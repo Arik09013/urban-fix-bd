@@ -1,0 +1,32 @@
+[
+  {
+    "complaint_id": "CP-9082",
+    "description": "Large pothole outside Main Market, Block C. Vehicles are swerving around it.",
+    "area": "Main Market, Block C",
+    "category": "Road Infrastructure",
+    "severity": "High",
+    "priority_score": 84,
+    "department": "Roads Department",
+    "status": "Assigned"
+  },
+  {
+    "complaint_id": "CP-7194",
+    "description": "Drainage overflow near school gate. Students cannot cross safely.",
+    "area": "Zone B School Road",
+    "category": "Drainage / Sewerage",
+    "severity": "Critical",
+    "priority_score": 94,
+    "department": "Drainage Department",
+    "status": "Submitted"
+  },
+  {
+    "complaint_id": "CP-5510",
+    "description": "Waste pile beside residential lane has not been collected.",
+    "area": "Johar Town Phase 2",
+    "category": "Waste Management",
+    "severity": "Medium",
+    "priority_score": 67,
+    "department": "Sanitation Department",
+    "status": "Resolved"
+  }
+]

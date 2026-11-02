@@ -1,0 +1,48 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.cert
+
+# Python & Virtual Environments
+.venv/
+backend/.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+test-results/
+playwright-report/
+
+# Node & Frontend Build
+node_modules/
+dist/
+build/
+.npm/
+
+# Local & Upload Data
+data/uploads/*
+!data/uploads/.gitkeep
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# IDE & OS Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

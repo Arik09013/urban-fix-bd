@@ -1,0 +1,12 @@
+.git
+.env
+backend/.env
+backend/.venv
+__pycache__
+.pytest_cache
+*.pyc
+.coverage
+htmlcov
+*.log
+.DS_Store
+data/uploads/*

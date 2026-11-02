@@ -1,0 +1,26 @@
+[
+  {
+    "contractor_id": "CTR-1001",
+    "name": "Ahmed Roadworks Team",
+    "skills": ["Potholes", "Concrete patch", "Road Infrastructure", "Night crew"],
+    "rating": 4.9,
+    "completed_jobs": 43,
+    "trust_score": 94
+  },
+  {
+    "contractor_id": "CTR-1002",
+    "name": "Green Lane Services",
+    "skills": ["Waste Management", "Drain cleaning", "Rapid response"],
+    "rating": 4.7,
+    "completed_jobs": 31,
+    "trust_score": 88
+  },
+  {
+    "contractor_id": "CTR-1003",
+    "name": "City Light Technicians",
+    "skills": ["Street Lighting", "Inspection", "Electrical repair"],
+    "rating": 4.8,
+    "completed_jobs": 56,
+    "trust_score": 91
+  }
+]

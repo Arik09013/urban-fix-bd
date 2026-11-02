@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="UrbanFix logo">
+  <defs><linearGradient id="g" x1="128" y1="896" x2="896" y2="128" gradientUnits="userSpaceOnUse"><stop stop-color="#0EA5E9"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
+  <rect x="48" y="48" width="928" height="928" rx="252" fill="url(#g)"/>
+  <path d="M270 284v268c0 151 91 234 230 234 86 0 155-32 196-91" fill="none" stroke="#07111F" stroke-width="104" stroke-linecap="round"/>
+  <path d="m492 568 118 112 188-246" fill="none" stroke="#F8FAFC" stroke-width="92" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

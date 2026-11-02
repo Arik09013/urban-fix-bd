@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: urbanfix-ai
+    runtime: docker
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: ALLOW_MEMORY_FALLBACK
+        value: "false"
+      - key: SEED_DEMO_DATA
+        value: "false"
+      - key: MONGO_URI
+        sync: false
+      - key: MONGO_DB_NAME
+        value: civicpulse
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ALLOW_DEMO_ADMIN
+        value: "true"
+      - key: REPORTER_TOKEN_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PAYMENT_PROVIDER
+        value: stripe
+      - key: STRIPE_SECRET_KEY
+        sync: false
