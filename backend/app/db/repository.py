@@ -161,78 +161,187 @@ class CivicRepository:
             await self.insert_many("discussions", [
                 {
                     "post_id": "DISC-1001",
-                    "author_name": "Ayesha",
-                    "area": "Lahore",
+                    "author_name": "Tanvir",
+                    "area": "Agrabad, Chattogram",
                     "topic": "Clean streets",
-                    "message": "Civility starts when people stop throwing waste outside shops and homes.",
+                    "message": "Civic responsibility starts when shopkeepers and commuters stop throwing waste onto public pedestrian paths.",
                     "upvotes": 18,
                     "created_at": now_utc(),
                 },
                 {
                     "post_id": "DISC-1002",
-                    "author_name": "Hassan",
-                    "area": "Karachi",
+                    "author_name": "Nusrat",
+                    "area": "GEC Circle, Chattogram",
                     "topic": "Report with proof",
-                    "message": "Citizens should upload clear photos so departments can act faster.",
+                    "message": "Clear photos and accurate GPS pins help ward supervisors and cleanup crews respond much faster.",
                     "upvotes": 11,
                     "created_at": now_utc(),
                 },
             ])
 
         if await self.count("complaints") == 0:
+            ts = now_utc()
             await self.insert_many("complaints", [
             {
                 "complaint_id": "CP-9082", "data_label": "Demo",
-                "description": "Large pothole outside Main Market, Block C. Vehicles are swerving around it.",
-                "location": {"area": "Main Market, Block C", "latitude": 31.5204, "longitude": 74.3587},
+                "description": "Large asphalt crater near Agrabad Commercial Area access road. Motor vehicles and rickshaws are swerving sharply into oncoming traffic.",
+                "location": {"area": "Agrabad Commercial Area", "latitude": 22.3262, "longitude": 91.8124},
                 "image_url": None,
                 "category": "Road Infrastructure",
                 "severity": "High",
                 "confidence": 0.93,
-                "summary": "Large pothole affecting vehicle movement near a market corridor.",
-                "department": "Roads Department",
+                "summary": "Asphalt road damage causing hazardous traffic obstruction near Agrabad commercial corridor.",
+                "department": "Engineering Department (Road Maintenance)",
+                "assigned_authority": {
+                    "authority_id": "AUTH-CCC",
+                    "authority_name": "Chattogram City Corporation",
+                    "short_code": "CCC",
+                    "department": "Engineering Department (Road Maintenance)",
+                    "jurisdiction": "Chattogram Metropolitan Area",
+                    "routing_status": "assigned",
+                    "assignment_status": "auto_assigned",
+                    "routing_method": "administrative_area_keyword",
+                    "routing_confidence": 0.88,
+                    "authority_data_status": "candidate_registry",
+                    "jurisdiction_data_status": "keyword_inferred",
+                    "integration_status": "simulated",
+                    "environment": "demo",
+                    "data_status": "pending_verification",
+                    "assignment_reason": "Matched to Chattogram City Corporation (Engineering Department (Road Maintenance)) via administrative_area_keyword.",
+                    "assigned_at": ts.isoformat(),
+                },
+                "initial_assigned_authority": {
+                    "authority_id": "AUTH-CCC",
+                    "authority_name": "Chattogram City Corporation",
+                    "short_code": "CCC",
+                    "department": "Engineering Department (Road Maintenance)",
+                    "jurisdiction": "Chattogram Metropolitan Area",
+                    "routing_status": "assigned",
+                    "assignment_status": "auto_assigned",
+                    "routing_method": "administrative_area_keyword",
+                    "routing_confidence": 0.88,
+                    "authority_data_status": "candidate_registry",
+                    "jurisdiction_data_status": "keyword_inferred",
+                    "integration_status": "simulated",
+                    "environment": "demo",
+                    "data_status": "pending_verification",
+                    "assignment_reason": "Matched to Chattogram City Corporation (Engineering Department (Road Maintenance)) via administrative_area_keyword.",
+                    "assigned_at": ts.isoformat(),
+                },
                 "priority_score": 84,
                 "priority_breakdown": {"severity": 38, "citizen_signal": 22, "waiting_time": 10, "location_impact": 14},
                 "duplicate_count": 7,
                 "status": "Assigned",
                 "channel": "Portal",
-                "created_at": now_utc(),
-                "updated_at": now_utc(),
+                "created_at": ts,
+                "updated_at": ts,
                 "status_history": [
-                    {"status": "Submitted", "note": "Citizen report received.", "at": now_utc()},
-                    {"status": "AI Analyzed", "note": "Classified as road infrastructure.", "at": now_utc()},
-                    {"status": "Assigned", "note": "Routed to Roads Department.", "at": now_utc()},
+                    {"status": "Submitted", "note": "Citizen report received.", "at": ts},
+                    {"status": "AI Analyzed", "note": "Classified as road infrastructure.", "at": ts},
+                    {"status": "Assigned", "note": "Routed to Chattogram City Corporation — Engineering Department (Road Maintenance).", "at": ts},
                 ],
             },
             {
                 "complaint_id": "CP-7194", "data_label": "Demo",
-                "description": "Drainage overflow near school gate. Students cannot cross safely.",
-                "location": {"area": "Zone B School Road", "latitude": 31.528, "longitude": 74.344},
+                "description": "Severe waterlogging and overflow along Muradpur main road following morning rainfall. Commuters and school students cannot cross the junction.",
+                "location": {"area": "Muradpur Junction", "latitude": 22.3654, "longitude": 91.8291},
                 "image_url": None,
                 "category": "Drainage / Sewerage",
                 "severity": "Critical",
                 "confidence": 0.91,
-                "summary": "Drainage overflow blocking access near a school.",
-                "department": "Drainage Department",
+                "summary": "Monsoon drainage overflow causing critical standing water at major transit intersection.",
+                "department": "Drainage & Flood Management Circle",
+                "assigned_authority": {
+                    "authority_id": "AUTH-CCC",
+                    "authority_name": "Chattogram City Corporation",
+                    "short_code": "CCC",
+                    "department": "Drainage & Flood Management Circle",
+                    "jurisdiction": "Chattogram Metropolitan Area",
+                    "routing_status": "assigned",
+                    "assignment_status": "auto_assigned",
+                    "routing_method": "administrative_area_keyword",
+                    "routing_confidence": 0.88,
+                    "authority_data_status": "candidate_registry",
+                    "jurisdiction_data_status": "keyword_inferred",
+                    "integration_status": "simulated",
+                    "environment": "demo",
+                    "data_status": "pending_verification",
+                    "assignment_reason": "Matched to Chattogram City Corporation (Drainage & Flood Management Circle) via administrative_area_keyword.",
+                    "assigned_at": ts.isoformat(),
+                },
+                "initial_assigned_authority": {
+                    "authority_id": "AUTH-CCC",
+                    "authority_name": "Chattogram City Corporation",
+                    "short_code": "CCC",
+                    "department": "Drainage & Flood Management Circle",
+                    "jurisdiction": "Chattogram Metropolitan Area",
+                    "routing_status": "assigned",
+                    "assignment_status": "auto_assigned",
+                    "routing_method": "administrative_area_keyword",
+                    "routing_confidence": 0.88,
+                    "authority_data_status": "candidate_registry",
+                    "jurisdiction_data_status": "keyword_inferred",
+                    "integration_status": "simulated",
+                    "environment": "demo",
+                    "data_status": "pending_verification",
+                    "assignment_reason": "Matched to Chattogram City Corporation (Drainage & Flood Management Circle) via administrative_area_keyword.",
+                    "assigned_at": ts.isoformat(),
+                },
                 "priority_score": 94,
                 "priority_breakdown": {"severity": 46, "citizen_signal": 20, "waiting_time": 8, "location_impact": 20},
                 "duplicate_count": 12,
                 "status": "Submitted",
                 "channel": "Portal",
-                "created_at": now_utc(),
-                "updated_at": now_utc(),
-                "status_history": [{"status": "Submitted", "note": "Citizen report received.", "at": now_utc()}],
+                "created_at": ts,
+                "updated_at": ts,
+                "status_history": [{"status": "Submitted", "note": "Citizen report received.", "at": ts}],
             },
             {
                 "complaint_id": "CP-5510", "data_label": "Demo",
-                "description": "Waste pile beside residential lane has not been collected.",
-                "location": {"area": "Johar Town Phase 2", "latitude": 31.4697, "longitude": 74.2728},
+                "description": "Unmanaged solid waste accumulation beside residential street near Nasirabad Housing Society.",
+                "location": {"area": "Nasirabad Housing Society", "latitude": 22.3587, "longitude": 91.8215},
                 "image_url": None,
                 "category": "Waste Management",
                 "severity": "Medium",
                 "confidence": 0.88,
-                "summary": "Uncollected waste is spreading near homes.",
-                "department": "Sanitation Department",
+                "summary": "Overflowing municipal waste pile obstructing pedestrian pathway.",
+                "department": "Conservancy Department (Waste Management)",
+                "assigned_authority": {
+                    "authority_id": "AUTH-CCC",
+                    "authority_name": "Chattogram City Corporation",
+                    "short_code": "CCC",
+                    "department": "Conservancy Department (Waste Management)",
+                    "jurisdiction": "Chattogram Metropolitan Area",
+                    "routing_status": "assigned",
+                    "assignment_status": "auto_assigned",
+                    "routing_method": "administrative_area_keyword",
+                    "routing_confidence": 0.88,
+                    "authority_data_status": "candidate_registry",
+                    "jurisdiction_data_status": "keyword_inferred",
+                    "integration_status": "simulated",
+                    "environment": "demo",
+                    "data_status": "pending_verification",
+                    "assignment_reason": "Matched to Chattogram City Corporation (Conservancy Department (Waste Management)) via administrative_area_keyword.",
+                    "assigned_at": ts.isoformat(),
+                },
+                "initial_assigned_authority": {
+                    "authority_id": "AUTH-CCC",
+                    "authority_name": "Chattogram City Corporation",
+                    "short_code": "CCC",
+                    "department": "Conservancy Department (Waste Management)",
+                    "jurisdiction": "Chattogram Metropolitan Area",
+                    "routing_status": "assigned",
+                    "assignment_status": "auto_assigned",
+                    "routing_method": "administrative_area_keyword",
+                    "routing_confidence": 0.88,
+                    "authority_data_status": "candidate_registry",
+                    "jurisdiction_data_status": "keyword_inferred",
+                    "integration_status": "simulated",
+                    "environment": "demo",
+                    "data_status": "pending_verification",
+                    "assignment_reason": "Matched to Chattogram City Corporation (Conservancy Department (Waste Management)) via administrative_area_keyword.",
+                    "assigned_at": ts.isoformat(),
+                },
                 "priority_score": 67,
                 "priority_breakdown": {"severity": 30, "citizen_signal": 12, "waiting_time": 5, "location_impact": 20},
                 "duplicate_count": 4,
@@ -240,9 +349,9 @@ class CivicRepository:
                 "resolution_approvals": {"contractor": True, "government": True},
                 "fully_verified": True,
                 "channel": "Portal",
-                "created_at": now_utc(),
-                "updated_at": now_utc(),
-                "status_history": [{"status": "Resolved", "note": "Demo case resolved.", "at": now_utc()}],
+                "created_at": ts,
+                "updated_at": ts,
+                "status_history": [{"status": "Resolved", "note": "Demo case resolved.", "at": ts}],
             },
             ])
 
@@ -250,9 +359,9 @@ class CivicRepository:
             await self.insert_many("contractors", [
             {
                 "contractor_id": "CTR-1001",
-                "name": "Ahmed Roadworks Team",
-                "contact": "+92 300 1111111",
-                "service_area": "Main Market, Block C",
+                "name": "Karnaphuli Civil Works Team",
+                "contact": "+880 1711 111111",
+                "service_area": "Agrabad & Port Zone",
                 "skills": ["Potholes", "Concrete patch", "Road Infrastructure", "Night crew"],
                 "rating": 4.9,
                 "completed_jobs": 43,
@@ -263,9 +372,9 @@ class CivicRepository:
             },
             {
                 "contractor_id": "CTR-1002",
-                "name": "Green Lane Services",
-                "contact": "+92 300 2222222",
-                "service_area": "Johar Town Phase 2",
+                "name": "Bay Green Environmental Crew",
+                "contact": "+880 1819 222222",
+                "service_area": "Nasirabad & GEC",
                 "skills": ["Waste Management", "Drain cleaning", "Rapid response"],
                 "rating": 4.7,
                 "completed_jobs": 31,
@@ -276,9 +385,9 @@ class CivicRepository:
             },
             {
                 "contractor_id": "CTR-1003",
-                "name": "City Light Technicians",
-                "contact": "+92 300 3333333",
-                "service_area": "Saddar Civic Center",
+                "name": "Chattogram Urban Electricians",
+                "contact": "+880 1912 333333",
+                "service_area": "Muradpur & Chawkbazar",
                 "skills": ["Street Lighting", "Inspection", "Electrical repair"],
                 "rating": 4.8,
                 "completed_jobs": 56,
@@ -288,6 +397,9 @@ class CivicRepository:
                 "trust_score": 91,
             },
             ])
+
+        from app.api.routes.auth import ensure_demo_officers
+        await ensure_demo_officers()
 
     async def count(self, collection: str) -> int:
         if self.use_memory:
@@ -409,6 +521,30 @@ class CivicRepository:
                     return deepcopy(item)
             return None
         return clean_mongo_doc(await self.db[collection].find_one({key: value}))
+
+    async def find_complaint_by_evidence_filename(self, filename: str) -> dict | None:
+        clean_name = filename.split("?")[0].strip()
+        if not clean_name:
+            return None
+        if self.use_memory:
+            for item in self.memory["complaints"]:
+                img = item.get("image_url") or ""
+                after_img = item.get("after_image_url") or ""
+                ev = item.get("resolution_evidence") or {}
+                ev_url = ev.get("url") or ""
+                ev_after = ev.get("after_image_url") or ""
+                if any(clean_name in candidate for candidate in (img, after_img, ev_url, ev_after) if candidate):
+                    return deepcopy(item)
+            return None
+        doc = await self.db.complaints.find_one({
+            "$or": [
+                {"image_url": {"$regex": clean_name}},
+                {"after_image_url": {"$regex": clean_name}},
+                {"resolution_evidence.after_image_url": {"$regex": clean_name}},
+                {"resolution_evidence.url": {"$regex": clean_name}},
+            ]
+        })
+        return clean_mongo_doc(doc)
 
     async def update_one(self, collection: str, key: str, value: str, changes: dict, *, session=None) -> dict | None:
         changes = deepcopy(changes)

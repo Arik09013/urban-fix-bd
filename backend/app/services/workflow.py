@@ -14,6 +14,10 @@ SPAM_SIGNAL_LIMIT = 1
 def requires_review(analysis: dict, payload: dict) -> tuple[bool, str | None]:
     if analysis.get("confidence", 0) < settings.ai_min_confidence:
         return True, f"AI confidence below {round(settings.ai_min_confidence * 100)}%; officer review required before routing."
+    if analysis.get("visual_verification") == "unverified" or analysis.get("analysis_source") == "fallback-rules":
+        return True, "Automated visual verification unavailable; officer review required before routing."
+    if analysis.get("is_civic_issue") is False:
+        return True, "Civic relevance unconfirmed; officer review required before routing."
     if payload.get("image_quality") in {"blurry", "dark", "missing"}:
         return True, "Image quality is too low for confident classification."
     location = payload.get("location") or {}

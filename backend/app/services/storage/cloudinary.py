@@ -20,6 +20,43 @@ IMAGE_SIGNATURES = {
 SAFE_SUFFIX = {"image/jpeg": ".jpg", "image/png": ".png", "image/gif": ".gif", "image/webp": ".webp"}
 
 
+def sign_evidence_access(complaint_id: str, filename: str, expires_at: int) -> str:
+    import hashlib
+    import hmac
+
+    secret = (settings.evidence_signing_secret or "").strip()
+    if not secret:
+        raise ValueError("EVIDENCE_SIGNING_SECRET is not configured. Set EVIDENCE_SIGNING_SECRET in environment or .env.")
+    message = f"{complaint_id}:{filename}:{expires_at}".encode("utf-8")
+    return hmac.new(secret.encode("utf-8"), message, hashlib.sha256).hexdigest()
+
+
+def verify_evidence_signature(complaint_id: str, filename: str, sig: str, exp: int) -> bool:
+    import hmac
+    import time
+
+    secret = (settings.evidence_signing_secret or "").strip()
+    if not secret or not sig or not exp or not complaint_id or not filename:
+        return False
+    try:
+        exp_int = int(exp)
+        if int(time.time()) > exp_int:
+            return False
+        expected = sign_evidence_access(complaint_id, filename, exp_int)
+    except (ValueError, TypeError):
+        return False
+    return hmac.compare_digest(expected, sig)
+
+
+def create_signed_evidence_url(complaint_id: str, filename: str, ttl_seconds: int = 3600) -> str:
+    import time
+
+    expires_at = int(time.time()) + ttl_seconds
+    sig = sign_evidence_access(complaint_id, filename, expires_at)
+    return f"/uploads/{filename}?cid={complaint_id}&exp={expires_at}&sig={sig}"
+
+
+
 async def store_upload(file: UploadFile | None) -> str | None:
     if file is None:
         return None

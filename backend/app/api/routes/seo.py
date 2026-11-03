@@ -11,12 +11,14 @@ from app.core.config import settings
 router = APIRouter(tags=["public-pages"])
 
 ISSUES = {
-    "potholes": ("Report Potholes in Pakistan", "Report road damage with photo and confirmed location evidence, receive a public tracking ID, and follow verified repair progress.", "Potholes damage vehicles, slow emergency access, and create avoidable safety risks. UrbanFix turns a photograph, description, and confirmed map location into a structured road-infrastructure report for transparent municipal follow-up."),
+    "potholes": ("Report Potholes in Bangladesh", "Report road damage with photo and confirmed location evidence, receive a public tracking ID, and follow verified repair progress.", "Potholes and road craters damage vehicles, slow emergency access, and create avoidable safety risks. UrbanFix turns a photograph, description, and confirmed map location into a structured road-infrastructure report for transparent municipal follow-up."),
     "waste-management": ("Report Waste and Garbage Problems", "Report uncollected waste and illegal dumping with evidence, location, public tracking, and privacy protection.", "Uncollected waste affects health, drainage, walkability, and neighborhood confidence. UrbanFix records each report as distinct evidence while helping authorities recognize recurring waste hotspots."),
     "drainage": ("Report Drainage and Sewerage Problems", "Report blocked drains, sewerage overflow, and flooding risks with evidence-backed civic tracking.", "Drainage failures can quickly become health and access emergencies. UrbanFix helps residents document the location and severity, while its transparent priority method highlights safety and public-access impact."),
 }
 
 CITIES = {
+    "chattogram": ("Report Civic Problems in Chattogram", "Report road craters, waste piles, drainage overflow, water supply, and street-light problems in Chattogram through a transparent evidence-based workflow."),
+    "dhaka": ("Report Civic Problems in Dhaka", "Create and track evidence-backed civic issue reports across Dhaka while protecting reporter identity."),
     "multan": ("Report Civic Problems in Multan", "Report potholes, waste, drainage, water, and street-light problems in Multan through a transparent evidence-based workflow."),
     "lahore": ("Report Civic Problems in Lahore", "Create and track evidence-backed civic issue reports across Lahore while protecting reporter identity."),
     "karachi": ("Report Civic Problems in Karachi", "Report and publicly track infrastructure, sanitation, drainage, water, and street-light issues in Karachi."),
@@ -45,7 +47,7 @@ def _page(request: Request, path: str, title: str, description: str, heading: st
 <style>body{{margin:0;background:#0b0f17;color:#dbeafe;font:16px/1.7 system-ui,sans-serif}}main,nav,footer{{max-width:860px;margin:auto;padding:24px}}nav a,a{{color:#38bdf8}}h1{{font-size:clamp(2rem,6vw,3.7rem);line-height:1.08;color:white}}h2{{color:white;margin-top:2rem}}.cta{{display:inline-block;background:#38bdf8;color:#07111f;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none}}ul{{display:flex;flex-wrap:wrap;gap:10px 24px;padding-left:20px}}.eyebrow{{color:#38bdf8;font-weight:700;text-transform:uppercase;letter-spacing:.08em}}</style></head>
 <body><nav aria-label="Main navigation"><a href="/">UrbanFix home</a><ul>{links}</ul></nav><main><div class="eyebrow">Evidence-backed civic action</div><h1>{escape(heading)}</h1><p>{escape(description)}</p>{body}
 <h2>Report with confidence</h2><p>Photos are safely re-encoded, private metadata is removed, reporter identity is not published, and precise public coordinates are reduced. Every accepted report receives a public tracking record.</p><a class="cta" href="/">Open UrbanFix</a></main>
-<footer>UrbanFix AI · Transparent civic reporting for Pakistan</footer></body></html>"""
+<footer>Urban Fix BD · Transparent civic reporting for Bangladesh</footer></body></html>"""
     return HTMLResponse(html)
 
 

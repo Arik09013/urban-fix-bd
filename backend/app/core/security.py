@@ -37,6 +37,8 @@ async def create_session(user: dict) -> tuple[str, dict]:
         "csrf_token": csrf,
         "user_id": user["user_id"],
         "role": user["role"],
+        "authority_id": user.get("authority_id"),
+        "department": user.get("department"),
         "expires_at": now_utc() + timedelta(days=SESSION_DAYS),
         "created_at": now_utc(),
     }
@@ -46,6 +48,10 @@ async def create_session(user: dict) -> tuple[str, dict]:
 
 async def optional_user(request: Request) -> dict | None:
     token = request.cookies.get(SESSION_COOKIE)
+    if not token:
+        auth_header = request.headers.get("authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
     if not token:
         return None
     session = await civic_repo.find_one("sessions", "token_hash", token_hash(token))
@@ -68,7 +74,16 @@ async def optional_user(request: Request) -> dict | None:
         user = await civic_repo.find_one("users", "user_id", session["user_id"])
     if not user:
         return None
-    return {**user, "csrf_token": session["csrf_token"], "session_id": session["session_id"]}
+    if user.get("role") == "officer" and not user.get("active", True):
+        return None
+    return {
+        **user,
+        "role": session.get("role", user.get("role")),
+        "authority_id": session.get("authority_id") or user.get("authority_id"),
+        "department": session.get("department") or user.get("department"),
+        "csrf_token": session["csrf_token"],
+        "session_id": session["session_id"],
+    }
 
 
 async def require_user(request: Request) -> dict:
@@ -88,5 +103,32 @@ async def require_admin(user: dict = Depends(require_user)) -> dict:
     return user
 
 
+async def require_officer(user: dict = Depends(require_user)) -> dict:
+    if user.get("role") != "officer":
+        raise HTTPException(status_code=403, detail="Authority officer access required")
+    if not user.get("active", True):
+        raise HTTPException(status_code=403, detail="Officer account is inactive")
+    if not user.get("authority_id"):
+        raise HTTPException(status_code=403, detail="Officer is not assigned to any authority")
+    return user
+
+
+async def require_admin_or_officer(user: dict = Depends(require_user)) -> dict:
+    role = user.get("role")
+    if role == "admin":
+        return user
+    if role == "officer":
+        if not user.get("active", True):
+            raise HTTPException(status_code=403, detail="Officer account is inactive")
+        if not user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officer is not assigned to any authority")
+        return user
+    raise HTTPException(status_code=403, detail="Administrative or officer access required")
+
+
 def public_user(user: dict) -> dict:
-    return {key: user.get(key) for key in ("user_id", "name", "email", "role")} | {"csrf_token": user.get("csrf_token")}
+    base = {key: user.get(key) for key in ("user_id", "name", "email", "role")}
+    for extra in ("username", "authority_id", "department", "active"):
+        if extra in user and user[extra] is not None:
+            base[extra] = user[extra]
+    return base | {"csrf_token": user.get("csrf_token")}

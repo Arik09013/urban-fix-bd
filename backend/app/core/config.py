@@ -17,7 +17,10 @@ class Settings(BaseSettings):
     admin_username: str = "admin"
     admin_password: str = "admin"
     allow_demo_admin: bool = False
+    allow_demo_officer_login: bool = False
+    demo_officer_default_password: str = "OfficerDemo123!"
     reporter_token_secret: str = "development-reporter-secret"
+    evidence_signing_secret: str = ""
     api_prefix: str = "/api"
     mongo_uri: str = "mongodb://localhost:27017"
     mongo_db_name: str = "civicpulse"
@@ -51,7 +54,11 @@ class Settings(BaseSettings):
         "null",
     ]
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=(".env", "backend/.env", str(Path(__file__).resolve().parents[2] / ".env")),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     @model_validator(mode="after")
     def validate_production_safety(self):
@@ -64,6 +71,8 @@ class Settings(BaseSettings):
                 unsafe.append("ADMIN_PASSWORD (minimum 12 characters)")
             if self.reporter_token_secret == "development-reporter-secret" or len(self.reporter_token_secret) < 32:
                 unsafe.append("REPORTER_TOKEN_SECRET (minimum 32 characters)")
+            if not self.evidence_signing_secret or len(self.evidence_signing_secret) < 32:
+                unsafe.append("EVIDENCE_SIGNING_SECRET (minimum 32 characters)")
             if self.mongo_uri in {"", "mongodb://localhost:27017"}:
                 unsafe.append("MONGO_URI")
             cloudinary_parts = all((self.cloudinary_cloud_name, self.cloudinary_api_key, self.cloudinary_api_secret))

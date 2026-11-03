@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from app.core.security import require_admin
+from app.core.security import require_admin_or_officer
 
 from app.db.repository import civic_repo
 from app.services.contractors.matching import rank_contractors
@@ -25,8 +25,17 @@ async def filtered_incident_queue(
     category: Optional[str] = None,
     severity: Optional[str] = None,
     search: Optional[str] = Query(default=None, max_length=120),
-    _admin: dict = Depends(require_admin),
+    authority_id: Optional[str] = Query(default=None, max_length=50),
+    user: dict = Depends(require_admin_or_officer),
 ):
+    # Authority isolation: Resolve officer authority strictly from session
+    if user.get("role") == "officer":
+        if authority_id and authority_id != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot access queues for other authorities")
+        target_authority = user.get("authority_id")
+    else:
+        target_authority = authority_id
+
     items = await civic_repo.list_all("complaints")
     cutoff = datetime.now(timezone.utc) - timedelta(days=days) if days else None
     assigned_states = {"Assigned", "In Progress", "Evidence Uploaded"}
@@ -36,6 +45,10 @@ async def filtered_incident_queue(
         created = _utc(item.get("created_at"))
         if cutoff and (not created or created < cutoff):
             return False
+        if target_authority:
+            item_auth = (item.get("assigned_authority") or {}).get("authority_id")
+            if item_auth != target_authority:
+                return False
         if state == "assigned" and item.get("status") not in assigned_states:
             return False
         if state == "unresolved" and item.get("status") == "Resolved":
@@ -61,7 +74,17 @@ async def filtered_incident_queue(
 
 
 @router.get("/audit/{entity_type}/{entity_id}")
-async def entity_audit_trail(entity_type: str, entity_id: str, _admin: dict = Depends(require_admin)):
+async def entity_audit_trail(entity_type: str, entity_id: str, user: dict = Depends(require_admin_or_officer)):
+    if user.get("role") == "officer":
+        if entity_type == "complaint":
+            complaint = await civic_repo.find_one("complaints", "complaint_id", entity_id)
+            if not complaint:
+                raise HTTPException(status_code=404, detail="Complaint not found")
+            assigned = complaint.get("assigned_authority") or {}
+            if assigned.get("authority_id") != user.get("authority_id"):
+                raise HTTPException(status_code=403, detail="Access denied to audit trail of other authority's complaint")
+        else:
+            raise HTTPException(status_code=403, detail="Officers cannot access non-complaint audit trails")
     events = [item for item in await civic_repo.list_all("audit_events") if item.get("entity_type") == entity_type and item.get("entity_id") == entity_id]
     events.sort(key=lambda item: item.get("created_at"), reverse=True)
     return {"events": events[:200], "count": len(events)}
@@ -82,10 +105,14 @@ def recommended_action(complaint: dict) -> str:
 
 
 @router.get("/incidents/{complaint_id}")
-async def incident_workspace(complaint_id: str, _admin: dict = Depends(require_admin)):
+async def incident_workspace(complaint_id: str, user: dict = Depends(require_admin_or_officer)):
     complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Access denied to other authority's incident workspace")
     contractors = await civic_repo.list_all("contractors")
     offers = [
         item for item in await civic_repo.list_all("offers")

@@ -1,32 +1,32 @@
 [
   {
     "complaint_id": "CP-9082",
-    "description": "Large pothole outside Main Market, Block C. Vehicles are swerving around it.",
-    "area": "Main Market, Block C",
+    "description": "Large asphalt crater near Agrabad Commercial Area access road. Motor vehicles and rickshaws are swerving sharply into oncoming traffic.",
+    "area": "Agrabad Commercial Area",
     "category": "Road Infrastructure",
     "severity": "High",
     "priority_score": 84,
-    "department": "Roads Department",
+    "department": "Engineering Department (Road Maintenance)",
     "status": "Assigned"
   },
   {
     "complaint_id": "CP-7194",
-    "description": "Drainage overflow near school gate. Students cannot cross safely.",
-    "area": "Zone B School Road",
+    "description": "Severe waterlogging and overflow along Muradpur main road following morning rainfall. Commuters and school students cannot cross the junction.",
+    "area": "Muradpur Junction",
     "category": "Drainage / Sewerage",
     "severity": "Critical",
     "priority_score": 94,
-    "department": "Drainage Department",
+    "department": "Drainage & Flood Management Circle",
     "status": "Submitted"
   },
   {
     "complaint_id": "CP-5510",
-    "description": "Waste pile beside residential lane has not been collected.",
-    "area": "Johar Town Phase 2",
+    "description": "Unmanaged solid waste accumulation beside residential street near Nasirabad Housing Society.",
+    "area": "Nasirabad Housing Society",
     "category": "Waste Management",
     "severity": "Medium",
     "priority_score": 67,
-    "department": "Sanitation Department",
+    "department": "Conservancy Department (Waste Management)",
     "status": "Resolved"
   }
 ]

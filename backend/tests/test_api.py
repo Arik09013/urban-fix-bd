@@ -171,7 +171,7 @@ def test_health_and_api_root(monkeypatch):
         assert health.json()["database"] == "memory-demo"
         homepage = client.get("/")
         assert homepage.status_code == 200
-        assert "Report civic problems in Pakistan" in homepage.text
+        assert "Report civic problems in Bangladesh" in homepage.text
         assert "Sitemap:" in client.get("/robots.txt").text
         sitemap = client.get("/sitemap.xml").text
         assert "<urlset" in sitemap

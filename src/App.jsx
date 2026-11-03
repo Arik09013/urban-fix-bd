@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { api } from './lib/api.js';
 import Icon from './components/Icon.jsx';
 import ReviewDialog from './components/ReviewDialog.jsx';
+import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
     const absoluteMediaUrl = (url) => {
       if (!url || url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) return url;
@@ -18,10 +19,10 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
     })[char]);
 
-    const normalizeReport = (item) => ({
+    export const normalizeReport = (item) => ({
       ...item,
       id: item.complaint_id || item.id,
-      title: item.summary || item.title || item.description,
+      title: item.description || item.title || item.summary || 'Civic Issue',
       location: typeof item.location === 'string' ? item.location : item.location?.area || 'Location pending',
       coordinates: item.coordinates || { lat: item.location?.latitude, lng: item.location?.longitude },
       confidence: typeof item.confidence === 'number'
@@ -43,10 +44,10 @@ import ReviewDialog from './components/ReviewDialog.jsx';
     });
 
     const markerState = (report) => {
-      const approvals = report.resolution_approvals || {};
-      const approvalCount = ['contractor', 'government'].filter(key => approvals[key]).length;
-      if (approvalCount === 2 || report.fully_verified) return { color: '#22c55e', label: 'Verified resolution' };
-      if (approvalCount > 0) return { color: '#38bdf8', label: `${approvalCount}/2 resolution approvals` };
+      const hasEvidence = Boolean(report.afterImage || report.resolution_evidence || report.officer_evidence_submitted);
+      const citizenConfirmed = Boolean(report.citizen_verification?.fixed || report.resolution_approvals?.reporter || report.status === 'Resolved');
+      if (citizenConfirmed || report.fully_verified) return { color: '#22c55e', label: 'Verified resolution' };
+      if (hasEvidence) return { color: '#38bdf8', label: 'Evidence submitted · Awaiting citizen verification' };
       if (report.severity === 'Critical' || report.severity === 'High') return { color: '#ef4444', label: `${report.severity} unresolved problem` };
       return { color: '#eab308', label: `${report.severity || 'Moderate'} unresolved problem` };
     };
@@ -65,7 +66,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
           groups.get(key).push(report);
         });
         const located = [...groups.values()].map(group => ({...group[0], incidentReportCount: group.length}));
-        const center = located.length ? [located[0].coordinates.lat, located[0].coordinates.lng] : [30.1575, 71.5249];
+        const center = located.length ? [located[0].coordinates.lat, located[0].coordinates.lng] : [22.3475, 91.8123];
         const map = window.L.map(mapNode.current, { zoomControl: false }).setView(center, 12);
         window.L.control.zoom({ position: 'bottomright' }).addTo(map);
         window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -131,7 +132,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       useEffect(() => {
         if (!window.L || !mapNode.current) return;
         const hasLocation = Number.isFinite(latitude) && Number.isFinite(longitude);
-        const center = hasLocation ? [latitude, longitude] : [30.1575, 71.5249];
+        const center = hasLocation ? [latitude, longitude] : [22.3475, 91.8123];
         const map = window.L.map(mapNode.current, { zoomControl: false }).setView(center, hasLocation ? 17 : 12);
         window.L.control.zoom({ position: 'bottomright' }).addTo(map);
         window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -167,22 +168,34 @@ import ReviewDialog from './components/ReviewDialog.jsx';
     const INITIAL_REPORTS = [
       {
         id: 'CP-88412',
-        category: 'Let AI decide',
-        title: 'Severe Asphalt Pothole near School Gate',
-        location: 'Bosan Road, Sector 3, Multan',
-        coordinates: { lat: 30.258, lng: 71.514 },
+        category: 'Road Infrastructure',
+        title: 'Severe Asphalt Crater near Agrabad Access Road',
+        location: 'Agrabad Commercial Area, Chattogram',
+        coordinates: { lat: 22.3262, lng: 91.8124 },
         severity: 'Critical',
         status: 'In Progress',
         data_label: 'Demo',
         priority_score: 92,
         priority_breakdown: { severity: 46, duplicates_and_affected: 18, age: 8, location_impact: 14, critical_safety: 6 },
-        department: 'Dept. of Public Works',
+        department: 'Engineering Department (Road Maintenance)',
+        assigned_authority: {
+          authority_id: 'AUTH-CCC',
+          authority_name: 'Chattogram City Corporation',
+          short_code: 'CCC',
+          department: 'Engineering Department (Road Maintenance)',
+          jurisdiction: 'Chattogram Metropolitan Area',
+          routing_status: 'assigned',
+          routing_method: 'administrative_area_keyword',
+          routing_confidence: 0.88,
+          data_status: 'pending_verification',
+          assignment_reason: 'Matched to Chattogram City Corporation (Engineering Department (Road Maintenance)) via administrative_area_keyword.'
+        },
         reportedAt: '2026-08-20T09:12:00Z',
         confidence: 'High Confidence (98.4%)',
         duplicates: 4,
         beforeImage: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800',
         afterImage: null,
-        description: 'Deep pothole across the left lane creating severe traffic bottlenecks during morning school hours.',
+        description: 'Deep road crater across the commercial access lane creating severe vehicular bottlenecks during peak transit hours.',
         timeline: [
           { step: 'Reported', time: '09:12 AM', done: true },
           { step: 'AI Assessed', time: '09:13 AM', done: true },
@@ -194,9 +207,9 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       {
         id: 'CP-88390',
         category: 'Waste Management',
-        title: 'Overflowing Municipal Garbage Bin',
-        location: 'Main Commercial Market, Block B',
-        coordinates: { lat: 30.262, lng: 71.520 },
+        title: 'Overflowing Municipal Waste Collection Point',
+        location: 'Nasirabad Housing Society, Chattogram',
+        coordinates: { lat: 22.3587, lng: 91.8215 },
         severity: 'High',
         status: 'Resolved',
         data_label: 'Demo',
@@ -204,7 +217,24 @@ import ReviewDialog from './components/ReviewDialog.jsx';
         priority_breakdown: { severity: 30, duplicates_and_affected: 9, age: 10, location_impact: 17, critical_safety: 5 },
         resolution_approvals: { contractor: true, government: true },
         fully_verified: true,
-        department: 'Sanitation Authority',
+        department: 'Conservancy Department (Waste Management)',
+        assigned_authority: {
+          authority_id: 'AUTH-CCC',
+          authority_name: 'Chattogram City Corporation',
+          short_code: 'CCC',
+          department: 'Conservancy Department (Waste Management)',
+          jurisdiction: 'Chattogram Metropolitan Area',
+          routing_status: 'assigned',
+          assignment_status: 'auto_assigned',
+          routing_method: 'administrative_area_keyword',
+          routing_confidence: 0.88,
+          authority_data_status: 'candidate_registry',
+          jurisdiction_data_status: 'keyword_inferred',
+          integration_status: 'simulated',
+          environment: 'demo',
+          data_status: 'pending_verification',
+          assignment_reason: 'Matched to Chattogram City Corporation (Conservancy Department (Waste Management)) via administrative_area_keyword.'
+        },
         reportedAt: '2026-08-19T14:20:00Z',
         confidence: 'High Confidence (96.1%)',
         duplicates: 1,
@@ -221,16 +251,33 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       },
       {
         id: 'CP-88210',
-        category: 'Water & Sewage',
-        title: 'Main Pipeline Overflow & Standing Water',
-        location: 'Gulgasht Colony, Street 14',
-        coordinates: { lat: 30.250, lng: 71.508 },
+        category: 'Drainage / Sewerage',
+        title: 'Monsoon Waterlogging & Blocked Culvert',
+        location: 'Muradpur Junction, Chattogram',
+        coordinates: { lat: 22.3654, lng: 91.8291 },
         severity: 'Critical',
-        status: 'Pending',
+        status: 'Needs Review',
         data_label: 'Demo',
         priority_score: 86,
         priority_breakdown: { severity: 46, duplicates_and_affected: 6, age: 8, location_impact: 20, critical_safety: 6 },
-        department: 'Water Supply & Sewerage Board',
+        department: 'Drainage & Flood Management Circle',
+        assigned_authority: {
+          authority_id: 'AUTH-CCC',
+          authority_name: 'Chattogram City Corporation',
+          short_code: 'CCC',
+          department: 'Drainage & Flood Management Circle',
+          jurisdiction: 'Chattogram Metropolitan Area',
+          routing_status: 'needs_review',
+          assignment_status: 'needs_review',
+          routing_method: 'administrative_area_keyword',
+          routing_confidence: 0.88,
+          authority_data_status: 'candidate_registry',
+          jurisdiction_data_status: 'keyword_inferred',
+          integration_status: 'simulated',
+          environment: 'demo',
+          data_status: 'pending_verification',
+          assignment_reason: 'Monsoon waterlogging requires officer site verification for emergency pump deployment.'
+        },
         reportedAt: '2026-08-20T11:45:00Z',
         confidence: 'Needs Human Review',
         duplicates: 0,
@@ -247,7 +294,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       }
     ];
 
-    function AuthCard({ title, subtitle, mode, setMode, form, setForm, submit, busy, error, allowRegister = true, demoCredentials = false }) {
+    function AuthCard({ title, subtitle, mode, setMode, form, setForm, submit, busy, error, allowRegister = true, demoCredentials = false, onDemoOfficerLogin = null }) {
       const [showPassword, setShowPassword] = useState(false);
       const registering = allowRegister && mode === 'register';
       const emailValid = !allowRegister || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim());
@@ -277,10 +324,39 @@ import ReviewDialog from './components/ReviewDialog.jsx';
             </>
           )}
           {demoCredentials && (
-            <button type="button" onClick={() => setForm({...form, email:'admin', password:'admin'})} className="w-full rounded-xl border border-sky-500/30 bg-sky-500/10 p-3 text-left text-xs text-sky-300 hover:bg-sky-500/20 transition-colors">
-              <span className="block font-bold">Judge demo access</span>
-              <span className="font-mono">Username: admin · Password: admin</span>
-            </button>
+            <div className="space-y-2.5">
+              <button type="button" onClick={() => setForm({...form, email:'admin', password:'admin'})} className="w-full rounded-xl border border-sky-500/30 bg-sky-500/10 p-3 text-left text-xs text-sky-300 hover:bg-sky-500/20 transition-colors">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold">Judge demo access (Administrator)</span>
+                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold">Admin</span>
+                </div>
+                <span className="font-mono text-[11px] text-slate-400">Username: admin · Global access</span>
+              </button>
+              <div className="p-3 rounded-xl border border-amber-500/20 bg-amber-500/5 space-y-2">
+                <div className="text-[10px] font-mono uppercase text-amber-300 font-bold flex items-center justify-between">
+                  <span>Simulated Authority Officers</span>
+                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200">DEMO ONLY</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { code: 'officer.ccc', label: 'CCC (Chattogram)', auth: 'AUTH-CCC' },
+                    { code: 'officer.dncc', label: 'DNCC (Dhaka N)', auth: 'AUTH-DNCC' },
+                    { code: 'officer.dscc', label: 'DSCC (Dhaka S)', auth: 'AUTH-DSCC' },
+                    { code: 'officer.dwasa', label: 'DWASA (Water/Sewer)', auth: 'AUTH-DWASA' },
+                  ].map(item => (
+                    <button
+                      key={item.code}
+                      type="button"
+                      onClick={() => onDemoOfficerLogin ? onDemoOfficerLogin(item.code) : setForm({...form, email: item.code})}
+                      className="rounded-lg border border-slate-700/80 bg-slate-900/90 p-2 text-left text-[11px] text-slate-300 hover:border-sky-500/50 hover:bg-slate-800 transition-colors"
+                    >
+                      <div className="font-bold text-sky-300 truncate">{item.label}</div>
+                      <div className="font-mono text-[10px] text-slate-400">{item.code}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
           <input type={allowRegister?'email':'text'} value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder={allowRegister ? 'Email address' : 'Admin username'} autoComplete="username" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
           <div className="relative">
@@ -343,6 +419,13 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       const [reviewBusy, setReviewBusy] = useState(false);
       const [fundingBudgets, setFundingBudgets] = useState({});
       const [authUser, setAuthUser] = useState(null);
+      const [verificationToken, setVerificationToken] = useState('');
+      const [citizenFeedback, setCitizenFeedback] = useState('');
+      const [isVerifying, setIsVerifying] = useState(false);
+      const [officerProgressNote, setOfficerProgressNote] = useState('');
+      const [evidenceFile, setEvidenceFile] = useState(null);
+      const [evidenceNote, setEvidenceNote] = useState('');
+      const [isUploadingEvidence, setIsUploadingEvidence] = useState(false);
       const [authMode, setAuthMode] = useState('login');
       const [authForm, setAuthForm] = useState({name:'',email:'',password:'',confirmPassword:'',phone:'',payoutAccount:''});
       const [authBusy, setAuthBusy] = useState(false);
@@ -439,6 +522,14 @@ import ReviewDialog from './components/ReviewDialog.jsx';
         }
       };
 
+      useEffect(() => {
+        if (selectedReport?.id) {
+          const stored = sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) || '';
+          setVerificationToken(stored);
+          setCitizenFeedback('');
+        }
+      }, [selectedReport?.id]);
+
       const authenticate = async (forcedMode = null) => {
         const selectedMode = ['login', 'register'].includes(forcedMode) ? forcedMode : authMode;
         authVersionRef.current += 1;
@@ -506,6 +597,26 @@ import ReviewDialog from './components/ReviewDialog.jsx';
         catch(error) { showToast(error.message); }
       };
 
+      const handleDemoOfficerLogin = async (username) => {
+        setAuthBusy(true);
+        setAuthError('');
+        try {
+          const user = await api('/auth/demo-officer-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username }),
+          });
+          if (user.csrf_token) window.URBANFIX_CSRF = user.csrf_token;
+          setAuthUser(user);
+          await refreshData(user);
+          showToast(`Logged in as simulated officer: ${user.name}`);
+        } catch (err) {
+          setAuthError(err.message);
+        } finally {
+          setAuthBusy(false);
+        }
+      };
+
       const logout = async () => {
         authVersionRef.current += 1;
         try { await api('/auth/logout',{method:'POST'}); } catch (_) {}
@@ -532,7 +643,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
           data.append('description', reportForm.description || 'Civic issue shown in uploaded evidence');
           data.append('category_hint', reportForm.category || 'Let AI decide');
           const analysis = await api('/complaints/analyze', { method: 'POST', body: data });
-          if (analysis.is_civic_issue === false) {
+          if (analysis.is_civic_issue === false && analysis.confidence >= 0.75) {
             setUploadedFile(null);
             setUploadedImage(null);
             setAiAnalysis(null);
@@ -547,7 +658,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
             ...form,
             category: analysis.category,
             severity: analysis.severity,
-            description: form.description.trim() || analysis.summary || 'Civic issue shown in uploaded evidence',
+            description: form.description,
           }));
           setReportStep(2);
         } catch (error) {
@@ -690,8 +801,12 @@ import ReviewDialog from './components/ReviewDialog.jsx';
       };
 
       const nextOperationalStatus = report => ({
-        'Submitted': 'Assigned', 'Needs Review': 'Assigned', 'Assigned': 'Acknowledged',
-        'Contractor Offer Sent': 'Acknowledged', 'Acknowledged': 'In Progress', 'Reopened - Needs Review': 'Assigned'
+        'Submitted': (report.assigned_authority?.routing_status === 'assigned') ? 'Acknowledged' : 'Assigned',
+        'Needs Review': 'Assigned',
+        'Assigned': 'Acknowledged',
+        'Contractor Offer Sent': 'Acknowledged',
+        'Acknowledged': 'In Progress',
+        'Reopened - Needs Review': 'Acknowledged',
       })[report.status] || null;
 
       const inspectIncident = async report => {
@@ -739,6 +854,100 @@ import ReviewDialog from './components/ReviewDialog.jsx';
         } catch (error) { showToast(error.message); }
       };
 
+      const handleCitizenVerify = async (outcome) => {
+        const token = (verificationToken || sessionStorage.getItem(`urbanfix-reporter-${selectedReport?.id}`) || '').trim();
+        if (!token) {
+          showToast('Please enter your reporter verification token to proceed.');
+          return;
+        }
+        if ((outcome === 'not_fixed' || outcome === 'partially_fixed') && !citizenFeedback.trim()) {
+          showToast('Please provide a reason or notes for the dispute.');
+          return;
+        }
+        setIsVerifying(true);
+        try {
+          const updated = await api(`/complaints/${selectedReport.id}/reporter-verification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              token,
+              outcome,
+              note: citizenFeedback.trim() || (outcome === 'fixed' ? 'Citizen verified resolution on site.' : 'Citizen disputed resolution.'),
+            }),
+          });
+          setSelectedReport(normalizeReport(updated));
+          await refreshData(authUser);
+          showToast(outcome === 'fixed' ? '✓ Resolution confirmed! Complaint is now fully resolved.' : 'Dispute recorded. Complaint reopened for field review.');
+          setCitizenFeedback('');
+        } catch (error) {
+          showToast(error.message || 'Verification failed. Please check token.');
+        } finally {
+          setIsVerifying(false);
+        }
+      };
+
+      const handleOfficerStatusUpdate = async (status, note) => {
+        if (!operationDetail?.complaint) return;
+        try {
+          await api(`/complaints/${operationDetail.complaint.id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status, note }),
+          });
+          await refreshData(authUser);
+          await inspectIncident(operationDetail.complaint);
+          showToast(`Status updated to ${status}.`);
+        } catch (error) {
+          showToast(error.message);
+        }
+      };
+
+      const handleOfficerProgressUpdate = async () => {
+        if (!operationDetail?.complaint || !officerProgressNote.trim()) {
+          showToast('Please enter a progress note.');
+          return;
+        }
+        try {
+          await api(`/complaints/${operationDetail.complaint.id}/progress`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ note: officerProgressNote.trim() }),
+          });
+          setOfficerProgressNote('');
+          await refreshData(authUser);
+          await inspectIncident(operationDetail.complaint);
+          showToast('Progress update saved.');
+        } catch (error) {
+          showToast(error.message);
+        }
+      };
+
+      const handleEvidenceUpload = async () => {
+        if (!operationDetail?.complaint || !evidenceFile || !evidenceNote.trim()) {
+          showToast('Please select a photo and enter field completion notes.');
+          return;
+        }
+        setIsUploadingEvidence(true);
+        try {
+          const formData = new FormData();
+          formData.append('image', evidenceFile);
+          formData.append('completion_note', evidenceNote.trim());
+          await api(`/complaints/${operationDetail.complaint.id}/evidence/upload`, {
+            method: 'POST',
+            body: formData,
+          });
+          setEvidenceFile(null);
+          setEvidenceNote('');
+          await refreshData(authUser);
+          await inspectIncident(operationDetail.complaint);
+          showToast('✓ Resolution evidence uploaded. Submitted for citizen verification.');
+        } catch (error) {
+          showToast(error.message);
+        } finally {
+          setIsUploadingEvidence(false);
+        }
+      };
+
       const submitRepairRequest = async () => {
         if (!authUser || authUser.role !== 'youth') return showToast('Log in with a youth account first.');
         try {
@@ -782,7 +991,11 @@ import ReviewDialog from './components/ReviewDialog.jsx';
 
       const reportCategories = [...new Set(reports.map(item => item.category).filter(Boolean))].sort();
       const filteredAdminReports = reports.filter(item => {
-        const searchable = `${item.id} ${item.title || ''} ${item.category} ${item.location} ${item.status}`.toLowerCase();
+        if (authUser?.role === 'officer' && authUser?.authority_id) {
+          const itemAuth = item.assigned_authority?.authority_id;
+          if (itemAuth && itemAuth !== authUser.authority_id) return false;
+        }
+        const searchable = `${item.id} ${item.title || ''} ${item.description || ''} ${item.category} ${item.location} ${item.status}`.toLowerCase();
         if (searchQuery && !searchable.includes(searchQuery.toLowerCase())) return false;
         if (queueFilters.category !== 'all' && item.category !== queueFilters.category) return false;
         if (queueFilters.severity !== 'all' && item.severity !== queueFilters.severity) return false;
@@ -1144,8 +1357,28 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                         ) : (
                           <div className="space-y-3.5">
                             <div className="border-b border-slate-800 pb-4">
-                              <div className="text-xs text-sky-400 font-semibold">Suggested description</div>
-                              <p className="text-xs sm:text-sm font-medium text-slate-100 mt-1.5 leading-snug">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                  <div className="text-xs text-sky-400 font-semibold flex items-center gap-1.5">
+                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-sky-400" />
+                                    <span>Suggested description (AI-generated)</span>
+                                  </div>
+                                  <p className="text-[11px] text-slate-400 mt-0.5">
+                                    Draft suggestion based on your photo. You can edit or write your own below.
+                                  </p>
+                                </div>
+                                {aiAnalysis?.summary ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => setReportForm(form => ({ ...form, description: aiAnalysis.summary }))}
+                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/40 transition-colors flex items-center gap-1.5"
+                                  >
+                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-sky-400" />
+                                    <span>Use this suggestion</span>
+                                  </button>
+                                ) : null}
+                              </div>
+                              <p className="text-xs sm:text-sm font-medium text-slate-100 mt-2.5 leading-snug bg-slate-900/40 p-3 rounded-xl border border-slate-800/80">
                                 {aiAnalysis?.summary || 'Your photo is ready. Add the location and a short description below.'}
                               </p>
                             </div>
@@ -1166,9 +1399,13 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                             </div>
 
                             {aiAnalysis?.is_civic_issue === false && (
-                              <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-3 text-xs text-red-300 flex items-center gap-2">
-                                <Icon name="alert-triangle" className="w-4 h-4 text-red-400 shrink-0" />
-                                <span>This photo does not appear to show a valid public civic problem.</span>
+                              <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-300 flex items-center gap-2">
+                                <Icon name="alert-triangle" className="w-4 h-4 text-amber-400 shrink-0" />
+                                <span>
+                                  {aiAnalysis?.visual_verification === 'unverified'
+                                    ? 'AI visual verification is currently unavailable. Your report will be routed to municipal officers for human review.'
+                                    : 'AI could not verify a civic issue in this photo with high confidence. You may describe it below for officer review.'}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -1387,7 +1624,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                       </span>
                     </div>
 
-                    <h1 className="text-xl font-bold text-white mt-2 tracking-tight">{selectedReport.title}</h1>
+                    <h1 className="text-xl font-bold text-white mt-2 tracking-tight break-words">{selectedReport.title}</h1>
                     <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1 font-sans">
                       <Icon name="map-pin" className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                       <span>{selectedReport.location}</span>
@@ -1447,10 +1684,60 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                     </div>
 
                     <div className="border-t border-slate-800/80 pt-4 space-y-3">
-                      <div className="text-xs text-slate-400">Responsible team</div>
-                      <div className="glass-card p-3 rounded-xl text-xs font-semibold text-slate-200 flex items-center gap-2 border border-slate-800">
-                        <Icon name="building-2" className="w-4 h-4 text-sky-400" />
-                        <span>{selectedReport.department}</span>
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-slate-400">
+                        <span>Responsible Public Authority</span>
+                        <div className="flex flex-wrap items-center gap-1">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                            {selectedReport.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
+                          </span>
+                          {selectedReport.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                              Statutory Verified
+                            </span>
+                          ) : selectedReport.assigned_authority?.jurisdiction_data_status === 'heuristic_bbox' ? (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                              Heuristic Area
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                              Location Inferred
+                            </span>
+                          )}
+                          {selectedReport.assigned_authority?.assignment_status === 'officer_assigned' && (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                              Officer Assigned
+                            </span>
+                          )}
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                            Simulated Workflow
+                          </span>
+                        </div>
+                      </div>
+                      <div className="glass-card p-3 rounded-xl text-xs text-slate-200 space-y-2 border border-slate-800">
+                        <div className="flex items-center gap-2 font-semibold">
+                          <Icon name="building-2" className="w-4 h-4 text-sky-400 shrink-0" />
+                          <span>
+                            {selectedReport.assigned_authority?.authority_name
+                              ? `${selectedReport.assigned_authority.authority_name} (${selectedReport.assigned_authority.short_code})`
+                              : (selectedReport.needs_review || selectedReport.department === 'Needs Review' ? 'Awaiting Authority Review' : selectedReport.department)}
+                          </span>
+                        </div>
+                        {selectedReport.assigned_authority?.department && selectedReport.assigned_authority?.authority_name && (
+                          <div className="text-[11px] text-slate-400 pl-6">
+                            Department: <span className="text-slate-200 font-medium">{selectedReport.assigned_authority.department}</span>
+                          </div>
+                        )}
+                        {selectedReport.assigned_authority?.jurisdiction && (
+                          <div className="text-[11px] text-slate-400 pl-6 flex items-center gap-1.5">
+                            <Icon name="map-pin" className="w-3 h-3 text-sky-400 shrink-0" />
+                            <span>{selectedReport.assigned_authority.jurisdiction}</span>
+                          </div>
+                        )}
+                        {selectedReport.assigned_authority?.assignment_reason && (
+                          <div className="text-[10px] text-slate-500 pl-6 border-t border-slate-800/60 pt-1.5 leading-snug">
+                            {selectedReport.assigned_authority.assignment_reason}
+                          </div>
+                        )}
                       </div>
                       {selectedReport.priority_score != null && (
                         <details className="rounded-xl border border-slate-800 p-3">
@@ -1472,43 +1759,43 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                         <Icon name="shield-check" className="w-4 h-4 text-sky-400" />
                         RESOLUTION & EVIDENCE
                       </h2>
-                      {selectedReport.afterImage && (
+                      {selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed ? (
                         <span className="text-xs text-emerald-400 font-mono bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30 font-bold flex items-center gap-1">
-                          <span>✓</span> After Photo Verified
+                          <span>✓</span> Citizen Confirmed & Resolved
                         </span>
-                      )}
+                      ) : selectedReport.afterImage || selectedReport.resolution_evidence ? (
+                        <span className="text-xs text-amber-400 font-mono bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/30 font-bold flex items-center gap-1">
+                          <span>⏳</span> Awaiting Citizen Verification
+                        </span>
+                      ) : null}
                     </div>
 
-                    {/* TWO-PARTY VERIFICATION */}
+                    {/* RESOLUTION VERIFICATION */}
                     <div>
                       <div className="text-[11px] font-mono text-slate-400 mb-2 font-semibold">RESOLUTION VERIFICATION</div>
                       <div className="grid grid-cols-2 gap-2.5">
-                        {[
-                          ['contractor', 'Contractor Sign-off', 'hard-hat'],
-                          ['government', 'Authority Inspector', 'landmark']
-                        ].map(([key, label, icon]) => {
-                          const approved = selectedReport.resolution_approvals?.[key];
-                          const canApprove = authUser?.role === 'admin';
-                          return (
-                            <button 
-                              key={key} 
-                              disabled={!canApprove || approved} 
-                              onClick={() => canApprove && !approved && approveResolution(selectedReport, key)} 
-                              title={canApprove ? 'Record verified approval' : 'Authority approval required'}
-                              className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
-                                approved 
-                                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 shadow-glow-emerald' 
-                                  : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:border-slate-700'
-                              }`}
-                            >
-                              <Icon name={icon} className={`w-4 h-4 ${approved ? 'text-emerald-400' : 'text-slate-500'}`} />
-                              <span className="text-[11px] font-bold tracking-tight">{label}</span>
-                              <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${approved ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
-                                {approved ? '✓ VERIFIED' : 'PENDING'}
-                              </span>
-                            </button>
-                          );
-                        })}
+                        <div className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
+                          selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence
+                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400'
+                        }`}>
+                          <Icon name="landmark" className={`w-4 h-4 ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-emerald-400' : 'text-slate-500'}`} />
+                          <span className="text-[11px] font-bold tracking-tight">Field Officer Evidence</span>
+                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
+                            {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? '✓ SUBMITTED' : 'PENDING'}
+                          </span>
+                        </div>
+                        <div className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
+                          selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter
+                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400'
+                        }`}>
+                          <Icon name="check" className={`w-4 h-4 ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-emerald-400' : 'text-slate-500'}`} />
+                          <span className="text-[11px] font-bold tracking-tight">Citizen Verification</span>
+                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
+                            {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? '✓ VERIFIED' : 'PENDING'}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -1539,58 +1826,135 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                     )}
 
                     {/* INTERACTIVE BEFORE/AFTER IMAGE SLIDER */}
-                    {selectedReport.afterImage ? (
-                      <div className="relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden select-none border border-slate-700/80 shadow-2xl bg-slate-950">
-                        {/* AFTER IMAGE (BOTTOM) */}
-                        <img src={selectedReport.afterImage} alt="After resolution" className="absolute inset-0 w-full h-full object-cover" />
-                        <div className="absolute top-3.5 right-3.5 bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 text-[10px] font-mono px-3 py-1 rounded-full backdrop-blur-md font-bold shadow-lg">
-                          AFTER RESOLUTION
-                        </div>
+                    <InteractiveBeforeAfter
+                      beforeImage={selectedReport.beforeImage}
+                      afterImage={selectedReport.afterImage}
+                      altBefore="Reported problem"
+                      altAfter="After resolution"
+                    />
 
-                        {/* BEFORE IMAGE (TOP CLIPPED) */}
-                        <div 
-                          className="absolute inset-0 overflow-hidden"
-                          style={{ width: `${sliderPos}%` }}
-                        >
-                          <img 
-                            src={selectedReport.beforeImage} 
-                            alt="Before report" 
-                            className="absolute inset-0 w-full h-full object-cover max-w-none" 
-                            style={{ width: '100%', height: '100%' }} 
-                          />
-                          <div className="absolute top-3.5 left-3.5 bg-slate-950/90 text-slate-200 border border-slate-700 text-[10px] font-mono px-3 py-1 rounded-full backdrop-blur-md font-bold shadow-lg">
-                            BEFORE REPORTED
+                    {/* CITIZEN VERIFICATION CARD */}
+                    {(selectedReport.afterImage || selectedReport.resolution_evidence || ['Evidence Uploaded', 'Verification', 'Resolution Submitted', 'Resolved', 'Reopened - Needs Review'].includes(selectedReport.status)) && (
+                      <div data-testid="citizen-verification-card" className="rounded-2xl border border-slate-700/80 bg-slate-950/70 p-5 space-y-4 shadow-lg">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Icon name="shield-check" className="w-4 h-4 text-sky-400" />
+                            <span className="text-xs font-bold font-mono text-white tracking-wider uppercase">Citizen Verification Gate</span>
                           </div>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                            Simulated Authority Workflow
+                          </span>
                         </div>
 
-                        {/* SLIDER DIVIDER LINE & HANDLE */}
-                        <div 
-                          className="before-after-divider"
-                          style={{ left: `${sliderPos}%` }}
-                        >
-                          <div className="before-after-handle">
-                            <Icon name="move-horizontal" className="w-4 h-4 text-white stroke-[2.5]" />
+                        {/* If already confirmed & resolved */}
+                        {(selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed) ? (
+                          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-emerald-400 flex items-center gap-1.5">
+                                <Icon name="circle-check" className="w-4 h-4" />
+                                RESOLUTION CONFIRMED BY CITIZEN
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">
+                                Status: Resolved
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                              The reporter confirmed this incident was successfully fixed on site.
+                            </p>
+                            {selectedReport.citizen_verification?.note && (
+                              <div className="text-xs text-slate-300 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 italic">
+                                "{selectedReport.citizen_verification.note}"
+                              </div>
+                            )}
                           </div>
-                        </div>
+                        ) : selectedReport.status === 'Reopened - Needs Review' ? (
+                          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold font-mono text-amber-400 flex items-center gap-1.5">
+                                <Icon name="alert-triangle" className="w-4 h-4" />
+                                RESOLUTION DISPUTED · REOPENED
+                              </span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">
+                                Reopened - Needs Review
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                              The citizen reported that the problem was not satisfactorily fixed. Authority field crew has been notified to re-inspect.
+                            </p>
+                            {selectedReport.citizen_verification?.note && (
+                              <div className="text-xs text-amber-200 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 italic">
+                                Dispute reason: "{selectedReport.citizen_verification.note}"
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          /* Pending verification form */
+                          <div className="space-y-3.5">
+                            {(selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note) && (
+                              <div className="rounded-xl bg-slate-900/90 border border-slate-800 p-3 text-xs">
+                                <div className="text-[10px] font-mono text-sky-400 font-bold mb-1">FIELD OFFICER COMPLETION NOTE</div>
+                                <p className="text-slate-200 leading-relaxed">
+                                  {selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note}
+                                </p>
+                              </div>
+                            )}
 
-                        {/* RANGE INPUT CONTROLLER */}
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="100" 
-                          value={sliderPos}
-                          onChange={(e) => setSliderPos(Number(e.target.value))}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-40"
-                          aria-label="Before after slider scrub"
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-72 sm:h-80 w-full rounded-2xl overflow-hidden relative border border-slate-800 shadow-xl bg-slate-950">
-                        <img src={selectedReport.beforeImage} alt="Reported problem" className="w-full h-full object-cover" />
-                        <div className="absolute bottom-3.5 inset-x-3.5 bg-slate-950/85 text-slate-300 border border-slate-800 text-xs p-3 rounded-xl backdrop-blur-md flex items-center gap-2">
-                          <Icon name="clock" className="w-4 h-4 text-amber-400 shrink-0" />
-                          <span>Resolution in progress. Inspection proof photo will appear here when completed.</span>
-                        </div>
+                            <div>
+                              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1">
+                                <span>REPORTER VERIFICATION TOKEN</span>
+                                {sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) && (
+                                  <span className="text-[10px] text-emerald-400 font-bold">✓ Active on this device</span>
+                                )}
+                              </div>
+                              <input
+                                type="text"
+                                placeholder="Paste or verify reporter token..."
+                                value={verificationToken || (selectedReport ? sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) || '' : '')}
+                                onChange={(e) => setVerificationToken(e.target.value)}
+                                className="w-full glass-input rounded-xl p-2.5 text-xs text-white font-mono"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                                FEEDBACK / NOTES (Required if rejecting or reporting partial fix)
+                              </label>
+                              <textarea
+                                rows={2}
+                                placeholder="Enter inspection feedback or reason for dispute..."
+                                value={citizenFeedback}
+                                onChange={(e) => setCitizenFeedback(e.target.value)}
+                                className="w-full glass-input rounded-xl p-2 text-xs text-white resize-none"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                              <button
+                                disabled={isVerifying}
+                                onClick={() => handleCitizenVerify('fixed')}
+                                className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5"
+                              >
+                                <Icon name="check" className="w-4 h-4" />
+                                <span>Confirm Fixed</span>
+                              </button>
+                              <button
+                                disabled={isVerifying}
+                                onClick={() => handleCitizenVerify('partially_fixed')}
+                                className="py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                              >
+                                <span>Partially Fixed</span>
+                              </button>
+                              <button
+                                disabled={isVerifying}
+                                onClick={() => handleCitizenVerify('not_fixed')}
+                                className="py-2.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                              >
+                                <Icon name="x" className="w-4 h-4" />
+                                <span>Reject & Reopen</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -1601,9 +1965,25 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                       </a>
                     )}
 
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans glass-card p-4 rounded-2xl border border-slate-800">
-                      {selectedReport.description}
-                    </p>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1">Citizen Description</div>
+                        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans glass-card p-4 rounded-2xl border border-slate-800">
+                          {selectedReport.description || 'No written description was provided.'}
+                        </p>
+                      </div>
+                      {selectedReport.summary && selectedReport.summary !== selectedReport.description && (
+                        <div>
+                          <div className="text-[10px] font-mono font-bold text-sky-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                            <Icon name="sparkles" className="w-3 h-3 text-sky-400" />
+                            <span>AI Assessment Summary (AI-generated)</span>
+                          </div>
+                          <p className="text-xs text-slate-400 leading-relaxed font-sans bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
+                            {selectedReport.summary}
+                          </p>
+                        </div>
+                      )}
+                    </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-4">
                       <div className="text-xs text-slate-400">
@@ -1808,7 +2188,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                             min="1" 
                             value={repairForm.estimated_price} 
                             onChange={e => setRepairForm({...repairForm, estimated_price: e.target.value})} 
-                            placeholder="Estimate (PKR)" 
+                            placeholder="Estimate (BDT)" 
                             className="min-w-0 glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
                           />
                           <input 
@@ -1851,7 +2231,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                               </span>
                             </div>
                             <div className="text-xs text-slate-400 font-mono">
-                              Budget: PKR {Number(req.estimated_price).toLocaleString()} · {req.estimated_hours}h
+                              Budget: BDT {Number(req.estimated_price).toLocaleString()} · {req.estimated_hours}h
                             </div>
                             {req.admin_note && (
                               <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-xs text-slate-300">
@@ -1937,7 +2317,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                           <div>
                             <div className="text-xs font-mono text-sky-400 font-bold">{job.offer_id} · {job.complaint_id}</div>
                             <h3 className="text-base font-bold text-white mt-0.5">{job.issue_title}</h3>
-                            <p className="text-xs text-slate-400 mt-1 font-mono">{job.work_location_area} · Budget: PKR {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
+                            <p className="text-xs text-slate-400 mt-1 font-mono">{job.work_location_area} · Budget: BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
                           </div>
                           <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full h-fit">
                             {job.status}
@@ -1987,7 +2367,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
 
             {/* 7. AUTHORITY COMMAND CENTER */}
             {activeTab === 'admin' && (
-              authUser?.role !== 'admin' ? (
+              !['admin', 'officer'].includes(authUser?.role) ? (
                 <div className="max-w-4xl mx-auto px-4 py-10 space-y-5 reveal-up">
                   <AuthCard
                     title="Municipal Authority Command Center"
@@ -2001,6 +2381,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                     error={authError}
                     allowRegister={false}
                     demoCredentials
+                    onDemoOfficerLogin={handleDemoOfficerLogin}
                   />
                   {authUser && (
                     <button onClick={logout} className="block mx-auto text-xs text-slate-400 hover:text-white underline">
@@ -2013,9 +2394,25 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                   {/* COMMAND HEADER */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
                     <div>
-                      <div className="text-xs text-sky-400 font-semibold">Municipal operations</div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">Authority dashboard</h1>
-                      <p className="text-sm text-slate-400 mt-1">Review priority cases, approve evidence, and manage assignments.</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="text-xs text-sky-400 font-semibold">Municipal operations</div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                          DEMO / SIMULATED ENVIRONMENT
+                        </span>
+                        {authUser?.role === 'officer' && (
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                            Authority Scoped ({authUser.authority_id})
+                          </span>
+                        )}
+                      </div>
+                      <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
+                        {authUser?.role === 'officer' ? `${authUser.name} Workspace` : 'Authority dashboard'}
+                      </h1>
+                      <p className="text-sm text-slate-400 mt-1">
+                        {authUser?.role === 'officer'
+                          ? `Simulated Officer Scoped to ${authUser.authority_id} · ${authUser.department || 'Department Operations'}`
+                          : 'Review priority cases, approve evidence, and manage assignments.'}
+                      </p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
@@ -2213,7 +2610,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                               <span className="text-xs font-mono text-slate-400">Incident: {req.complaint_id}</span>
                               <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-mono text-amber-400 font-bold">{req.status}</span>
                             </div>
-                            <div className="text-lg font-bold text-white mt-2">{req.applicant_name} · PKR {Number(req.estimated_price).toLocaleString()}</div>
+                            <div className="text-lg font-bold text-white mt-2">{req.applicant_name} · BDT {Number(req.estimated_price).toLocaleString()}</div>
                             <div className="text-xs text-slate-400 mt-0.5 font-mono">Contact: {req.applicant_contact} · Est. Hours: {req.estimated_hours}h</div>
                             <div className="mt-4 p-4 rounded-2xl bg-slate-950/80 border border-slate-800">
                               <div className="text-[10px] font-mono text-slate-400 mb-1 font-bold">SUBMITTED WORK PLAN</div>
@@ -2233,7 +2630,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                             <div className="rounded-2xl glass-card border border-slate-800 p-4">
                               <div className="text-[10px] font-mono text-slate-400 font-bold">ESCROW STATUS</div>
                               <div className="text-xs text-white mt-1">{req.funds_status}</div>
-                              {req.approved_budget && <div className="text-xl font-extrabold text-emerald-400 font-mono mt-1">PKR {Number(req.approved_budget).toLocaleString()}</div>}
+                              {req.approved_budget && <div className="text-xl font-extrabold text-emerald-400 font-mono mt-1">BDT {Number(req.approved_budget).toLocaleString()}</div>}
                             </div>
                             {req.status === 'Pending Admin Review' && (
                               <>
@@ -2309,12 +2706,236 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                                     <p className="text-slate-400 mt-1 text-[11px] leading-snug">{operationDetail.complaint.ai_reasoning || operationDetail.complaint.title}</p>
                                     <div className="text-sky-400 font-mono text-[11px] mt-1.5">Confidence: {operationDetail.complaint.confidence}</div>
                                   </div>
+                                  <div className="sm:col-span-2 p-3.5 rounded-2xl glass-card border border-slate-800">
+                                    <div className="flex flex-wrap items-center justify-between gap-1.5">
+                                      <div className="text-slate-400 font-mono text-[10px] font-bold">ASSIGNED RESPONSIBLE AUTHORITY</div>
+                                      <div className="flex flex-wrap items-center gap-1">
+                                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                          {operationDetail.complaint.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
+                                        </span>
+                                        {operationDetail.complaint.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                                            Statutory Verified
+                                          </span>
+                                        ) : operationDetail.complaint.assigned_authority?.jurisdiction_data_status === 'heuristic_bbox' ? (
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                            Heuristic Area
+                                          </span>
+                                        ) : (
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                                            Location Inferred
+                                          </span>
+                                        )}
+                                        {operationDetail.complaint.assigned_authority?.assignment_status === 'officer_assigned' && (
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                                            Officer Assigned
+                                          </span>
+                                        )}
+                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                                          Simulated Workflow
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="mt-2 text-white font-semibold flex items-center gap-2">
+                                      <Icon name="building-2" className="w-4 h-4 text-sky-400" />
+                                      <span>
+                                        {operationDetail.complaint.assigned_authority?.authority_name
+                                          ? `${operationDetail.complaint.assigned_authority.authority_name} (${operationDetail.complaint.assigned_authority.short_code})`
+                                          : (operationDetail.complaint.needs_review || operationDetail.complaint.department === 'Needs Review' ? 'Awaiting Authority Review' : operationDetail.complaint.department)}
+                                      </span>
+                                    </div>
+                                    {operationDetail.complaint.assigned_authority?.department && operationDetail.complaint.assigned_authority?.authority_name && (
+                                      <div className="text-[11px] text-slate-300 mt-1 pl-6">
+                                        Department: <span className="text-slate-100 font-medium">{operationDetail.complaint.assigned_authority.department}</span>
+                                      </div>
+                                    )}
+                                    {operationDetail.complaint.assigned_authority?.jurisdiction && (
+                                      <div className="text-[11px] text-slate-400 mt-0.5 pl-6 flex items-center gap-1.5">
+                                        <Icon name="map-pin" className="w-3 h-3 text-sky-400" />
+                                        <span>Jurisdiction: {operationDetail.complaint.assigned_authority.jurisdiction}</span>
+                                        {operationDetail.complaint.assigned_authority.routing_method && (
+                                          <span className="font-mono text-[10px] text-slate-500">({operationDetail.complaint.assigned_authority.routing_method})</span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
                                   <div className="sm:col-span-2 p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/25">
                                     <div className="text-sky-400 font-mono text-[10px] font-bold">RECOMMENDED NEXT ACTION</div>
                                     <p className="text-slate-200 mt-1 text-xs">{operationDetail.recommended_action}</p>
                                   </div>
                                 </div>
                               </div>
+
+                              {/* SIMULATED FIELD OFFICER WORKFLOW CONTROLS */}
+                              {(authUser?.role === 'officer' || authUser?.role === 'admin') && (
+                                <div data-testid="officer-workflow-controls" className="rounded-2xl border border-sky-500/30 bg-slate-900/80 p-4 space-y-4">
+                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                                    <div className="text-xs font-bold font-mono text-sky-400 flex items-center gap-2">
+                                      <Icon name="briefcase" className="w-4 h-4 text-sky-400" />
+                                      <span>SIMULATED FIELD OFFICER WORKFLOW</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                                        Current Status: {operationDetail.complaint.status}
+                                      </span>
+                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                        Simulated Demo
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Acknowledge Button */}
+                                  {['Submitted', 'Assigned'].includes(operationDetail.complaint.status) && operationDetail.complaint.assigned_authority?.routing_status === 'assigned' && (
+                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                      <div>
+                                        <div className="text-xs font-bold text-white">Step 1: Acknowledge Assignment</div>
+                                        <div className="text-[11px] text-slate-400">Confirm authority ownership and dispatch inspection crew.</div>
+                                      </div>
+                                      <button
+                                        onClick={() => handleOfficerStatusUpdate('Acknowledged', 'Officer acknowledged incident and dispatched inspection team.')}
+                                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                      >
+                                        <Icon name="check" className="w-4 h-4" />
+                                        <span>Acknowledge Incident</span>
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  {/* Reopened Incident Reinspection Card */}
+                                  {operationDetail.complaint.status === 'Reopened - Needs Review' && (
+                                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-amber-400 font-bold text-xs uppercase font-mono tracking-wider">Citizen Dispute · Reinspection Required</span>
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-500/15 text-red-300 border border-red-500/30 font-bold">
+                                            {operationDetail.complaint.citizen_verification?.outcome || 'not_fixed'}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+                                        <span className="text-slate-400 font-semibold">Citizen feedback: </span>
+                                        {operationDetail.complaint.citizen_verification?.note || operationDetail.complaint.review_reason || 'Citizen disputed resolution completion.'}
+                                      </div>
+                                      <div className="flex flex-wrap gap-2 pt-1">
+                                        <button
+                                          onClick={() => handleOfficerStatusUpdate('Acknowledged', 'Officer acknowledged citizen dispute and scheduled reinspection.')}
+                                          className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                        >
+                                          <Icon name="check" className="w-4 h-4" />
+                                          <span>Acknowledge Reinspection</span>
+                                        </button>
+                                        <button
+                                          onClick={() => handleOfficerStatusUpdate('In Progress', 'Field team deployed to address citizen dispute.')}
+                                          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                        >
+                                          <Icon name="play" className="w-4 h-4" />
+                                          <span>Resume Field Work</span>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Start Work Button */}
+                                  {operationDetail.complaint.status === 'Acknowledged' && (
+                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                      <div>
+                                        <div className="text-xs font-bold text-white">Step 2: Mobilize Crew & Start Work</div>
+                                        <div className="text-[11px] text-slate-400">Deploy maintenance equipment to site.</div>
+                                      </div>
+                                      <button
+                                        onClick={() => handleOfficerStatusUpdate('In Progress', 'Field maintenance team deployed to site.')}
+                                        className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                      >
+                                        <Icon name="play" className="w-4 h-4" />
+                                        <span>Start Field Work</span>
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  {/* In Progress Controls: Progress Note & Evidence Upload */}
+                                  {['In Progress', 'Resolution Submitted'].includes(operationDetail.complaint.status) && (
+                                    <div className="space-y-4 pt-1">
+                                      {/* Progress Note Form */}
+                                      <div className="space-y-1.5">
+                                        <label className="block text-[10px] font-mono text-slate-400 uppercase">Field Progress Note</label>
+                                        <div className="flex gap-2">
+                                          <input
+                                            type="text"
+                                            placeholder="Add progress note (e.g. materials arriving at 2 PM)..."
+                                            value={officerProgressNote}
+                                            onChange={(e) => setOfficerProgressNote(e.target.value)}
+                                            className="min-w-0 flex-1 glass-input rounded-xl p-2.5 text-xs text-white font-mono"
+                                          />
+                                          <button
+                                            onClick={handleOfficerProgressUpdate}
+                                            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-sky-400 transition-all shrink-0"
+                                          >
+                                            Add Note
+                                          </button>
+                                        </div>
+                                      </div>
+
+                                      {/* Upload Resolution Evidence Form */}
+                                      <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 space-y-3">
+                                        <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                          <Icon name="camera" className="w-3.5 h-3.5" />
+                                          <span>Upload Completed Resolution Proof</span>
+                                        </div>
+                                        <div className="grid sm:grid-cols-2 gap-3">
+                                          <div>
+                                            <label className="block text-[10px] font-mono text-slate-400 mb-1 uppercase">Completion Photograph</label>
+                                            <input
+                                              type="file"
+                                              accept="image/*"
+                                              onChange={(e) => setEvidenceFile(e.target.files?.[0] || null)}
+                                              className="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-500/20 file:text-sky-300 hover:file:bg-sky-500/30"
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="block text-[10px] font-mono text-slate-400 mb-1 uppercase">Completion Notes</label>
+                                            <textarea
+                                              rows={2}
+                                              placeholder="Describe work performed on site..."
+                                              value={evidenceNote}
+                                              onChange={(e) => setEvidenceNote(e.target.value)}
+                                              className="w-full glass-input rounded-xl p-2 text-xs text-white resize-none"
+                                            />
+                                          </div>
+                                        </div>
+                                        <button
+                                          disabled={!evidenceFile || !evidenceNote.trim() || isUploadingEvidence}
+                                          onClick={handleEvidenceUpload}
+                                          className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                                        >
+                                          {isUploadingEvidence ? (
+                                            <span>Uploading & Verifying Image…</span>
+                                          ) : (
+                                            <>
+                                              <Icon name="upload" className="w-3.5 h-3.5" />
+                                              <span>Submit Resolution Evidence for Citizen Verification</span>
+                                            </>
+                                          )}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* If already in Evidence Uploaded or Verification */}
+                                  {['Evidence Uploaded', 'Verification'].includes(operationDetail.complaint.status) && (
+                                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                                      <span className="text-emerald-300 flex items-center gap-2">
+                                        <Icon name="clock" className="w-4 h-4 text-emerald-400" />
+                                        <span>Evidence submitted. Awaiting citizen confirmation gate.</span>
+                                      </span>
+                                      {operationDetail.complaint.afterImage && (
+                                        <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-sky-400 font-mono text-[11px] underline">
+                                          View proof photo ↗
+                                        </a>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
 
                               <div className="grid lg:grid-cols-2 gap-5 pt-2">
                                 <div>
@@ -2323,7 +2944,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                                     <select value={offerForm.contractor_id} onChange={e => setOfferForm({ ...offerForm, contractor_id: e.target.value })} className="min-w-0 flex-1 glass-input rounded-xl p-2.5 text-xs text-white">
                                       {operationDetail.contractor_matches.map(c => <option key={c.contractor_id} value={c.contractor_id} className="bg-slate-900">{c.name} · {c.match_score}% Match · ★{c.rating}</option>)}
                                     </select>
-                                    <input type="number" placeholder="Budget PKR" value={offerForm.budget_cap} onChange={e => setOfferForm({ ...offerForm, budget_cap: e.target.value })} className="w-28 glass-input rounded-xl p-2.5 text-xs text-white font-mono" />
+                                    <input type="number" placeholder="Budget BDT" value={offerForm.budget_cap} onChange={e => setOfferForm({ ...offerForm, budget_cap: e.target.value })} className="w-28 glass-input rounded-xl p-2.5 text-xs text-white font-mono" />
                                     <button disabled={operationDetail.complaint.needs_review || operationDetail.offers.some(o => ['Sent','Accepted','In Progress','Proof Submitted','Approved'].includes(o.status))} onClick={assignContractor} className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-35 disabled:cursor-not-allowed text-slate-950 text-xs font-bold shadow-md">Dispatch Order</button>
                                   </div>
                                 </div>
@@ -2336,7 +2957,7 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                                           <div className="flex flex-wrap items-center justify-between gap-2">
                                             <div>
                                               <span className="text-white font-bold">{offer.contractor_name}</span>
-                                              <span className="text-slate-400"> · PKR {Number(offer.budget_cap).toLocaleString()}</span>
+                                              <span className="text-slate-400"> · BDT {Number(offer.budget_cap).toLocaleString()}</span>
                                             </div>
                                             <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${offer.status === 'Proof Submitted' ? 'bg-amber-500/15 text-amber-300' : offer.status === 'Approved' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-sky-500/10 text-sky-300'}`}>{offer.status}</span>
                                           </div>
@@ -2391,6 +3012,11 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                                 <td className="p-4">
                                   <div className="font-semibold text-white">{item.category}</div>
                                   <div className="text-[11px] text-slate-400 font-mono">{item.location}</div>
+                                  {item.assigned_authority?.short_code && (
+                                    <div className="text-[10px] text-sky-400 font-mono mt-0.5">
+                                      {item.assigned_authority.short_code} • {item.assigned_authority.department || item.department}
+                                    </div>
+                                  )}
                                 </td>
                                 <td className="p-4">
                                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${item.severity === 'Critical'
@@ -2408,9 +3034,18 @@ import ReviewDialog from './components/ReviewDialog.jsx';
                                 </td>
                                 <td className="p-4 text-right">
                                   <div className="flex justify-end gap-2">
-                                    {(item.needs_review || item.status === 'Needs Review') && <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/35 text-amber-300 font-semibold text-xs">Review AI</button>}
+                                    {((item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review') && (
+                                      authUser?.role === 'admin' ? (
+                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/35 text-amber-300 font-semibold text-xs">Review AI</button>
+                                      ) : (
+                                        <span className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-[10px] font-mono">Admin Review</span>
+                                      )
+                                    )}
+                                    {item.status === 'Reopened - Needs Review' && (
+                                      <span className="px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono">Disputed</span>
+                                    )}
                                     <button
-                                      disabled={!nextOperationalStatus(item) || item.needs_review || item.status === 'Needs Review'}
+                                      disabled={!nextOperationalStatus(item) || (item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review'}
                                       onClick={() => nextOperationalStatus(item) && updateStatus(item, nextOperationalStatus(item))}
                                       className="px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 disabled:opacity-30 text-sky-400 font-semibold text-xs transition-all"
                                     >

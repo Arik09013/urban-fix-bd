@@ -8,18 +8,20 @@ import binascii
 import json
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, UploadFile, File, Form, Request
+from fastapi.responses import FileResponse
 import hashlib
 import hmac
 
 from app.db.repository import civic_repo, now_utc, public_id
-from app.core.config import settings
-from app.core.security import require_admin
+from app.core.config import settings, upload_directory
+from app.core.security import require_admin, require_admin_or_officer, optional_user
 from app.schemas.complaint import (
     AffectedTooCreate,
     CitizenVerificationCreate,
     ReporterVerificationCreate,
     ComplaintCreate,
     ComplaintStatusUpdate,
+    ComplaintProgressUpdate,
     OfficerOverride,
     ResolutionEvidenceCreate,
     ResolutionApprovalCreate,
@@ -27,7 +29,7 @@ from app.schemas.complaint import (
 )
 from app.services.ai.gemini import analyze_complaint
 from app.services.priority import calculate_priority, with_current_priority
-from app.services.storage.cloudinary import store_upload
+from app.services.storage.cloudinary import store_upload, verify_evidence_signature
 from app.services.image_metadata import extract_permitted_metadata
 from app.services.workflow import (
     duplicate_assessment,
@@ -44,6 +46,8 @@ from app.services.lifecycle import InvalidTransition, transition_changes
 from app.services.privacy import public_complaint
 from app.services.volunteer_safety import volunteer_eligibility
 from app.services.reporter_access import create_reporter_access, verify_reporter_access
+from app.services.routing.engine import route_complaint
+from app.services.routing.registry import get_authority
 
 router = APIRouter(prefix="/api/complaints", tags=["complaints"])
 intake_attempts: dict[str, deque] = defaultdict(deque)
@@ -222,11 +226,53 @@ async def _create_complaint(payload: ComplaintCreate, analysis_override: dict | 
         affected_count=1,
         safety_flag=safety_flag,
     )
-    status = "Needs Review" if needs_review else "Submitted"
-    department = "Needs Review" if needs_review else analysis["department"]
+    # Authority Routing Resolution
+    routing_result = route_complaint(
+        category=analysis["category"],
+        latitude=payload.location.latitude,
+        longitude=payload.location.longitude,
+        area=payload.location.area,
+    )
+
+    review_type = None
+    if needs_review:
+        status = "Needs Review"
+        department = "Needs Review"
+        review_type = "routing_uncertain"
+        assigned_authority = {
+            **routing_result,
+            "routing_status": "needs_review",
+            "assignment_status": "needs_review",
+            "assignment_reason": review_reason or "Report flagged for human review before authority dispatch.",
+        }
+    else:
+        if routing_result["routing_status"] == "assigned":
+            status = "Submitted"
+            department = routing_result["department"]
+            assigned_authority = routing_result
+            review_type = None
+        else:
+            needs_review = True
+            status = "Needs Review"
+            department = "Needs Review"
+            review_reason = routing_result.get("assignment_reason") or "Authority routing uncertain; officer review required."
+            review_type = "routing_uncertain"
+            assigned_authority = {
+                **routing_result,
+                "routing_status": "needs_review",
+                "assignment_status": "needs_review",
+            }
+
     complaint_id = public_id("CP", 6)
     while await civic_repo.find_one("complaints", "complaint_id", complaint_id):
         complaint_id = public_id("CP", 6)
+
+    routing_note = review_reason or (
+        f"Routed to {assigned_authority['authority_name']} — {assigned_authority['department']}."
+        if assigned_authority.get("authority_name")
+        else f"Routed to {department}."
+    )
+
     complaint = {
         "complaint_id": complaint_id,
         "incident_id": incident_id,
@@ -244,6 +290,8 @@ async def _create_complaint(payload: ComplaintCreate, analysis_override: dict | 
         "confidence": analysis["confidence"],
         "summary": analysis["summary"],
         "department": department,
+        "assigned_authority": assigned_authority,
+        "initial_assigned_authority": dict(assigned_authority),
         "priority_score": score,
         "priority_breakdown": breakdown,
         "duplicate_count": 1,
@@ -251,6 +299,7 @@ async def _create_complaint(payload: ComplaintCreate, analysis_override: dict | 
         "affected_sources": [payload.source_fingerprint] if payload.source_fingerprint else [],
         "needs_review": needs_review,
         "review_reason": review_reason,
+        "review_type": review_type,
         "sla_minutes": sla_minutes,
         "sla_started_at": timestamp,
         "sla_due_at": sla["sla_due_at"],
@@ -277,11 +326,12 @@ async def _create_complaint(payload: ComplaintCreate, analysis_override: dict | 
         "final_decision": None,
         "resolution_evidence": None,
         "citizen_verification": None,
-        "resolution_approvals": {"contractor": False, "government": False},
+        "officer_evidence_submitted": False,
+        "resolution_approvals": {"officer_submission": False, "reporter": False},
         "status_history": [
             {"status": "Reported", "note": "Citizen report received.", "at": timestamp},
             {"status": "AI Classified", "note": analysis["reasoning"], "at": timestamp},
-            {"status": status, "note": review_reason or f"Routed to {department}.", "at": timestamp},
+            {"status": status, "note": routing_note, "at": timestamp},
         ],
     }
     complaint["analysis_source"] = analysis.get("analysis_source", "unknown")
@@ -417,12 +467,20 @@ async def create_complaint_with_image(
 
 
 @router.patch("/{complaint_id}/status")
-async def update_complaint_status(complaint_id: str, payload: ComplaintStatusUpdate, _admin: dict = Depends(require_admin)):
+async def update_complaint_status(complaint_id: str, payload: ComplaintStatusUpdate, user: dict = Depends(require_admin_or_officer)):
     complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    if payload.status == "Acknowledged" and complaint.get("status") == "Acknowledged":
+        return complaint
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if complaint.get("review_type") == "routing_uncertain" or assigned.get("routing_status") == "needs_review":
+            raise HTTPException(status_code=403, detail="Routing-uncertain complaints require administrator review before operational dispatch")
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot modify complaints assigned to other authorities")
     try:
-        changes = transition_changes(complaint, payload.status, payload.note or "", _admin)
+        changes = transition_changes(complaint, payload.status, payload.note or "", user)
     except InvalidTransition as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     sla_history = list(complaint.get("sla_history", []))
@@ -445,8 +503,62 @@ async def update_complaint_status(complaint_id: str, payload: ComplaintStatusUpd
         complaint_id,
         changes,
     )
-    await record_audit_event("complaint", complaint_id, "status_transition", _admin, {"status": complaint.get("status")}, {"status": payload.status}, payload.note)
+    await record_audit_event("complaint", complaint_id, "status_transition", user, {"status": complaint.get("status")}, {"status": payload.status}, payload.note)
+    if complaint.get("status") == "Reopened - Needs Review" and payload.status in {"Acknowledged", "In Progress"}:
+        action = "reinspection_acknowledged" if payload.status == "Acknowledged" else "reinspection_started"
+        await record_audit_event("complaint", complaint_id, action, user, {"status": complaint.get("status"), "review_type": complaint.get("review_type")}, {"status": payload.status, "needs_review": False}, payload.note)
+    if payload.status == "Acknowledged":
+        await record_audit_event("complaint", complaint_id, "complaint_acknowledged", user, {"status": complaint.get("status")}, {"status": "Acknowledged"}, payload.note)
+    elif payload.status == "In Progress":
+        await record_audit_event("complaint", complaint_id, "work_started", user, {"status": complaint.get("status")}, {"status": "In Progress"}, payload.note)
+    elif payload.status == "Resolution Submitted":
+        await record_audit_event("complaint", complaint_id, "resolution_submitted", user, {"status": complaint.get("status")}, {"status": "Resolution Submitted"}, payload.note)
     return updated
+
+
+@router.post("/{complaint_id}/progress")
+async def update_complaint_progress(complaint_id: str, payload: ComplaintProgressUpdate, user: dict = Depends(require_admin_or_officer)):
+    complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot update progress on complaints assigned to other authorities")
+    if complaint.get("status") in {"Resolved", "Rejected"}:
+        raise HTTPException(status_code=409, detail="Cannot add progress notes to resolved or rejected reports")
+
+    now = now_utc()
+    history = list(complaint.get("status_history", []))
+    history.append({
+        "status": "Progress Update",
+        "note": payload.note,
+        "at": now,
+        "actor_id": user.get("user_id"),
+        "actor_role": user.get("role"),
+    })
+    updated = await civic_repo.update_one(
+        "complaints",
+        "complaint_id",
+        complaint_id,
+        {
+            "status_history": history,
+            "last_progress_note": payload.note,
+            "last_progress_at": now,
+            "updated_at": now,
+        },
+    )
+    await record_audit_event(
+        "complaint",
+        complaint_id,
+        "progress_update",
+        user,
+        None,
+        {"note": payload.note},
+        payload.note,
+    )
+    return updated
+
 
 
 @router.post("/{complaint_id}/affected-too")
@@ -490,8 +602,8 @@ async def officer_override(complaint_id: str, payload: OfficerOverride, _admin: 
     complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
-    if not complaint.get("needs_review") and complaint.get("status") != "Needs Review":
-        raise HTTPException(status_code=409, detail="This report is not awaiting human review")
+    if complaint.get("status") in ("Resolved", "Rejected"):
+        raise HTTPException(status_code=409, detail="Cannot override a resolved or rejected report")
     final_category = payload.final_category or complaint["category"]
     final_severity = payload.final_severity or complaint["severity"]
     final_department = payload.final_department or complaint["department"]
@@ -502,63 +614,304 @@ async def officer_override(complaint_id: str, payload: OfficerOverride, _admin: 
         safety_flag=complaint.get("safety_flag", False),
     )
     history = complaint.get("status_history", [])
-    history.append({"status": "Officer Override", "note": payload.reason, "at": now_utc(), "officer_id": _admin["user_id"]})
+    current_authority = dict(complaint.get("assigned_authority") or {})
+
+    # Requirement 4 & Tests 10, 11:
+    # Preserve initial automated routing snapshot. NEVER overwrite an existing initial_assigned_authority snapshot.
+    initial_authority = complaint.get("initial_assigned_authority")
+    if not initial_authority and current_authority:
+        initial_authority = dict(current_authority)
+
+    assigned_authority = dict(current_authority)
+    if payload.final_authority_id:
+        auth = get_authority(payload.final_authority_id)
+        if auth:
+            # Preserve existing jurisdiction_data_status or keep inferred; NEVER mark as "verified"
+            prev_jur_data_status = assigned_authority.get("jurisdiction_data_status", "keyword_inferred")
+
+            assigned_authority.update({
+                "authority_id": auth["authority_id"],
+                "authority_name": auth["name"],
+                "short_code": auth["short_code"],
+                "department": final_department,
+                "routing_status": "assigned",
+                "assignment_status": "officer_assigned",  # Requirement 3 & Test 9
+                "routing_method": "officer_override",
+                "routing_confidence": 1.0,
+                # CRITICAL: An officer override must NEVER change authority_data_status or jurisdiction_data_status to verified!
+                "authority_data_status": auth.get("authority_data_status", "candidate_registry"),  # Test 7
+                "jurisdiction_data_status": prev_jur_data_status,  # Test 8
+                "integration_status": "simulated",
+                "environment": "demo",
+                "data_status": "pending_verification",  # Backward compat, NOT "verified"!
+                "assignment_reason": f"Officer manual override: {payload.reason}",
+                "assigned_at": now_utc().isoformat(),
+            })
+    elif final_department and final_department != "Needs Review":
+        assigned_authority.update({
+            "department": final_department,
+            "routing_status": "assigned",
+            "assignment_status": "officer_assigned",
+            "routing_method": "officer_override",
+            "routing_confidence": 1.0,
+            "integration_status": "simulated",
+            "environment": "demo",
+            "assignment_reason": f"Officer manual override: {payload.reason}",
+            "assigned_at": now_utc().isoformat(),
+        })
+
+    history.append({
+        "status": "Officer Override",
+        "note": payload.reason,
+        "at": now_utc(),
+        "officer_id": _admin["user_id"],
+        "previous_authority": {
+            "authority_id": current_authority.get("authority_id"),
+            "authority_name": current_authority.get("authority_name"),
+            "department": current_authority.get("department") or complaint.get("department"),
+            "assignment_status": current_authority.get("assignment_status", "needs_review"),
+        },
+        "new_authority": {
+            "authority_id": assigned_authority.get("authority_id"),
+            "authority_name": assigned_authority.get("authority_name"),
+            "department": final_department,
+            "assignment_status": "officer_assigned",
+        },
+    })
+
+    update_doc = {
+        "category": final_category,
+        "severity": final_severity,
+        "department": final_department,
+        "assigned_authority": assigned_authority,
+        "priority_score": score,
+        "priority_breakdown": breakdown,
+        "needs_review": False,
+        "review_type": None,
+        "status": "Submitted",
+        "final_decision": {
+            "category": final_category,
+            "severity": final_severity,
+            "department": final_department,
+            "authority_id": assigned_authority.get("authority_id"),
+            "reason": payload.reason,
+            "officer_id": _admin["user_id"],
+            "at": now_utc(),
+        },
+        "status_history": history,
+        "updated_at": now_utc(),
+    }
+    if initial_authority:
+        update_doc["initial_assigned_authority"] = initial_authority
+
     updated = await civic_repo.update_one(
         "complaints",
         "complaint_id",
         complaint_id,
-        {
-            "category": final_category,
-            "severity": final_severity,
-            "department": final_department,
-            "priority_score": score,
-            "priority_breakdown": breakdown,
-            "needs_review": False,
-            "status": "Submitted",
-            "final_decision": {
-                "category": final_category,
-                "severity": final_severity,
-                "department": final_department,
-                "reason": payload.reason,
-                "officer_id": _admin["user_id"],
-                "at": now_utc(),
-            },
-            "status_history": history,
-            "updated_at": now_utc(),
-        },
+        update_doc,
     )
-    await record_audit_event("complaint", complaint_id, "ai_override", _admin, {"category": complaint.get("category"), "severity": complaint.get("severity"), "department": complaint.get("department")}, {"category": final_category, "severity": final_severity, "department": final_department}, payload.reason)
+    await record_audit_event(
+        "complaint",
+        complaint_id,
+        "ai_override",
+        _admin,
+        {"category": complaint.get("category"), "severity": complaint.get("severity"), "department": complaint.get("department"), "authority_id": (complaint.get("assigned_authority") or {}).get("authority_id")},
+        {"category": final_category, "severity": final_severity, "department": final_department, "authority_id": assigned_authority.get("authority_id")},
+        payload.reason,
+    )
     return updated
 
 
 @router.post("/{complaint_id}/evidence")
-async def attach_resolution_evidence(complaint_id: str, payload: ResolutionEvidenceCreate, _admin: dict = Depends(require_admin)):
+async def attach_resolution_evidence(complaint_id: str, payload: ResolutionEvidenceCreate, user: dict = Depends(require_admin_or_officer)):
     complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
-    if complaint.get("status") not in {"In Progress", "Resolution Submitted"}:
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot submit evidence for complaints assigned to other authorities")
+    if complaint.get("status") not in {"In Progress", "Resolution Submitted", "Evidence Uploaded"}:
         raise HTTPException(status_code=409, detail="Evidence can only be uploaded after work is in progress or resolution is submitted")
     history = list(complaint.get("status_history", []))
+    uploader_name = payload.uploaded_by or user.get("name") or user.get("username") or user.get("user_id")
+    now = now_utc()
     if complaint.get("status") == "In Progress":
-        history.append({"status": "Resolution Submitted", "note": "Field team submitted work for verification.", "at": now_utc(), "actor_id": _admin["user_id"], "actor_role": _admin["role"]})
-    history.append({"status": "Evidence Uploaded", "note": payload.completion_note, "at": now_utc(), "uploaded_by": payload.uploaded_by, "actor_id": _admin["user_id"], "actor_role": _admin["role"]})
-    approvals = complaint.get("resolution_approvals") or {"contractor": False, "government": False}
-    approvals["contractor"] = True
+        history.append({"status": "Resolution Submitted", "note": "Field team submitted work for verification.", "at": now, "actor_id": user["user_id"], "actor_role": user["role"]})
+    history.append({"status": "Evidence Uploaded", "note": payload.completion_note, "at": now, "uploaded_by": uploader_name, "actor_id": user["user_id"], "actor_role": user["role"]})
+    approvals = dict(complaint.get("resolution_approvals") or {})
+    approvals["officer_submission"] = True
+    if not complaint.get("assigned_contractor_id"):
+        approvals.pop("contractor", None)
+    evidence_dict = payload.model_dump() | {
+        "url": payload.after_image_url,
+        "uploaded_at": now,
+        "uploaded_by": uploader_name,
+        "actor_id": user["user_id"],
+        "actor_role": user["role"],
+    }
     updated = await civic_repo.update_one(
         "complaints",
         "complaint_id",
         complaint_id,
         {
             "status": "Evidence Uploaded",
-            "resolution_evidence": payload.model_dump() | {"uploaded_at": now_utc()},
+            "resolution_evidence": evidence_dict,
+            "after_image_url": payload.after_image_url,
+            "completion_notes": payload.completion_note,
+            "officer_evidence_submitted": True,
             "resolution_approvals": approvals,
             "status_history": history,
-            "resolution_submitted_at": complaint.get("resolution_submitted_at") or now_utc(),
-            "updated_at": now_utc(),
+            "resolution_submitted_at": complaint.get("resolution_submitted_at") or now,
+            "updated_at": now,
         },
     )
-    await record_audit_event("complaint", complaint_id, "resolution_evidence_uploaded", _admin, {"status": complaint.get("status")}, {"status": "Evidence Uploaded"}, payload.completion_note)
+    await record_audit_event("complaint", complaint_id, "resolution_evidence_uploaded", user, {"status": complaint.get("status")}, {"status": "Evidence Uploaded", "evidence_url": payload.after_image_url}, payload.completion_note)
     return updated
+
+
+@router.post("/{complaint_id}/evidence/upload")
+async def upload_resolution_evidence(
+    complaint_id: str,
+    image: UploadFile = File(...),
+    completion_note: str = Form(...),
+    gps_latitude: Optional[float] = Form(default=None),
+    gps_longitude: Optional[float] = Form(default=None),
+    user: dict = Depends(require_admin_or_officer),
+):
+    complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot submit evidence for complaints assigned to other authorities")
+    if complaint.get("status") not in {"In Progress", "Resolution Submitted", "Evidence Uploaded"}:
+        raise HTTPException(status_code=409, detail="Evidence can only be uploaded after work is in progress or resolution is submitted")
+
+    image_url = await store_upload(image)
+    uploader_name = user.get("name") or user.get("username") or user.get("user_id")
+    now = now_utc()
+    history = list(complaint.get("status_history", []))
+    if complaint.get("status") == "In Progress":
+        history.append({
+            "status": "Resolution Submitted",
+            "note": "Field team submitted work for verification.",
+            "at": now,
+            "actor_id": user["user_id"],
+            "actor_role": user["role"],
+        })
+    history.append({
+        "status": "Evidence Uploaded",
+        "note": completion_note,
+        "at": now,
+        "uploaded_by": uploader_name,
+        "actor_id": user["user_id"],
+        "actor_role": user["role"],
+    })
+
+    evidence_dict = {
+        "url": image_url,
+        "after_image_url": image_url,
+        "completion_note": completion_note,
+        "completion_notes": completion_note,
+        "uploaded_by": uploader_name,
+        "uploaded_at": now,
+        "actor_id": user["user_id"],
+        "actor_role": user["role"],
+    }
+    if gps_latitude is not None and gps_longitude is not None:
+        evidence_dict["gps"] = {"latitude": gps_latitude, "longitude": gps_longitude}
+
+    approvals = dict(complaint.get("resolution_approvals") or {})
+    approvals["officer_submission"] = True
+    if not complaint.get("assigned_contractor_id"):
+        approvals.pop("contractor", None)
+
+    changes = {
+        "status": "Evidence Uploaded",
+        "resolution_evidence": evidence_dict,
+        "after_image_url": image_url,
+        "completion_notes": completion_note,
+        "officer_evidence_submitted": True,
+        "resolution_approvals": approvals,
+        "status_history": history,
+        "resolution_submitted_at": complaint.get("resolution_submitted_at") or now,
+        "updated_at": now,
+    }
+    updated = await civic_repo.update_one("complaints", "complaint_id", complaint_id, changes)
+    await record_audit_event(
+        "complaint",
+        complaint_id,
+        "resolution_evidence_uploaded",
+        user,
+        {"status": complaint.get("status")},
+        {"status": "Evidence Uploaded", "evidence_url": image_url},
+        completion_note,
+    )
+    return updated
+
+
+@router.get("/{complaint_id}/evidence/file/{kind}")
+async def get_complaint_evidence_file(
+    complaint_id: str,
+    kind: str,
+    request: Request,
+    token: Optional[str] = Query(default=None),
+    sig: Optional[str] = Query(default=None),
+    exp: Optional[int] = Query(default=None),
+):
+    complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    target_url = None
+    if kind == "before":
+        target_url = complaint.get("image_url")
+    elif kind == "after":
+        ev = complaint.get("resolution_evidence") or {}
+        target_url = ev.get("url") or ev.get("after_image_url") or complaint.get("after_image_url")
+    else:
+        raise HTTPException(status_code=400, detail="Invalid evidence kind. Use 'before' or 'after'")
+
+    if not target_url:
+        raise HTTPException(status_code=404, detail=f"No {kind} image recorded for this complaint")
+
+    # Access control if not demo complaint
+    if complaint.get("data_label") != "Demo":
+        authorized = False
+        user = await optional_user(request)
+        if user:
+            if user.get("role") == "admin":
+                authorized = True
+            elif user.get("role") == "officer":
+                assigned_auth = (complaint.get("assigned_authority") or {}).get("authority_id")
+                if user.get("authority_id") == assigned_auth:
+                    authorized = True
+                else:
+                    raise HTTPException(status_code=403, detail="Officers cannot access evidence for other authorities")
+
+        if not authorized and sig and exp:
+            clean_name = target_url.split("/")[-1].split("?")[0].strip()
+            if verify_evidence_signature(complaint_id, clean_name, sig, exp):
+                authorized = True
+
+        eff_token = token or request.headers.get("x-reporter-token")
+        if not authorized and eff_token:
+            owner = await verify_reporter_access(complaint_id, eff_token)
+            if owner:
+                authorized = True
+
+        if not authorized:
+            raise HTTPException(status_code=403, detail="Unauthorized access to evidence file")
+
+    clean_filename = target_url.split("/")[-1].split("?")[0].strip()
+    upload_root = upload_directory()
+    file_path = (upload_root / clean_filename).resolve()
+    if not file_path.is_relative_to(upload_root.resolve()) or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Evidence file missing on server")
+
+    return FileResponse(file_path, headers={"Cache-Control": "private, no-store"})
 
 
 @router.post("/{complaint_id}/citizen-verification")
@@ -567,10 +920,14 @@ async def citizen_verification(complaint_id: str, payload: CitizenVerificationCr
 
 
 @router.post("/{complaint_id}/resolution-approval")
-async def resolution_approval(complaint_id: str, payload: ResolutionApprovalCreate, _admin: dict = Depends(require_admin)):
+async def resolution_approval(complaint_id: str, payload: ResolutionApprovalCreate, user: dict = Depends(require_admin_or_officer)):
     complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot approve complaints assigned to other authorities")
     if payload.stakeholder == "reporter":
         raise HTTPException(status_code=403, detail="Reporter approval must come from the private reporter verification flow")
     if payload.approved and not complaint.get("resolution_evidence"):
@@ -592,15 +949,19 @@ async def resolution_approval(complaint_id: str, payload: ResolutionApprovalCrea
         "resolved_at": now_utc() if all_approved and complaint.get("resolution_evidence") else complaint.get("resolved_at"),
         "status_history": history,
     })
-    await record_audit_event("complaint", complaint_id, "resolution_approval_updated", _admin, {"approvals": complaint.get("resolution_approvals", {})}, {"approvals": approvals, "fully_verified": all_approved}, payload.note, source="human")
+    await record_audit_event("complaint", complaint_id, "resolution_approval_updated", user, {"approvals": complaint.get("resolution_approvals", {})}, {"approvals": approvals, "fully_verified": all_approved}, payload.note, source="human")
     return updated
 
 
 @router.post("/{complaint_id}/authority-contractor-rating")
-async def authority_contractor_rating(complaint_id: str, payload: ContractorRatingCreate, _admin: dict = Depends(require_admin)):
+async def authority_contractor_rating(complaint_id: str, payload: ContractorRatingCreate, user: dict = Depends(require_admin_or_officer)):
     complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot rate contractors for other authorities")
     return await _save_contractor_rating(complaint, "authority", payload.score)
 
 
@@ -627,16 +988,31 @@ async def reporter_verification(complaint_id: str, payload: ReporterVerification
         raise HTTPException(status_code=409, detail="Completion evidence must be submitted before reporter verification")
 
     timestamp = now_utc()
-    approvals = dict(complaint.get("resolution_approvals") or {"contractor": False, "government": False})
+    approvals = dict(complaint.get("resolution_approvals") or {})
     positive = payload.outcome == "fixed"
     approvals["reporter"] = positive
-    all_approved = all(approvals.get(key) for key in ("contractor", "government"))
+    is_evidence_submitted = bool(
+        complaint.get("officer_evidence_submitted")
+        or complaint.get("resolution_evidence")
+        or approvals.get("officer_submission")
+        or approvals.get("government")
+    )
+    if complaint.get("assigned_contractor_id"):
+        all_approved = positive and is_evidence_submitted and approvals.get("contractor", False)
+    else:
+        all_approved = positive and is_evidence_submitted
+
+    review_type = complaint.get("review_type")
+    review_reason = complaint.get("review_reason")
     if payload.outcome in {"partially_fixed", "not_fixed"}:
         status = "Reopened - Needs Review"
         needs_review = True
+        review_type = "citizen_dispute"
+        review_reason = f"Citizen disputed resolution ({payload.outcome}): {payload.note or 'Work not completed or partially completed'}"
     elif all_approved:
         status = "Resolved"
         needs_review = False
+        review_type = None
     else:
         status = "Verification"
         needs_review = complaint.get("needs_review", False)
@@ -651,6 +1027,8 @@ async def reporter_verification(complaint_id: str, payload: ReporterVerification
     changes = {
         "status": status,
         "needs_review": needs_review,
+        "review_type": review_type,
+        "review_reason": review_reason,
         "resolution_approvals": approvals,
         "fully_verified": all_approved,
         "citizen_verification": {"outcome": payload.outcome, "fixed": positive, "note": payload.note, "verified_at": timestamp},
@@ -661,6 +1039,7 @@ async def reporter_verification(complaint_id: str, payload: ReporterVerification
         changes["resolved_at"] = timestamp
     if status == "Reopened - Needs Review":
         changes["reopened_at"] = timestamp
+        changes["previous_resolution_evidence"] = complaint.get("resolution_evidence")
     updated = await civic_repo.update_one("complaints", "complaint_id", complaint_id, changes)
     await civic_repo.update_one("report_owners", "owner_id", owner["owner_id"], {
         "verification_count": owner.get("verification_count", 0) + 1,
@@ -672,4 +1051,25 @@ async def reporter_verification(complaint_id: str, payload: ReporterVerification
         {"status": complaint.get("status")},
         {"status": status, "outcome": payload.outcome}, payload.note, source="reporter-token",
     )
+    if positive:
+        await record_audit_event(
+            "complaint", complaint_id, "citizen_confirmed",
+            {"user_id": owner["owner_id"], "role": "reporter"},
+            {"status": complaint.get("status")},
+            {"status": "Resolved", "outcome": "fixed"}, payload.note, source="reporter-token",
+        )
+    else:
+        await record_audit_event(
+            "complaint", complaint_id, "citizen_rejected",
+            {"user_id": owner["owner_id"], "role": "reporter"},
+            {"status": complaint.get("status")},
+            {"status": status, "outcome": payload.outcome}, payload.note, source="reporter-token",
+        )
+        await record_audit_event(
+            "complaint", complaint_id, "complaint_reopened",
+            {"user_id": owner["owner_id"], "role": "reporter"},
+            {"status": complaint.get("status")},
+            {"status": status, "outcome": payload.outcome}, payload.note, source="reporter-token",
+        )
     return public_complaint(updated)
+

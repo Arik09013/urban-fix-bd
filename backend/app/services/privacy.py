@@ -9,9 +9,11 @@ PRIVATE_COMPLAINT_FIELDS = {
 }
 
 PII_PATTERNS = (
+    (re.compile(r"(?<!\d)(?:\+?880[-\s]?)?0?1[3-9]\d{8}(?!\d)"), "[phone redacted]"),
     (re.compile(r"(?<!\d)(?:\+?92[-\s]?)?0?3\d{2}[-\s]?\d{7}(?!\d)"), "[phone redacted]"),
     (re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.I), "[email redacted]"),
     (re.compile(r"(?<!\d)\d{5}-?\d{7}-?\d(?!\d)"), "[identifier redacted]"),
+    (re.compile(r"(?<!\d)(?:\d{10}|\d{13}|\d{17})(?!\d)"), "[identifier redacted]"),
 )
 
 

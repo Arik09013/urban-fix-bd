@@ -12,7 +12,7 @@ class PaymentReceipt:
     provider: str
     reference: str
     amount: int
-    currency: str = "pkr"
+    currency: str = "bdt"
 
 
 async def release_contractor_payment(offer: dict, contractor: dict) -> PaymentReceipt:
@@ -49,7 +49,7 @@ async def _release(*, reference: str, amount: int, destination: str | None, meta
         stripe.api_key = settings.stripe_secret_key
         transfer = stripe.Transfer.create(
             amount=amount * 100,
-            currency="pkr",
+            currency="bdt",
             destination=destination,
             transfer_group=reference,
             metadata=metadata,

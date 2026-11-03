@@ -38,7 +38,12 @@ class OfficerOverride(BaseModel):
     final_category: Optional[Literal["Road Infrastructure", "Waste Management", "Water Supply", "Drainage / Sewerage", "Street Lighting", "Public Infrastructure", "Other"]] = None
     final_severity: Optional[Literal["Critical", "High", "Medium", "Low"]] = None
     final_department: Optional[str] = Field(default=None, max_length=120)
+    final_authority_id: Optional[str] = Field(default=None, max_length=120)
     reason: str = Field(..., min_length=3, max_length=1000)
+
+
+class ComplaintProgressUpdate(BaseModel):
+    note: str = Field(..., min_length=3, max_length=1000)
 
 
 class AffectedTooCreate(BaseModel):
@@ -91,12 +96,17 @@ class Complaint(BaseModel):
     confidence: float
     summary: str
     department: str
+    assigned_authority: Optional[Dict[str, Any]] = None
+    initial_assigned_authority: Optional[Dict[str, Any]] = None
     priority_score: int
     priority_breakdown: Dict[str, int]
     duplicate_count: int = 1
     affected_count: int = 1
     needs_review: bool = False
     review_reason: Optional[str] = None
+    review_type: Optional[str] = None
+    officer_evidence_submitted: bool = False
+    previous_resolution_evidence: Optional[Dict[str, Any]] = None
     sla_minutes: int = 1440
     sla_due_at: Optional[datetime] = None
     sla_status: str = "On Track"
