@@ -8,7 +8,7 @@ import binascii
 import json
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, UploadFile, File, Form, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 import hashlib
 import hmac
 
@@ -29,7 +29,7 @@ from app.schemas.complaint import (
 )
 from app.services.ai.gemini import analyze_complaint
 from app.services.priority import calculate_priority, with_current_priority
-from app.services.storage.cloudinary import store_upload, verify_evidence_signature
+from app.services.storage.cloudinary import is_safe_evidence_url, store_upload, verify_evidence_signature
 from app.services.image_metadata import extract_permitted_metadata
 from app.services.workflow import (
     duplicate_assessment,
@@ -905,13 +905,19 @@ async def get_complaint_evidence_file(
         if not authorized:
             raise HTTPException(status_code=403, detail="Unauthorized access to evidence file")
 
+    cache_header = {"Cache-Control": "public, max-age=3600" if complaint.get("data_label") == "Demo" else "private, no-store"}
+    if target_url.startswith("http://") or target_url.startswith("https://"):
+        if not is_safe_evidence_url(target_url):
+            raise HTTPException(status_code=400, detail="Invalid evidence storage destination")
+        return RedirectResponse(url=target_url, status_code=307, headers=cache_header)
+
     clean_filename = target_url.split("/")[-1].split("?")[0].strip()
     upload_root = upload_directory()
     file_path = (upload_root / clean_filename).resolve()
     if not file_path.is_relative_to(upload_root.resolve()) or not file_path.is_file():
         raise HTTPException(status_code=404, detail="Evidence file missing on server")
 
-    return FileResponse(file_path, headers={"Cache-Control": "private, no-store"})
+    return FileResponse(file_path, headers=cache_header)
 
 
 @router.post("/{complaint_id}/citizen-verification")
@@ -986,6 +992,8 @@ async def reporter_verification(complaint_id: str, payload: ReporterVerification
         raise HTTPException(status_code=404, detail="Complaint not found")
     if not complaint.get("resolution_evidence"):
         raise HTTPException(status_code=409, detail="Completion evidence must be submitted before reporter verification")
+    if complaint.get("status") == "Resolved" or complaint.get("fully_verified"):
+        raise HTTPException(status_code=409, detail="Complaint resolution is already confirmed and finalized; cannot re-verify a resolved case")
 
     timestamp = now_utc()
     approvals = dict(complaint.get("resolution_approvals") or {})

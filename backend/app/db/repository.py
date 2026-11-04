@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import logging
 import secrets
 
@@ -53,6 +53,7 @@ class CivicRepository:
             "webhook_events": [],
             "report_owners": [],
             "discussion_votes": [],
+            "login_attempts": [],
         }
 
     async def connect(self) -> None:
@@ -72,6 +73,7 @@ class CivicRepository:
             await self.client.admin.command("ping")
             self.db = self.client[settings.mongo_db_name]
             await self.db.users.create_index("email", unique=True)
+            await self.db.users.create_index("username", unique=True, sparse=True)
             await self.db.sessions.create_index("token_hash", unique=True)
             await self.db.sessions.create_index("expires_at", expireAfterSeconds=0)
             await self.db.repair_requests.create_index([("applicant_user_id", 1), ("created_at", -1)])
@@ -90,6 +92,8 @@ class CivicRepository:
             await self.db.report_owners.create_index("token_hash", unique=True)
             await self.db.report_owners.create_index("expires_at", expireAfterSeconds=0)
             await self.db.discussion_votes.create_index([("post_id", 1), ("user_id", 1)], unique=True)
+            await self.db.login_attempts.create_index("expires_at", expireAfterSeconds=0)
+            await self.db.login_attempts.create_index([("key", 1), ("created_at", -1)])
             self.use_memory = False
             self.connection_error = None
         except Exception as exc:
@@ -566,6 +570,46 @@ class CivicRepository:
             return len(self.memory[collection]) < before
         result = await self.db[collection].delete_one({key: value})
         return result.deleted_count == 1
+
+    async def record_login_attempt(self, key: str, window_minutes: int = 5) -> None:
+        now = datetime.now(timezone.utc)
+        record = {
+            "key": key,
+            "created_at": now,
+            "expires_at": now + timedelta(minutes=window_minutes),
+        }
+        if self.use_memory:
+            if "login_attempts" not in self.memory:
+                self.memory["login_attempts"] = []
+            self.memory["login_attempts"].append(record)
+            return
+        await self.db.login_attempts.insert_one(record)
+
+    async def get_login_attempts_count(self, key: str, window_minutes: int = 5) -> int:
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=window_minutes)
+        if self.use_memory:
+            if "login_attempts" not in self.memory:
+                self.memory["login_attempts"] = []
+            self.memory["login_attempts"] = [
+                a for a in self.memory["login_attempts"]
+                if a.get("created_at") and a["created_at"] >= cutoff
+            ]
+            return sum(1 for a in self.memory["login_attempts"] if a.get("key") == key)
+        count = await self.db.login_attempts.count_documents({
+            "key": key,
+            "created_at": {"$gte": cutoff},
+        })
+        return count
+
+    async def clear_login_attempts(self, key: str) -> None:
+        if self.use_memory:
+            if "login_attempts" in self.memory:
+                self.memory["login_attempts"] = [
+                    a for a in self.memory["login_attempts"]
+                    if a.get("key") != key
+                ]
+            return
+        await self.db.login_attempts.delete_many({"key": key})
 
 
 civic_repo = CivicRepository()

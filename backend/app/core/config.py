@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 from typing import List
-from pydantic import model_validator
+from pydantic import field_validator, model_validator
 
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -54,6 +54,20 @@ class Settings(BaseSettings):
         "null",
     ]
 
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v):
+        if isinstance(v, str):
+            v = v.strip()
+            if v.startswith("[") and v.endswith("]"):
+                import json
+                try:
+                    return json.loads(v)
+                except Exception:
+                    pass
+            return [i.strip() for i in v.split(",") if i.strip()]
+        return v
+
     model_config = SettingsConfigDict(
         env_file=(".env", "backend/.env", str(Path(__file__).resolve().parents[2] / ".env")),
         env_file_encoding="utf-8",
@@ -78,8 +92,10 @@ class Settings(BaseSettings):
             cloudinary_parts = all((self.cloudinary_cloud_name, self.cloudinary_api_key, self.cloudinary_api_secret))
             if not self.cloudinary_url and not cloudinary_parts:
                 unsafe.append("CLOUDINARY_URL or separate Cloudinary credentials")
-            if self.payment_provider != "stripe" or not self.stripe_secret_key:
-                unsafe.append("PAYMENT_PROVIDER=stripe and STRIPE_SECRET_KEY")
+            if self.payment_provider == "stripe" and not self.stripe_secret_key:
+                unsafe.append("STRIPE_SECRET_KEY required when PAYMENT_PROVIDER=stripe")
+            elif self.payment_provider not in {"stripe", "demo"}:
+                unsafe.append("PAYMENT_PROVIDER must be 'stripe' or 'demo'")
             if unsafe:
                 raise ValueError("Unsafe production configuration: " + ", ".join(unsafe))
         return self

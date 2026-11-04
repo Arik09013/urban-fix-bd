@@ -4,7 +4,7 @@ import logging
 import time
 from uuid import uuid4
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -12,7 +12,7 @@ from app.api.routes import analytics, auth, authorities, complaints, contractors
 from app.core.config import project_root, settings, upload_directory
 from app.core.security import optional_user
 from app.db.repository import civic_repo
-from app.services.storage.cloudinary import verify_evidence_signature
+from app.services.storage.cloudinary import is_safe_evidence_url, verify_evidence_signature
 from app.services.reporter_access import verify_reporter_access
 
 PROJECT_ROOT = project_root()
@@ -98,23 +98,44 @@ async def get_secure_upload(filename: str, request: Request):
 
     clean_name = filename.split("?")[0].strip()
     file_path = (UPLOAD_DIR / clean_name).resolve()
-    if not file_path.is_relative_to(UPLOAD_DIR.resolve()) or not file_path.is_file():
-        raise HTTPException(status_code=404, detail="File not found")
+    local_exists = file_path.is_relative_to(UPLOAD_DIR.resolve()) and file_path.is_file()
 
     complaint = await civic_repo.find_complaint_by_evidence_filename(clean_name)
+    target_external_url = None
+    if complaint:
+        candidate_urls = [
+            complaint.get("image_url"),
+            complaint.get("after_image_url"),
+            (complaint.get("resolution_evidence") or {}).get("url"),
+            (complaint.get("resolution_evidence") or {}).get("after_image_url"),
+        ]
+        for cand in candidate_urls:
+            if cand and clean_name in cand and (cand.startswith("http://") or cand.startswith("https://")):
+                if is_safe_evidence_url(cand):
+                    target_external_url = cand
+                    break
+
+    if not local_exists and not target_external_url:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    def deliver_response(cache_header: dict):
+        if target_external_url:
+            return RedirectResponse(url=target_external_url, status_code=307, headers=cache_header)
+        return FileResponse(file_path, headers=cache_header)
+
     # If not associated with any complaint or if it's a demo complaint, allow public viewing
     if not complaint or complaint.get("data_label") == "Demo":
-        return FileResponse(file_path, headers={"Cache-Control": "public, max-age=3600"})
+        return deliver_response({"Cache-Control": "public, max-age=3600"})
 
     # Restricted complaint: require valid auth (admin, matching officer, signed URL, or reporter token)
     user = await optional_user(request)
     if user:
         if user.get("role") == "admin":
-            return FileResponse(file_path, headers={"Cache-Control": "private, no-store"})
+            return deliver_response({"Cache-Control": "private, no-store"})
         if user.get("role") == "officer":
             assigned_auth = (complaint.get("assigned_authority") or {}).get("authority_id")
             if user.get("authority_id") == assigned_auth:
-                return FileResponse(file_path, headers={"Cache-Control": "private, no-store"})
+                return deliver_response({"Cache-Control": "private, no-store"})
             raise HTTPException(status_code=403, detail="Officers cannot access evidence for other authorities")
 
     # Check HMAC signature
@@ -124,7 +145,7 @@ async def get_secure_upload(filename: str, request: Request):
     if sig and exp:
         try:
             if verify_evidence_signature(cid, clean_name, sig, int(exp)):
-                return FileResponse(file_path, headers={"Cache-Control": "private, no-store"})
+                return deliver_response({"Cache-Control": "private, no-store"})
         except (ValueError, TypeError):
             pass
 
@@ -133,7 +154,7 @@ async def get_secure_upload(filename: str, request: Request):
     if token:
         owner = await verify_reporter_access(complaint["complaint_id"], token)
         if owner:
-            return FileResponse(file_path, headers={"Cache-Control": "private, no-store"})
+            return deliver_response({"Cache-Control": "private, no-store"})
 
     raise HTTPException(status_code=403, detail="Unauthorized access to restricted evidence")
 

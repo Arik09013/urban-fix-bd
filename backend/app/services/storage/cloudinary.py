@@ -56,6 +56,19 @@ def create_signed_evidence_url(complaint_id: str, filename: str, ttl_seconds: in
     return f"/uploads/{filename}?cid={complaint_id}&exp={expires_at}&sig={sig}"
 
 
+def is_safe_evidence_url(url: str) -> bool:
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        return False
+    host = (parsed.hostname or "").lower()
+    return (
+        host == "res.cloudinary.com"
+        or host.endswith(".cloudinary.com")
+        or host.endswith(".onrender.com")
+        or host in ("localhost", "127.0.0.1")
+    )
+
 
 async def store_upload(file: UploadFile | None) -> str | None:
     if file is None:

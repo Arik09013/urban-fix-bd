@@ -22,6 +22,8 @@ services:
         value: "true"
       - key: REPORTER_TOKEN_SECRET
         sync: false
+      - key: EVIDENCE_SIGNING_SECRET
+        sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
@@ -33,6 +35,8 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: PAYMENT_PROVIDER
-        value: stripe
+        value: demo
       - key: STRIPE_SECRET_KEY
         sync: false
+      - key: CORS_ORIGINS
+        value: "https://urbanfix-web.vercel.app"

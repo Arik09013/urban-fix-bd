@@ -9,3 +9,4 @@ httpx==0.28.1
 pytest==8.3.4
 Pillow==11.1.0
 stripe==11.4.1
+dnspython>=2.0.0

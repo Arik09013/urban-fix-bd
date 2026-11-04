@@ -1,5 +1,5 @@
-from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
+import hashlib
 import hmac
 import re
 
@@ -11,7 +11,6 @@ from app.core.security import SESSION_COOKIE, create_session, hash_password, opt
 from app.db.repository import civic_repo, now_utc, public_id
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
-attempts: dict[str, deque] = defaultdict(deque)
 
 
 class RegisterCreate(BaseModel):
@@ -123,35 +122,36 @@ def set_session_cookie(response: Response, token: str) -> None:
 
 
 def rate_limit_key(request: Request) -> str:
-    return request.client.host if request.client else "unknown"
+    host = request.client.host if request.client else "unknown"
+    return f"rl_{host}"
 
 
-def check_rate_limit(request: Request) -> None:
+async def check_rate_limit(request: Request) -> None:
     key = rate_limit_key(request)
-    cutoff = datetime.now(timezone.utc) - timedelta(minutes=5)
-    while attempts[key] and attempts[key][0] < cutoff:
-        attempts[key].popleft()
-    if len(attempts[key]) >= 10:
+    count = await civic_repo.get_login_attempts_count(key, window_minutes=5)
+    if count >= 10:
         raise HTTPException(status_code=429, detail="Too many login attempts. Try again later.")
 
 
-def record_failed_attempt(request: Request) -> None:
-    attempts[rate_limit_key(request)].append(datetime.now(timezone.utc))
+async def record_failed_attempt(request: Request) -> None:
+    key = rate_limit_key(request)
+    await civic_repo.record_login_attempt(key, window_minutes=5)
 
 
-def clear_failed_attempts(request: Request) -> None:
-    attempts.pop(rate_limit_key(request), None)
+async def clear_failed_attempts(request: Request) -> None:
+    key = rate_limit_key(request)
+    await civic_repo.clear_login_attempts(key)
 
 
 @router.post("/register")
 async def register(payload: RegisterCreate, request: Request, response: Response):
-    check_rate_limit(request)
+    await check_rate_limit(request)
     email = payload.email.strip().lower()
     if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
-        record_failed_attempt(request)
+        await record_failed_attempt(request)
         raise HTTPException(status_code=422, detail="Enter a valid email address")
     if await civic_repo.find_one("users", "email", email):
-        record_failed_attempt(request)
+        await record_failed_attempt(request)
         raise HTTPException(status_code=409, detail="An account already exists for this email")
     salt, password_hash = hash_password(payload.password)
     user = {
@@ -171,14 +171,14 @@ async def register(payload: RegisterCreate, request: Request, response: Response
             "payout_account_id": payload.payout_account_id.strip() or None,
         })
     token, session = await create_session(user)
-    clear_failed_attempts(request)
+    await clear_failed_attempts(request)
     set_session_cookie(response, token)
     return public_user({**user, "csrf_token": session["csrf_token"]})
 
 
 @router.post("/login")
 async def login(payload: LoginCreate, request: Request, response: Response):
-    check_rate_limit(request)
+    await check_rate_limit(request)
     email = payload.email.strip().lower()
     is_admin_name = hmac.compare_digest(email, settings.admin_username.lower())
     is_admin_password = hmac.compare_digest(payload.password, settings.admin_password)
@@ -189,13 +189,13 @@ async def login(payload: LoginCreate, request: Request, response: Response):
         if not user:
             user = await civic_repo.find_one("users", "username", email)
         if not user or not verify_password(payload.password, user["password_salt"], user["password_hash"]):
-            record_failed_attempt(request)
+            await record_failed_attempt(request)
             raise HTTPException(status_code=401, detail="Invalid username or password")
         if user.get("role") == "officer" and not user.get("active", True):
-            record_failed_attempt(request)
+            await record_failed_attempt(request)
             raise HTTPException(status_code=403, detail="Officer account is inactive")
     token, session = await create_session(user)
-    clear_failed_attempts(request)
+    await clear_failed_attempts(request)
     set_session_cookie(response, token)
     return public_user({**user, "csrf_token": session["csrf_token"]})
 
@@ -222,6 +222,7 @@ async def list_demo_officers():
 @router.post("/demo-officer-login")
 async def demo_officer_login(payload: DemoOfficerLogin, request: Request, response: Response):
     """Controlled simulated demo officer login without exposing credentials."""
+    await check_rate_limit(request)
     if settings.environment == "production":
         raise HTTPException(status_code=403, detail="Demo officer login is disabled in production")
     if not settings.allow_demo_officer_login:
@@ -230,11 +231,13 @@ async def demo_officer_login(payload: DemoOfficerLogin, request: Request, respon
     await ensure_demo_officers()
     user = await civic_repo.find_one("users", "username", username)
     if not user or user.get("role") != "officer":
+        await record_failed_attempt(request)
         raise HTTPException(status_code=404, detail="Demo officer not found")
     if not user.get("active", True):
+        await record_failed_attempt(request)
         raise HTTPException(status_code=403, detail="Officer account is inactive")
     token, session = await create_session(user)
-    clear_failed_attempts(request)
+    await clear_failed_attempts(request)
     set_session_cookie(response, token)
     return public_user({**user, "csrf_token": session["csrf_token"]})
 
