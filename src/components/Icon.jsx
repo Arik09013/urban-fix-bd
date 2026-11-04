@@ -5,7 +5,7 @@ import {
   Clock, ExternalLink, FileText, GitMerge, Hammer, HandCoins, HardHat, Home,
   ImageOff, Inbox, Landmark, ListFilter, Map, MapPin, MapPinned, MessageCircle,
   Moon, MoveHorizontal, Play, RefreshCw, Scan, Search, ShieldAlert, ShieldCheck,
-  Siren, Sparkles, Star, Sun, ThumbsUp, UploadCloud, UserCheck, X,
+  Siren, Sparkles, Star, Sun, ThumbsUp, UploadCloud, UserCheck, X, LogOut,
 } from 'lucide-react';
 
 const icons = {
@@ -16,7 +16,7 @@ const icons = {
   'external-link': ExternalLink, 'file-text': FileText, 'git-merge': GitMerge,
   hammer: Hammer, 'hand-coins': HandCoins, 'hard-hat': HardHat, home: Home,
   'image-off': ImageOff, inbox: Inbox, landmark: Landmark, 'list-filter': ListFilter,
-  map: Map, 'map-pin': MapPin, 'map-pinned': MapPinned, 'message-circle': MessageCircle,
+  'log-out': LogOut, map: Map, 'map-pin': MapPin, 'map-pinned': MapPinned, 'message-circle': MessageCircle,
   moon: Moon, 'move-horizontal': MoveHorizontal, play: Play, 'refresh-cw': RefreshCw, scan: Scan,
   search: Search, 'shield-alert': ShieldAlert, 'shield-check': ShieldCheck, siren: Siren,
   sparkles: Sparkles, star: Star, sun: Sun, 'thumbs-up': ThumbsUp,

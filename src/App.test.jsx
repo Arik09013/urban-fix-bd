@@ -6,6 +6,7 @@ import * as apiModule from './lib/api.js';
 
 vi.mock('./lib/api.js', () => ({
   api: vi.fn(),
+  API_BASE: '/api',
 }));
 
 describe('normalizeReport unit tests', () => {
@@ -209,7 +210,7 @@ describe('Complaint Flow & AI Suggestion UX', () => {
       if (endpoint === '/complaints' || endpoint.startsWith('/complaints?')) {
         return { complaints: [mockComplaint], pagination: { total: 1 } };
       }
-      if (endpoint === '/track/CP-7777' || endpoint === '/tracking/CP-7777') {
+      if (endpoint.startsWith('/track/CP-7777') || endpoint.startsWith('/tracking/CP-7777')) {
         return mockComplaint;
       }
       if (endpoint === '/complaints/CP-7777/reporter-verification') {
@@ -262,4 +263,264 @@ describe('Complaint Flow & AI Suggestion UX', () => {
       expect(payload.outcome).toBe('fixed');
     });
   });
+
+  describe('Image Pipeline & Media URL resolution', () => {
+    it('preserves external Cloudinary or HTTP URLs', async () => {
+      const { absoluteMediaUrl } = await import('./App.jsx');
+      expect(absoluteMediaUrl('https://res.cloudinary.com/demo/image/upload/v1/sample.jpg'))
+        .toBe('https://res.cloudinary.com/demo/image/upload/v1/sample.jpg');
+    });
+
+    it('resolves relative URLs against URBANFIX_MEDIA_BASE if defined', async () => {
+      const { absoluteMediaUrl } = await import('./App.jsx');
+      window.URBANFIX_MEDIA_BASE = 'https://media.urbanfix.bd';
+      expect(absoluteMediaUrl('/uploads/sample.jpg')).toBe('https://media.urbanfix.bd/uploads/sample.jpg');
+      delete window.URBANFIX_MEDIA_BASE;
+    });
+
+    it('attaches reporter token to unsigned local uploads in normalizeReport', () => {
+      sessionStorage.setItem('urbanfix-reporter-CP-9999', 'token-abc-123');
+      const item = {
+        complaint_id: 'CP-9999',
+        description: 'Broken culvert',
+        image_url: '/uploads/raw_image.jpg',
+      };
+      const normalized = normalizeReport(item);
+      expect(normalized.beforeImage).toContain('token=token-abc-123');
+      sessionStorage.removeItem('urbanfix-reporter-CP-9999');
+    });
+
+    it('does not re-append token if URL already has an HMAC signature', () => {
+      sessionStorage.setItem('urbanfix-reporter-CP-8888', 'token-abc-123');
+      const item = {
+        complaint_id: 'CP-8888',
+        description: 'Road repair',
+        image_url: '/uploads/signed.jpg?cid=CP-8888&exp=1999999999&sig=abcdef123456',
+      };
+      const normalized = normalizeReport(item);
+      expect(normalized.beforeImage).toContain('sig=abcdef123456');
+      expect(normalized.beforeImage).not.toContain('token=');
+      sessionStorage.removeItem('urbanfix-reporter-CP-8888');
+    });
+  });
+
+  describe('Officer Authentication, Scoped Work Queue & Switch Authority', () => {
+    const mockComplaints = [
+      {
+        complaint_id: 'CP-DNCC-101',
+        description: 'Waste overflowing in Gulshan 2',
+        location: { area: 'Gulshan 2, Dhaka' },
+        category: 'Waste Management',
+        severity: 'High',
+        status: 'Assigned',
+        assigned_authority: {
+          authority_id: 'AUTH-DNCC',
+          authority_name: 'Dhaka North City Corporation',
+          short_code: 'DNCC',
+          department: 'Waste Management Department',
+        },
+      },
+      {
+        complaint_id: 'CP-CCC-202',
+        description: 'Broken road drainage in Agrabad',
+        location: { area: 'Agrabad, Chattogram' },
+        category: 'Drainage & Water Logging',
+        severity: 'Critical',
+        status: 'Assigned',
+        assigned_authority: {
+          authority_id: 'AUTH-CCC',
+          authority_name: 'Chattogram City Corporation',
+          short_code: 'CCC',
+          department: 'Engineering Department (Road Maintenance)',
+        },
+      },
+    ];
+
+    const dnccOfficer = {
+      user_id: 'OFF-DNCC-01',
+      name: 'Engr. Rafiqul Islam',
+      username: 'officer.dncc',
+      role: 'officer',
+      authority_id: 'AUTH-DNCC',
+      department: 'Waste Management Department',
+      csrf_token: 'csrf-dncc-token',
+    };
+
+    const cccOfficer = {
+      user_id: 'OFF-CCC-01',
+      name: 'Engr. Nazmul Huda',
+      username: 'officer.ccc',
+      role: 'officer',
+      authority_id: 'AUTH-CCC',
+      department: 'Engineering Department (Road Maintenance)',
+      csrf_token: 'csrf-ccc-token',
+    };
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+      sessionStorage.clear();
+      localStorage.clear();
+    });
+
+    it('handles officer login, strictly scopes work queue, switches authority, and logs out cleanly', async () => {
+      let currentSessionUser = null;
+
+      apiModule.api.mockImplementation(async (endpoint, options = {}) => {
+        if (endpoint === '/auth/me') {
+          if (!currentSessionUser) {
+            const err = new Error('Unauthorized');
+            err.status = 401;
+            throw err;
+          }
+          return currentSessionUser;
+        }
+        if (endpoint === '/auth/demo-officer-login') {
+          const body = JSON.parse(options.body);
+          if (body.username === 'officer.dncc') {
+            currentSessionUser = dnccOfficer;
+            return dnccOfficer;
+          }
+          if (body.username === 'officer.ccc') {
+            currentSessionUser = cccOfficer;
+            return cccOfficer;
+          }
+          throw new Error('Unknown demo officer');
+        }
+        if (endpoint === '/auth/logout') {
+          currentSessionUser = null;
+          return { ok: true, message: 'Logged out successfully' };
+        }
+        if (endpoint === '/complaints' || endpoint.startsWith('/complaints?')) {
+          return { complaints: mockComplaints, pagination: { total: 2 } };
+        }
+        if (endpoint === '/contractors') return { contractors: [] };
+        if (endpoint === '/repair-requests') return { requests: [] };
+        if (endpoint === '/offers') return { offers: [], contractor: null };
+        return {};
+      });
+
+      render(<App />);
+
+      // 1. Navigate to Authority Portal
+      const authorityPortalBtn = screen.getByRole('button', { name: /Authority Portal/i });
+      fireEvent.click(authorityPortalBtn);
+
+      // Verify AuthCard renders with demo officer buttons
+      expect(screen.getByText(/Municipal Authority Command Center/i)).toBeInTheDocument();
+      const dnccLoginBtn = screen.getByTestId('login-officer.dncc');
+      expect(dnccLoginBtn).toBeInTheDocument();
+
+      // 2. Log in as DNCC Officer
+      fireEvent.click(dnccLoginBtn);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Engr. Rafiqul Islam Workspace/i)).toBeInTheDocument();
+        expect(screen.getByText(/Authority Scoped \(AUTH-DNCC\)/i)).toBeInTheDocument();
+      });
+
+      // 3. Verify queue scoping: only DNCC complaint is shown, CCC complaint is excluded
+      expect(screen.getByText('CP-DNCC-101')).toBeInTheDocument();
+      expect(screen.queryByText('CP-CCC-202')).not.toBeInTheDocument();
+
+      // Verify Switch Authority and Log Out buttons exist in Command Header
+      const switchBtn = screen.getByTestId('switch-authority-btn');
+      const logoutBtn = screen.getByTestId('officer-logout-btn');
+      expect(switchBtn).toBeInTheDocument();
+      expect(logoutBtn).toBeInTheDocument();
+
+      // 4. Click Switch Authority
+      fireEvent.click(switchBtn);
+
+      await waitFor(() => {
+        // Must return to login screen on admin tab
+        expect(screen.getByText(/Municipal Authority Command Center/i)).toBeInTheDocument();
+        expect(screen.getByTestId('login-officer.ccc')).toBeInTheDocument();
+      });
+
+      // Verify /auth/logout was called
+      expect(apiModule.api.mock.calls.some(c => c[0] === '/auth/logout')).toBe(true);
+
+      // 5. Log in as CCC Officer
+      fireEvent.click(screen.getByTestId('login-officer.ccc'));
+
+      await waitFor(() => {
+        expect(screen.getByText(/Engr. Nazmul Huda Workspace/i)).toBeInTheDocument();
+        expect(screen.getByText(/Authority Scoped \(AUTH-CCC\)/i)).toBeInTheDocument();
+      });
+
+      // Verify queue scoping for CCC: only CCC complaint is shown, DNCC complaint is excluded
+      expect(screen.getByText('CP-CCC-202')).toBeInTheDocument();
+      expect(screen.queryByText('CP-DNCC-101')).not.toBeInTheDocument();
+
+      // 6. Test Log Out button
+      const cccLogoutBtn = screen.getByTestId('officer-logout-btn');
+      fireEvent.click(cccLogoutBtn);
+
+      await waitFor(() => {
+        // Returns to landing tab (or home)
+        expect(screen.queryByText(/Engr. Nazmul Huda Workspace/i)).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Authority Portal/i })).toBeInTheDocument();
+      });
+    });
+
+    it('safely handles logout when backend session is already expired or returns error', async () => {
+      let currentSessionUser = dnccOfficer;
+
+      apiModule.api.mockImplementation(async (endpoint) => {
+        if (endpoint === '/auth/me') return currentSessionUser;
+        if (endpoint === '/auth/logout') {
+          currentSessionUser = null;
+          const err = new Error('Session expired');
+          err.status = 401;
+          throw err;
+        }
+        if (endpoint === '/complaints') return { complaints: [], pagination: { total: 0 } };
+        return {};
+      });
+
+      render(<App />);
+
+      // Navigate to admin
+      await waitFor(() => {
+        expect(screen.getByTestId('nav-logout-btn')).toBeInTheDocument();
+      });
+
+      // Logout should succeed without uncaught error and clear UI state
+      fireEvent.click(screen.getByTestId('nav-logout-btn'));
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('nav-logout-btn')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Authority Portal/i })).toBeInTheDocument();
+      });
+    });
+
+    it('preserves citizen reporter verification tokens and theme on officer logout', async () => {
+      sessionStorage.setItem('urbanfix-reporter-CP-5555', 'reporter-token-keep');
+      localStorage.setItem('urbanfix-theme', 'dark');
+
+      apiModule.api.mockImplementation(async (endpoint) => {
+        if (endpoint === '/auth/me') return dnccOfficer;
+        if (endpoint === '/auth/logout') return { ok: true };
+        if (endpoint === '/complaints') return { complaints: [], pagination: { total: 0 } };
+        return {};
+      });
+
+      render(<App />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('nav-logout-btn')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('nav-logout-btn'));
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Authority Portal/i })).toBeInTheDocument();
+      });
+
+      // Reporter token and theme must remain intact
+      expect(sessionStorage.getItem('urbanfix-reporter-CP-5555')).toBe('reporter-token-keep');
+      expect(localStorage.getItem('urbanfix-theme')).toBe('dark');
+    });
+  });
 });
+

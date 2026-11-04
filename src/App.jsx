@@ -1,47 +1,91 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { api } from './lib/api.js';
+import { api, API_BASE } from './lib/api.js';
 import Icon from './components/Icon.jsx';
 import ReviewDialog from './components/ReviewDialog.jsx';
 import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
-    const absoluteMediaUrl = (url) => {
-      if (!url || url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) return url;
-      return `${window.location.origin}${url}`;
-    };
+export const getMediaBaseUrl = () => {
+  if (typeof window !== 'undefined' && window.URBANFIX_MEDIA_BASE) {
+    return window.URBANFIX_MEDIA_BASE.replace(/\/+$/, '');
+  }
+  if (typeof window !== 'undefined' && window.URBANFIX_API_BASE && typeof window.URBANFIX_API_BASE === 'string' && window.URBANFIX_API_BASE.startsWith('http')) {
+    try {
+      return new URL(window.URBANFIX_API_BASE).origin;
+    } catch (_) {}
+  }
+  if (typeof API_BASE === 'string' && API_BASE.startsWith('http')) {
+    try {
+      return new URL(API_BASE).origin;
+    } catch (_) {}
+  }
+  return typeof window !== 'undefined' && window.location ? window.location.origin : '';
+};
 
-    const DEMO_IMAGE_BY_CATEGORY = {
-      'Road Infrastructure': 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800',
-      'Drainage / Sewerage': 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&q=80&w=800',
-      'Waste Management': 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800',
-    };
+export const absoluteMediaUrl = (url) => {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+    return url;
+  }
+  const base = getMediaBaseUrl();
+  const path = url.startsWith('/') ? url : `/${url}`;
+  return base ? `${base}${path}` : path;
+};
 
-    const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, char => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    })[char]);
+const DEMO_IMAGE_BY_CATEGORY = {
+  'Road Infrastructure': 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800',
+  'Drainage / Sewerage': 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&q=80&w=800',
+  'Waste Management': 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800',
+};
 
-    export const normalizeReport = (item) => ({
-      ...item,
-      id: item.complaint_id || item.id,
-      title: item.description || item.title || item.summary || 'Civic Issue',
-      location: typeof item.location === 'string' ? item.location : item.location?.area || 'Location pending',
-      coordinates: item.coordinates || { lat: item.location?.latitude, lng: item.location?.longitude },
-      confidence: typeof item.confidence === 'number'
-        ? `${item.needs_review ? 'Needs Human Review' : 'AI Confidence'} (${Math.round(item.confidence * 100)}%)`
-        : item.confidence,
-      duplicates: item.duplicate_count ?? item.duplicates ?? 0,
-      beforeImage: absoluteMediaUrl(
-        item.image_url
-        || item.beforeImage
-        || (item.data_label === 'Demo' ? DEMO_IMAGE_BY_CATEGORY[item.category] : null)
-      ),
-      afterImage: absoluteMediaUrl(item.resolution_evidence?.after_image_url || item.afterImage),
-      timeline: (item.status_history || item.timeline || []).map(entry => ({
-        step: entry.status || entry.step,
-        time: entry.at ? new Date(entry.at).toLocaleString() : entry.time,
-        note: entry.note,
-        done: entry.done !== false,
-      })),
-    });
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, char => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+})[char]);
+
+export const normalizeReport = (item) => {
+  const complaintId = item.complaint_id || item.id;
+  let beforeUrl = item.image_url
+    || item.beforeImage
+    || (item.data_label === 'Demo' ? DEMO_IMAGE_BY_CATEGORY[item.category] : null);
+
+  if (beforeUrl && typeof beforeUrl === 'string' && beforeUrl.startsWith('/uploads/') && !beforeUrl.includes('sig=') && !beforeUrl.includes('token=')) {
+    try {
+      const storedToken = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`urbanfix-reporter-${complaintId}`) : null;
+      if (storedToken) {
+        beforeUrl = `${beforeUrl}${beforeUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(storedToken)}`;
+      }
+    } catch (_) {}
+  }
+
+  let afterUrl = item.resolution_evidence?.after_image_url || item.afterImage;
+  if (afterUrl && typeof afterUrl === 'string' && afterUrl.startsWith('/uploads/') && !afterUrl.includes('sig=') && !afterUrl.includes('token=')) {
+    try {
+      const storedToken = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`urbanfix-reporter-${complaintId}`) : null;
+      if (storedToken) {
+        afterUrl = `${afterUrl}${afterUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(storedToken)}`;
+      }
+    } catch (_) {}
+  }
+
+  return {
+    ...item,
+    id: complaintId,
+    title: item.description || item.title || item.summary || 'Civic Issue',
+    location: typeof item.location === 'string' ? item.location : item.location?.area || 'Location pending',
+    coordinates: item.coordinates || { lat: item.location?.latitude, lng: item.location?.longitude },
+    confidence: typeof item.confidence === 'number'
+      ? `${item.needs_review ? 'Needs Human Review' : 'AI Confidence'} (${Math.round(item.confidence * 100)}%)`
+      : item.confidence,
+    duplicates: item.duplicate_count ?? item.duplicates ?? 0,
+    beforeImage: absoluteMediaUrl(beforeUrl),
+    afterImage: absoluteMediaUrl(afterUrl),
+    timeline: (item.status_history || item.timeline || []).map(entry => ({
+      step: entry.status || entry.step,
+      time: entry.at ? new Date(entry.at).toLocaleString() : entry.time,
+      note: entry.note,
+      done: entry.done !== false,
+    })),
+  };
+};
 
     const markerState = (report) => {
       const hasEvidence = Boolean(report.afterImage || report.resolution_evidence || report.officer_evidence_submitted);
@@ -347,6 +391,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <button
                       key={item.code}
                       type="button"
+                      data-testid={`login-${item.code}`}
                       onClick={() => onDemoOfficerLogin ? onDemoOfficerLogin(item.code) : setForm({...form, email: item.code})}
                       className="rounded-lg border border-slate-700/80 bg-slate-900/90 p-2 text-left text-[11px] text-slate-300 hover:border-sky-500/50 hover:bg-slate-800 transition-colors"
                     >
@@ -617,10 +662,38 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         }
       };
 
-      const logout = async () => {
+      const clearAuthSession = async () => {
         authVersionRef.current += 1;
-        try { await api('/auth/logout',{method:'POST'}); } catch (_) {}
-        window.URBANFIX_CSRF=''; setAuthUser(null); setDashboard(null); setRepairRequests([]); setOperationDetail(null); setActiveTab('landing'); showToast('Logged out securely.');
+        try {
+          await api('/auth/logout', { method: 'POST' });
+        } catch (_) {}
+        window.URBANFIX_CSRF = '';
+        setAuthUser(null);
+        setDashboard(null);
+        setRepairRequests([]);
+        setOperationDetail(null);
+        setContractorJobs([]);
+        setContractorProfile(null);
+        setReviewReport(null);
+        setOfficerProgressNote('');
+        setAuthError('');
+        try {
+          sessionStorage.removeItem('urbanfix-active-authority');
+          sessionStorage.removeItem('urbanfix-auth-session');
+        } catch (_) {}
+        await refreshData(null);
+      };
+
+      const logout = async (targetTab = 'landing') => {
+        await clearAuthSession();
+        setActiveTab(targetTab);
+        showToast('Logged out securely.');
+      };
+
+      const handleSwitchAuthority = async () => {
+        await clearAuthSession();
+        setActiveTab('admin');
+        showToast('Switched out of authority session. Select another authority officer to sign in.');
       };
 
       const showToast = (msg) => {
@@ -715,7 +788,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         setTrackingBusy(true);
         setTrackingError('');
         try {
-          const result = await api(`/track/${encodeURIComponent(complaintId)}`);
+          const token = (verificationToken || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`urbanfix-reporter-${complaintId}`) : '') || '').trim();
+          const query = token ? `?token=${encodeURIComponent(token)}` : '';
+          const options = token ? { headers: { 'x-reporter-token': token } } : {};
+          const result = await api(`/track/${encodeURIComponent(complaintId)}${query}`, options);
           setSubmittedReportId('');
           setSelectedReport(normalizeReport(result.complaint || result));
           showToast('Live tracking record loaded.');
@@ -990,11 +1066,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
       };
 
       const reportCategories = [...new Set(reports.map(item => item.category).filter(Boolean))].sort();
-      const filteredAdminReports = reports.filter(item => {
-        if (authUser?.role === 'officer' && authUser?.authority_id) {
-          const itemAuth = item.assigned_authority?.authority_id;
-          if (itemAuth && itemAuth !== authUser.authority_id) return false;
-        }
+      const authorityScopedReports = authUser?.role === 'officer' && authUser?.authority_id
+        ? reports.filter(item => item.assigned_authority?.authority_id === authUser.authority_id)
+        : reports;
+
+      const filteredAdminReports = authorityScopedReports.filter(item => {
         const searchable = `${item.id} ${item.title || ''} ${item.description || ''} ${item.category} ${item.location} ${item.status}`.toLowerCase();
         if (searchQuery && !searchable.includes(searchQuery.toLowerCase())) return false;
         if (queueFilters.category !== 'all' && item.category !== queueFilters.category) return false;
@@ -1070,14 +1146,57 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 <button onClick={() => setDarkMode(value => !value)} aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`} title={`Switch to ${darkMode ? 'light' : 'dark'} mode`} className="mr-2 w-9 h-9 rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:text-sky-400 flex items-center justify-center transition-colors">
                   <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4" />
                 </button>
-                <button 
-                  onClick={() => setActiveTab('admin')}
-                  aria-label="Authority Portal"
-                  className="p-2.5 sm:px-3.5 sm:py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-sky-400 border border-slate-700 transition-colors flex items-center gap-1.5"
-                >
-                  <Icon name="shield-alert" className="w-3.5 h-3.5 text-sky-400" />
-                  <span className="hidden sm:inline">Authority Portal</span>
-                </button>
+                {authUser ? (
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    {authUser.role === 'officer' && (
+                      <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono font-bold">
+                        <Icon name="shield-check" className="w-3.5 h-3.5" />
+                        {authUser.authority_id}
+                      </span>
+                    )}
+                    {authUser.role === 'officer' && (
+                      <button
+                        onClick={handleSwitchAuthority}
+                        title="Switch Authority"
+                        aria-label="Switch Authority"
+                        data-testid="nav-switch-authority-btn"
+                        className="p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold text-amber-300 hover:text-amber-200 border border-amber-500/30 bg-amber-500/10 transition-colors flex items-center gap-1.5"
+                      >
+                        <Icon name="refresh-cw" className="w-3.5 h-3.5" />
+                        <span className="hidden md:inline">Switch</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => logout('landing')}
+                      title="Log Out"
+                      aria-label="Log Out"
+                      data-testid="nav-logout-btn"
+                      className="p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold text-rose-300 hover:text-rose-200 border border-rose-500/30 bg-rose-500/10 transition-colors flex items-center gap-1.5"
+                    >
+                      <Icon name="log-out" className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Logout</span>
+                    </button>
+                    {activeTab !== 'admin' && ['admin', 'officer'].includes(authUser.role) && (
+                      <button 
+                        onClick={() => setActiveTab('admin')}
+                        aria-label="Authority Portal"
+                        className="p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-sky-400 border border-slate-700 transition-colors flex items-center gap-1.5"
+                      >
+                        <Icon name="shield-alert" className="w-3.5 h-3.5 text-sky-400" />
+                        <span className="hidden md:inline">Portal</span>
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setActiveTab('admin')}
+                    aria-label="Authority Portal"
+                    className="p-2.5 sm:px-3.5 sm:py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-sky-400 border border-slate-700 transition-colors flex items-center gap-1.5"
+                  >
+                    <Icon name="shield-alert" className="w-3.5 h-3.5 text-sky-400" />
+                    <span className="hidden sm:inline">Authority Portal</span>
+                  </button>
+                )}
               </div>
             </div>
           </header>
@@ -1910,7 +2029,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                 type="text"
                                 placeholder="Paste or verify reporter token..."
                                 value={verificationToken || (selectedReport ? sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) || '' : '')}
-                                onChange={(e) => setVerificationToken(e.target.value)}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setVerificationToken(val);
+                                  if (selectedReport?.id && val.trim()) {
+                                    try {
+                                      sessionStorage.setItem(`urbanfix-reporter-${selectedReport.id}`, val.trim());
+                                    } catch (_) {}
+                                  }
+                                }}
                                 className="w-full glass-input rounded-xl p-2.5 text-xs text-white font-mono"
                               />
                             </div>
@@ -2392,34 +2519,59 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               ) : (
                 <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-8 reveal-up">
                   {/* COMMAND HEADER */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div className="text-xs text-sky-400 font-semibold">Municipal operations</div>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                          DEMO / SIMULATED ENVIRONMENT
-                        </span>
-                        {authUser?.role === 'officer' && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                            Authority Scoped ({authUser.authority_id})
+                  <div className="flex flex-col gap-5 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <div className="text-xs text-sky-400 font-semibold">Municipal operations</div>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                            DEMO / SIMULATED ENVIRONMENT
                           </span>
-                        )}
+                          {authUser?.role === 'officer' && (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                              Authority Scoped ({authUser.authority_id})
+                            </span>
+                          )}
+                        </div>
+                        <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
+                          {authUser?.role === 'officer' ? `${authUser.name} Workspace` : 'Authority dashboard'}
+                        </h1>
+                        <p className="text-sm text-slate-400 mt-1">
+                          {authUser?.role === 'officer'
+                            ? `Simulated Officer Scoped to ${authUser.authority_id} · ${authUser.department || 'Department Operations'}`
+                            : 'Review priority cases, approve evidence, and manage assignments.'}
+                        </p>
                       </div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
-                        {authUser?.role === 'officer' ? `${authUser.name} Workspace` : 'Authority dashboard'}
-                      </h1>
-                      <p className="text-sm text-slate-400 mt-1">
-                        {authUser?.role === 'officer'
-                          ? `Simulated Officer Scoped to ${authUser.authority_id} · ${authUser.department || 'Department Operations'}`
-                          : 'Review priority cases, approve evidence, and manage assignments.'}
-                      </p>
+
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        {authUser?.role === 'officer' && (
+                          <button
+                            onClick={handleSwitchAuthority}
+                            data-testid="switch-authority-btn"
+                            className="px-3.5 py-2 rounded-lg text-xs font-semibold glass-card border border-amber-500/40 text-amber-300 hover:bg-amber-500/15 transition-colors flex items-center gap-1.5 shadow-sm"
+                            title="Log out and switch to another municipal authority"
+                          >
+                            <Icon name="refresh-cw" className="w-3.5 h-3.5" />
+                            <span>Switch Authority</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => logout('landing')}
+                          data-testid="officer-logout-btn"
+                          className="px-3.5 py-2 rounded-lg text-xs font-semibold glass-card border border-rose-500/40 text-rose-300 hover:bg-rose-500/15 transition-colors flex items-center gap-1.5 shadow-sm"
+                          title="Log out of authority session"
+                        >
+                          <Icon name="log-out" className="w-3.5 h-3.5" />
+                          <span>Log Out</span>
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80">
                       {[
                         ['queue', 'list-filter', 'Work Queue'],
-                        ['review', 'user-check', `Human Review (${reports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
-                        ['proofs', 'clipboard-check', `Proof Reviews (${reports.filter(r => r.status === 'Evidence Uploaded').length})`],
+                        ['review', 'user-check', `Human Review (${authorityScopedReports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
+                        ['proofs', 'clipboard-check', `Proof Reviews (${authorityScopedReports.filter(r => r.status === 'Evidence Uploaded').length})`],
                         ['map', 'map', 'Spatial Map'],
                         ['contractors', 'hard-hat', 'Contractors'],
                         ['whatsapp', 'message-circle', 'WhatsApp'],
@@ -2443,10 +2595,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   {/* KPI STATS ROW */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                      { label: 'Human Review', val: reports.filter(r => r.needs_review || r.status === 'Needs Review').length, alert: true, icon: 'user-check' },
-                      { label: 'Proof Reviews', val: reports.filter(r => r.status === 'Evidence Uploaded').length, alert: false, icon: 'clipboard-check' },
-                      { label: 'SLA Overdue', val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length, alert: true, icon: 'clock' },
-                      { label: 'Active Work', val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length, alert: false, icon: 'inbox' }
+                      { label: 'Human Review', val: authorityScopedReports.filter(r => r.needs_review || r.status === 'Needs Review').length, alert: true, icon: 'user-check' },
+                      { label: 'Proof Reviews', val: authorityScopedReports.filter(r => r.status === 'Evidence Uploaded').length, alert: false, icon: 'clipboard-check' },
+                      { label: 'SLA Overdue', val: dashboard?.stats?.overdue_cases ?? authorityScopedReports.filter(r => (r.sla_status || '').startsWith('Overdue')).length, alert: true, icon: 'clock' },
+                      { label: 'Active Work', val: dashboard?.stats?.active_issues ?? authorityScopedReports.filter(r => r.status !== 'Resolved').length, alert: false, icon: 'inbox' }
                     ].map((kpi, idx) => (
                       <div key={idx} className={`glass-panel rounded-2xl p-5 border transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500/40 bg-red-950/15' : 'border-slate-800'}`}>
                         <div className="flex items-center justify-between text-slate-400">
@@ -2479,7 +2631,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                           <h2 className="text-sm font-semibold text-white">Find and filter cases</h2>
-                          <p className="text-xs text-slate-400 mt-0.5">Showing {filteredAdminReports.length} of {reports.length} municipal incidents</p>
+                          <p className="text-xs text-slate-400 mt-0.5">Showing {filteredAdminReports.length} of {authorityScopedReports.length} municipal incidents</p>
                         </div>
                         <button onClick={resetQueueFilters} className="text-xs text-sky-400 hover:text-sky-300 font-mono font-semibold underline underline-offset-4">
                           Reset All Filters

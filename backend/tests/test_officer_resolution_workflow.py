@@ -19,6 +19,14 @@ def make_test_image(format="JPEG", size=(100, 100), color=(0, 200, 100)) -> byte
     return buf.getvalue()
 
 
+@pytest.fixture(autouse=True)
+def _isolate_test_storage(monkeypatch):
+    monkeypatch.setattr(settings, "cloudinary_url", None)
+    monkeypatch.setattr(settings, "cloudinary_cloud_name", None)
+    monkeypatch.setattr(settings, "cloudinary_api_key", None)
+    monkeypatch.setattr(settings, "cloudinary_api_secret", None)
+
+
 def reset_repo():
     civic_repo.use_memory = True
     civic_repo.connection_error = None

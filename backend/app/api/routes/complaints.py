@@ -29,7 +29,12 @@ from app.schemas.complaint import (
 )
 from app.services.ai.gemini import analyze_complaint
 from app.services.priority import calculate_priority, with_current_priority
-from app.services.storage.cloudinary import is_safe_evidence_url, store_upload, verify_evidence_signature
+from app.services.storage.cloudinary import (
+    create_signed_evidence_url,
+    is_safe_evidence_url,
+    store_upload,
+    verify_evidence_signature,
+)
 from app.services.image_metadata import extract_permitted_metadata
 from app.services.workflow import (
     duplicate_assessment,
@@ -357,12 +362,15 @@ async def _create_complaint(payload: ComplaintCreate, analysis_override: dict | 
                 "priority_breakdown": member_breakdown,
             })
         created = await civic_repo.find_one("complaints", "complaint_id", created["complaint_id"])
-    if payload.reporter_contact:
-        # Returned once to the intake client; only the token hash is persisted.
-        created = dict(created)
-        created["reporter_verification_token"] = await create_reporter_access(
-            created["complaint_id"], payload.reporter_contact, created.get("channel", "Portal")
-        )
+    contact_key = (payload.reporter_contact or "").strip() or payload.source_fingerprint or "portal-anonymous"
+    created = dict(created)
+    created["reporter_verification_token"] = await create_reporter_access(
+        created["complaint_id"], contact_key, created.get("channel", "Portal")
+    )
+    if created.get("image_url") and "/uploads/" in created["image_url"]:
+        clean_name = created["image_url"].split("?")[0].split("/")[-1].strip()
+        if clean_name:
+            created["image_url"] = create_signed_evidence_url(created["complaint_id"], clean_name)
     return created
 
 

@@ -285,9 +285,19 @@ async def me(request: Request):
 
 
 @router.post("/logout")
-async def logout(request: Request, response: Response, _user: dict = Depends(require_user)):
+async def logout(request: Request, response: Response):
     token = request.cookies.get(SESSION_COOKIE)
+    if not token:
+        auth_header = request.headers.get("authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
     if token:
         await civic_repo.delete_one("sessions", "token_hash", token_hash(token))
-    response.delete_cookie(SESSION_COOKIE, path="/")
+    response.delete_cookie(
+        SESSION_COOKIE,
+        path="/",
+        httponly=True,
+        secure=settings.environment == "production",
+        samesite="lax",
+    )
     return {"message": "Logged out"}

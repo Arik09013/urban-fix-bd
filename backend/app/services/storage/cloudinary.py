@@ -20,6 +20,50 @@ IMAGE_SIGNATURES = {
 SAFE_SUFFIX = {"image/jpeg": ".jpg", "image/png": ".png", "image/gif": ".gif", "image/webp": ".webp"}
 
 
+_last_storage_error: str | None = None
+
+
+def get_last_storage_error() -> str | None:
+    return _last_storage_error
+
+
+def record_storage_error(error_name: str) -> None:
+    global _last_storage_error
+    _last_storage_error = error_name
+
+
+def reset_storage_error() -> None:
+    global _last_storage_error
+    _last_storage_error = None
+
+
+def get_cloudinary_config() -> dict | None:
+    from urllib.parse import urlparse
+
+    if all((settings.cloudinary_cloud_name, settings.cloudinary_api_key, settings.cloudinary_api_secret)):
+        return {
+            "cloud_name": settings.cloudinary_cloud_name,
+            "api_key": settings.cloudinary_api_key,
+            "api_secret": settings.cloudinary_api_secret,
+        }
+    if settings.cloudinary_url:
+        try:
+            parsed = urlparse(settings.cloudinary_url)
+            if parsed.scheme == "cloudinary" and parsed.username and parsed.password and parsed.hostname:
+                return {
+                    "cloud_name": parsed.hostname,
+                    "api_key": parsed.username,
+                    "api_secret": parsed.password,
+                }
+        except Exception:
+            pass
+    return None
+
+
+def cloudinary_configured() -> bool:
+    return get_cloudinary_config() is not None
+
+
 def sign_evidence_access(complaint_id: str, filename: str, expires_at: int) -> str:
     import hashlib
     import hmac
@@ -115,18 +159,17 @@ async def store_upload(file: UploadFile | None) -> str | None:
     except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as exc:
         raise HTTPException(status_code=415, detail="Image is corrupt or unsafe to process") from exc
 
-    cloudinary_parts = all((settings.cloudinary_cloud_name, settings.cloudinary_api_key, settings.cloudinary_api_secret))
-    if settings.cloudinary_url or cloudinary_parts:
+    cld_config = get_cloudinary_config()
+    if cld_config:
         import cloudinary
         import cloudinary.uploader
 
-        if cloudinary_parts:
-            cloudinary.config(
-                cloud_name=settings.cloudinary_cloud_name,
-                api_key=settings.cloudinary_api_key,
-                api_secret=settings.cloudinary_api_secret,
-                secure=True,
-            )
+        cloudinary.config(
+            cloud_name=cld_config["cloud_name"],
+            api_key=cld_config["api_key"],
+            api_secret=cld_config["api_secret"],
+            secure=True,
+        )
         try:
             result = await asyncio.wait_for(asyncio.to_thread(
                 cloudinary.uploader.upload,
@@ -137,9 +180,12 @@ async def store_upload(file: UploadFile | None) -> str | None:
                 unique_filename=True,
                 overwrite=False,
             ), timeout=30)
+            reset_storage_error()
             return result["secure_url"]
         except Exception as exc:
-            logger.exception("Cloudinary upload failed: %s", type(exc).__name__)
+            err_name = type(exc).__name__
+            record_storage_error(err_name)
+            logger.exception("Cloudinary upload failed: %s", err_name)
             if settings.environment == "production":
                 raise HTTPException(status_code=502, detail="Evidence storage is temporarily unavailable") from exc
 
