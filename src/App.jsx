@@ -294,7 +294,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
       }
     ];
 
-    function AuthCard({ title, subtitle, mode, setMode, form, setForm, submit, busy, error, allowRegister = true, demoCredentials = false, onDemoOfficerLogin = null }) {
+    function AuthCard({ title, subtitle, mode, setMode, form, setForm, submit, busy, error, allowRegister = true, demoCredentials = false, onDemoOfficerLogin = null, lang = 'bn' }) {
       const [showPassword, setShowPassword] = useState(false);
       const registering = allowRegister && mode === 'register';
       const emailValid = !allowRegister || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim());
@@ -306,7 +306,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
           <div className="text-left border-b border-slate-200 dark:border-slate-700 pb-5">
             <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-3 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>{allowRegister ? 'নাগরিক ও যুব কর্মী পোর্টাল · Civic Gate' : 'পৌর কর্তৃপক্ষ লগইন · Municipal Admin Gate'}</span>
+              <span>{allowRegister ? (lang === 'bn' ? 'নাগরিক ও যুব কর্মী পোর্টাল · Civic Gate' : 'Civic & Youth Worker Portal · Civic Gate') : (lang === 'bn' ? 'পৌর কর্তৃপক্ষ লগইন · Municipal Admin Gate' : 'Municipal Authority Login · Municipal Admin Gate')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold font-headline text-slate-900 dark:text-white tracking-tight">{title}</h2>
             <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{subtitle}</p>
@@ -314,8 +314,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
           {allowRegister && (
             <div className="grid grid-cols-2 bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl">
-              <button onClick={()=>setMode('login')} className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${mode==='login'?'bg-emerald-600 text-white shadow-sm':'text-slate-600 dark:text-slate-300 hover:text-slate-900'}`}>লগইন (Login)</button>
-              <button onClick={()=>setMode('register')} className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${mode==='register'?'bg-emerald-600 text-white shadow-sm':'text-slate-600 dark:text-slate-300 hover:text-slate-900'}`}>নিবন্ধন (Register)</button>
+              <button onClick={()=>setMode('login')} className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${mode==='login'?'bg-emerald-600 text-white shadow-sm':'text-slate-600 dark:text-slate-300 hover:text-slate-900'}`}>{lang === 'bn' ? 'লগইন (Login)' : 'Login'}</button>
+              <button onClick={()=>setMode('register')} className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${mode==='register'?'bg-emerald-600 text-white shadow-sm':'text-slate-600 dark:text-slate-300 hover:text-slate-900'}`}>{lang === 'bn' ? 'নিবন্ধন (Register)' : 'Register'}</button>
             </div>
           )}
 
@@ -324,30 +324,30 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {allowRegister && mode==='register' && (
               <>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">পূর্ণ নাম (Full Name)</label>
-                  <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name" autoComplete="name" className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">{lang === 'bn' ? 'পূর্ণ নাম (Full Name)' : 'Full Name'}</label>
+                  <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder={lang === 'bn' ? 'আপনার নাম' : 'Full name'} autoComplete="name" className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ফোন নম্বর (Phone Number)</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">{lang === 'bn' ? 'ফোন নম্বর (Phone Number)' : 'Phone Number'}</label>
                   <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="01XXXXXXXXX" autoComplete="tel" className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">পেমেন্ট অ্যাকাউন্ট (Stripe / MFS Account)</label>
-                  <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder="Account details (optional)" className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">{lang === 'bn' ? 'পেমেন্ট অ্যাকাউন্ট (MFS / Stripe)' : 'Payout Account (MFS / Stripe)'}</label>
+                  <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder={lang === 'bn' ? 'অ্যাকাউন্ট নম্বর (ঐচ্ছিক)' : 'Account details (optional)'} className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
                 </div>
               </>
             )}
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-                <span>{allowRegister ? 'ইমেইল অ্যাড্রেস (Email Address)' : 'অফিসার ইউজারনেম (Admin / Officer Username)'}</span>
+                <span>{allowRegister ? (lang === 'bn' ? 'ইমেইল অ্যাড্রেস (Email Address)' : 'Email Address') : (lang === 'bn' ? 'অফিসার ইউজারনেম (Admin / Officer Username)' : 'Admin / Officer Username')}</span>
                 {!allowRegister && <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">e.g. admin or officer.ccc</span>}
               </label>
               <input 
                 type={allowRegister ? 'email' : 'text'} 
                 value={form.email} 
                 onChange={e => setForm({...form, email: e.target.value})} 
-                placeholder={allowRegister ? 'Email address' : 'Admin username'} 
+                placeholder={allowRegister ? (lang === 'bn' ? 'ইমেইল লিখুন' : 'Email address') : (lang === 'bn' ? 'অ্যাডমিন ইউজারনেম' : 'Admin username')} 
                 autoComplete="username" 
                 className="w-full rounded-xl p-3.5 text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"
               />
@@ -355,7 +355,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-                <span>পাসওয়ার্ড (Password)</span>
+                <span>{lang === 'bn' ? 'পাসওয়ার্ড (Password)' : 'Password'}</span>
                 {!allowRegister && <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">admin or demo password</span>}
               </label>
               <div className="relative">
@@ -363,7 +363,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   type={showPassword ? 'text' : 'password'} 
                   value={form.password} 
                   onChange={e => setForm({...form, password: e.target.value})} 
-                  placeholder="Password" 
+                  placeholder={lang === 'bn' ? 'পাসওয়ার্ড লিখুন' : 'Password'} 
                   autoComplete={mode === 'register' ? 'new-password' : 'current-password'} 
                   onKeyDown={e => e.key === 'Enter' && canSubmit && submit()} 
                   className="w-full rounded-xl p-3.5 pr-16 text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"
@@ -373,26 +373,26 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   onClick={() => setShowPassword(value => !value)} 
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-emerald-600 cursor-pointer px-1 py-0.5"
                 >
-                  {showPassword ? 'লুকান' : 'দেখান'}
+                  {showPassword ? (lang === 'bn' ? 'লুকান' : 'Hide') : (lang === 'bn' ? 'দেখান' : 'Show')}
                 </button>
               </div>
             </div>
 
             {registering && (
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">পাসওয়ার্ড নিশ্চিত করুন (Confirm Password)</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{lang === 'bn' ? 'পাসওয়ার্ড নিশ্চিত করুন (Confirm Password)' : 'Confirm Password'}</label>
                 <input 
                   type={showPassword ? 'text' : 'password'} 
                   value={form.confirmPassword} 
                   onChange={e => setForm({...form, confirmPassword: e.target.value})} 
-                  placeholder="Confirm password" 
+                  placeholder={lang === 'bn' ? 'আবার পাসওয়ার্ড লিখুন' : 'Confirm password'} 
                   autoComplete="new-password" 
                   onKeyDown={e => e.key === 'Enter' && canSubmit && submit()} 
                   className={`w-full rounded-xl p-3.5 text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border shadow-sm focus:outline-none ${form.confirmPassword && !passwordsMatch ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'}`}
                 />
                 <div className="flex justify-between text-[11px] px-1 mt-1 font-medium">
-                  <span className={passwordValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}>{passwordValid ? '✓ ৮+ অক্ষর' : 'কমপক্ষে ৮ অক্ষর'}</span>
-                  {form.confirmPassword && <span className={passwordsMatch ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}>{passwordsMatch ? '✓ মিল আছে' : 'পাসওয়ার্ড মিলেনি'}</span>}
+                  <span className={passwordValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}>{passwordValid ? (lang === 'bn' ? '✓ ৮+ অক্ষর' : '✓ 8+ chars') : (lang === 'bn' ? 'কমপক্ষে ৮ অক্ষর' : 'Min 8 chars')}</span>
+                  {form.confirmPassword && <span className={passwordsMatch ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}>{passwordsMatch ? (lang === 'bn' ? '✓ মিল আছে' : '✓ Match') : (lang === 'bn' ? 'পাসওয়ার্ড মিলেনি' : 'Mismatch')}</span>}
                 </div>
               </div>
             )}
@@ -410,7 +410,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <Icon name="shield-check" className="w-5 h-5 text-white" />
-              <span>{busy ? 'প্রবেশ করা হচ্ছে…' : mode === 'register' ? 'অ্যাকাউন্ট তৈরি করুন →' : 'লগইন করুন ও প্রবেশ করুন →'}</span>
+              <span>{busy ? (lang === 'bn' ? 'প্রবেশ করা হচ্ছে…' : 'Signing in…') : mode === 'register' ? (lang === 'bn' ? 'অ্যাকাউন্ট তৈরি করুন →' : 'Create Account →') : (lang === 'bn' ? 'লগইন করুন ও প্রবেশ করুন →' : 'Sign In & Enter Console →')}</span>
             </button>
           </div>
 
@@ -418,7 +418,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
           {demoCredentials && (
             <div className="border-t border-slate-200 dark:border-slate-700 pt-5 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">দ্রুত পরীক্ষামূলক লগইন (Demo Access)</span>
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{lang === 'bn' ? 'দ্রুত পরীক্ষামূলক লগইন (Demo Access)' : 'Quick Demo Access'}</span>
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">1-CLICK ACCESS</span>
               </div>
 
@@ -429,21 +429,21 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               >
                 <div>
                   <div className="font-bold text-xs text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
-                    ⚡ Judge demo access (Administrator)
+                    {lang === 'bn' ? '⚡ বিচারক ও অ্যাডমিন টেস্ট অ্যাক্সেস' : '⚡ Judge demo access (Administrator)'}
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    Fills: <span className="font-semibold text-slate-700 dark:text-slate-300">username: admin</span> · <span className="font-semibold text-slate-700 dark:text-slate-300">password: admin</span>
+                    {lang === 'bn' ? 'স্বয়ংক্রিয় পূরণ: ইউজারনেম: admin · পাসওয়ার্ড: admin' : 'Fills: username: admin · password: admin'}
                   </div>
                 </div>
                 <span className="shrink-0 text-xs px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold shadow-sm">
-                  FILL ADMIN
+                  {lang === 'bn' ? 'অ্যাডমিন পূরণ' : 'FILL ADMIN'}
                 </span>
               </button>
 
               <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-2.5">
                 <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center justify-between">
-                  <span>সিটি করপোরেশন ও পৌর অফিসার (Direct Officer Login)</span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">তাৎক্ষণিক সেশন</span>
+                  <span>{lang === 'bn' ? 'সিটি করপোরেশন ও পৌর অফিসার (Direct Officer Login)' : 'Municipal Corporation & Officer Login'}</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">{lang === 'bn' ? 'তাৎক্ষণিক সেশন' : 'Instant Session'}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
@@ -473,17 +473,26 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
     // --- BILINGUAL BANGLADESH CIVIC TRANSLATION DICTIONARY ---
     const I18N = {
       en: {
+        // Navigation & Common
         home: 'Home',
         reportIssue: 'Report Issue',
         trackReport: 'Track Report',
         publicMap: 'Public Map',
         authorityPortal: 'Authority Portal',
+        logout: 'Log Out',
+        activeUser: 'Active User',
+        loading: 'Loading...',
+        statusLive: 'Live Municipal Network',
+
+        // Ticker & Header
         tickerStatus: 'CITIZEN SERVICES · LIVE CITY MONITORING',
         tickerPill1: 'NO APP DOWNLOAD REQUIRED',
         tickerPill2: 'AVG DISPATCH: 4.2 HRS',
         tickerPill3: 'ACTIVE INCIDENTS:',
         tickerPill4: 'MUNICIPAL AUDIT 2026',
         govBadge: 'PEOPLE\'S REPUBLIC OF BANGLADESH · CIVIC PLATFORM',
+
+        // Landing Hero
         heroTitle1: 'See a problem in your area?',
         heroTitle2: 'Report it directly to authorities.',
         heroSubtext: 'Take a photo, share the location, and track municipal action in real time. No app download or prior registration required.',
@@ -492,6 +501,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         check1: 'No account needed',
         check2: 'Get a report ID',
         check3: 'See proof when fixed',
+
+        // Categories
         categoriesBadge: 'POPULAR CATEGORIES',
         categoriesTitle: 'Common Municipal Issues',
         categoriesSub: 'Select a category below for rapid AI categorization and direct department routing',
@@ -503,6 +514,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         catWasteSub: 'Overflowing dumpsters, roadside waste, uncollected garbage',
         catLightsTitle: 'Street Lights & Cables',
         catLightsSub: 'Broken streetlights, dangling live wires, electric poles',
+
+        // How It Works
         howItWorksTitle: 'Report. Track. Verify.',
         howItWorksSub: 'A simple process, with a clear record at every step.',
         step1Num: '01',
@@ -517,6 +530,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         step3Title: 'Verify',
         step3Desc: 'See the repair evidence and whether the resolution has been confirmed.',
         step3Meta: 'INCLUDES PHOTOGRAPHIC PROOF',
+
+        // Metrics
         metricsBadge: 'LIVE PERFORMANCE METRICS',
         metric1Val: '12,840',
         metric1Label: 'Incidents Logged',
@@ -534,6 +549,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         metric4Label: 'Public Transparency',
         metric4Desc: 'All verified cases accessible on the public map.',
         metric4Meta: 'Open Citizen Ledger',
+
+        // Slider & Banner
         sliderBadge: 'RESOLUTION EVIDENCE',
         sliderTitle: 'Interactive Before & After Verification',
         sliderSub: 'Drag the slider to compare original citizen reports with verified municipal repairs.',
@@ -541,20 +558,202 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         bannerTitle: 'Spot a civic hazard right now? No app required.',
         bannerSub: 'Open camera, pin your coordinates, and UrbanFix routes directly to the assigned zone authority.',
         hotline: 'Civic Helpline: 16104 / 311',
-        bannerBtn: 'Report Issue Now'
+        bannerBtn: 'Report Issue Now',
+
+        // Citizen Report Flow
+        step1Pill: 'Step 1: Upload Photo',
+        step2Pill: 'Step 2: Details',
+        photoUploadTitle: 'Take or upload a clear photo of the issue',
+        photoUploadSub: 'Clear photos enable municipal field teams to locate and resolve the hazard quickly.',
+        dragDropText: 'Drag and drop photo here, or browse files',
+        browseFilesBtn: 'Take Photo / Browse',
+        photoLimitHint: 'Supports JPEG, PNG, WebP up to 10MB',
+        detailsTitle: 'Provide Issue Details',
+        detailsSub: 'Our AI has pre-categorized your issue. Review or edit details below before submission.',
+        categoryLabel: 'Category',
+        issueTitleLabel: 'Issue Title',
+        issueTitlePlaceholder: 'e.g. Broken pavement near gate',
+        descriptionLabel: 'Description',
+        descriptionPlaceholder: 'Briefly describe the problem (e.g. depth of pothole, exact building nearby)...',
+        locationLabel: 'Location / Address',
+        locationPlaceholder: 'Enter street, area or landmark',
+        aiSuggestedLabel: 'Suggested description (AI-generated)',
+        useSuggestionBtn: 'Use this suggestion',
+        submittingBtn: 'Submitting Incident...',
+        submitReportBtn: 'Submit Report',
+        backBtn: 'Back to Photo',
+
+        // Track Report
+        trackPageTitle: 'Track a Report',
+        trackPageSub: 'Enter your report ID to see its current status, responsible municipal authority, and completion evidence.',
+        searchIdPlaceholder: 'Search ID (e.g. CP-88390)',
+        trackActionBtn: 'Track',
+        seePublicReportBtn: 'See public report',
+        reportProgressTitle: 'Report progress',
+        responsibleAuthority: 'Responsible Public Authority',
+        gazetteVerified: 'Gazette Verified',
+        statutoryVerified: 'Statutory Verified',
+        locationInferred: 'Location Inferred',
+        resAndEvidence: 'RESOLUTION & EVIDENCE',
+        citizenConfirmed: 'Citizen Confirmed & Resolved',
+        awaitingCitizen: 'Awaiting Citizen Verification',
+        gate01Title: 'Field Officer Evidence',
+        gate01Desc: 'Photographic proof and work-order completion logs from dispatch crew.',
+        gate02Title: 'Citizen Verification',
+        gate02Desc: 'Reporter on-site inspection and token approval before final ticket closure.',
+        gateMunicipalLog: 'MUNICIPAL LOG',
+        gateTwoPartyAudit: 'TWO-PARTY AUDIT',
+        gateSubmitted: '✓ SUBMITTED',
+        gatePending: 'PENDING',
+        gateVerified: '✓ VERIFIED',
+        citizenVerificationGate: 'Citizen Verification Gate',
+        citizenConfirmPrompt: 'Was this issue fixed satisfactorily?',
+        citizenConfirmYes: '✓ Yes, Issue Fixed',
+        citizenConfirmNo: '✕ Not Fixed / Reopen',
+        citizenNotesPlaceholder: 'Add optional inspection feedback for municipal records...',
+        submittingVerification: 'Submitting verification...',
+        submitCitizenFeedback: 'Submit Citizen Verification',
+        accountabilityReceiptTitle: 'Tamper-Evident Accountability Receipt',
+        sha256Proof: 'SHA-256 Audit Seal',
+
+        // Map
+        mapTitle: 'Live Municipal Incident Map',
+        mapFilterAll: 'All Reports',
+        mapFilterRoads: 'Roads & Potholes',
+        mapFilterDrainage: 'Waterlogging & Drains',
+        mapFilterWaste: 'Waste & Sanitation',
+        mapFilterLights: 'Street Lights',
+        mapLegendReported: 'Reported',
+        mapLegendInProgress: 'In Progress',
+        mapLegendResolved: 'Resolved',
+
+        // Youth Community Escrow
+        youthTitle: 'Youth Civic Escrow',
+        youthSub: 'Community-led micro-repairs and street cleanups backed by guaranteed municipal escrow funds.',
+        youthStep1Title: 'Submit Proposal',
+        youthStep1Desc: 'Draft a repair plan, materials needed, and budget estimate for an eligible neighborhood issue.',
+        youthStep1Meta: 'Civic Estimate Dispatch',
+        youthStep2Title: 'Escrow Lock',
+        youthStep2Desc: 'Municipal authority officers inspect the plan and lock guaranteed funds into escrow.',
+        youthStep2Meta: 'Government Backed Funds',
+        youthStep3Title: 'Verify & Payout',
+        youthStep3Desc: 'Complete work, submit photographic proof, and receive instant verified payout release.',
+        youthStep3Meta: 'Verified Payout Release',
+        proposalLedgerTitle: 'Your Proposal Ledger',
+        newProposalTitle: 'Submit New Community Action Proposal',
+        estimatePriceLabel: 'Budget Estimate (BDT)',
+        estimatedHoursLabel: 'Hours Required',
+        planDetailsPlaceholder: 'Detail materials needed, safe tools, clean-up steps, and expected completion result...',
+        sendProposalBtn: 'Send Proposal to Authority',
+
+        // Contractor Portal
+        contractorHubTitle: 'Contractor Operations Portal',
+        contractorHubSub: 'Official municipal contractor operations, dispatch work orders, and completion reporting.',
+        assignedOrdersTitle: 'Assigned Work Orders',
+        acceptOrderBtn: 'Accept Order',
+        rejectOrderBtn: 'Reject',
+        startWorkBtn: 'Start Work On-Site',
+        uploadProofPrompt: 'Choose completion photo',
+        submitWorkForReviewBtn: 'Submit completed work for review',
+        waitingVerificationNotice: 'Completion proof submitted. Waiting for authority verification.',
+
+        // Admin Command Center
+        adminMunicipalCommand: 'Citizen Services · Municipal Command',
+        adminDigitalCadastre: 'DIGITAL CADASTRE',
+        adminOperationsHub: 'Operations Hub',
+        adminOfficerSubtitle: 'Designated Municipal Officer · ',
+        adminOfficerUser: 'Designated Officer',
+        adminNavQueue: 'Work Queue',
+        adminNavReview: 'Human Review',
+        adminNavProofs: 'Proof Reviews',
+        adminNavMap: 'Spatial Map',
+        adminNavContractors: 'Contractors',
+        adminNavWhatsApp: 'WhatsApp',
+        adminNavYouth: 'Youth Escrow',
+        adminKpi1Label: 'Human Review',
+        adminKpi1Desc: 'Routing ambiguity or boundary flags requiring officer sign-off.',
+        adminKpi1Meta: 'TRIAGE QUEUE: IMMEDIATE',
+        adminKpi2Label: 'Proof Reviews',
+        adminKpi2Desc: 'Resolution proofs submitted by crews awaiting confirmation.',
+        adminKpi2Meta: 'TWO-PARTY VERIFICATION',
+        adminKpi3Label: 'SLA Overdue',
+        adminKpi3Desc: 'Incidents exceeding statutory resolution deadlines across wards.',
+        adminKpi3Meta: 'SLA ESCALATION FLAG',
+        adminKpi4Label: 'Active Work',
+        adminKpi4Desc: 'Work orders assigned and currently in progress on site.',
+        adminKpi4Meta: 'MUNICIPAL DISPATCH SYNC',
+        adminFindFilterTitle: 'Find and filter cases',
+        adminShowingText: 'Showing',
+        adminOfText: 'of',
+        adminIncidentsText: 'municipal incidents',
+        adminResetFilters: 'Reset All Filters',
+        adminSearchPlaceholder: 'Search ID, area, type…',
+        adminAgeAny: 'Any age',
+        adminAge24h: 'Last 24 hours',
+        adminAge7d: 'Last 7 days',
+        adminAge15d: 'Last 15 days',
+        adminAge30d: 'Last 30 days',
+        adminStatusAll: 'All statuses',
+        adminStatusNeedsAction: 'Needs action',
+        adminStatusAssigned: 'Assigned',
+        adminStatusUnresolved: 'Unresolved',
+        adminStatusResolved: 'Resolved',
+        adminCategoryAll: 'All categories',
+        adminSeverityAll: 'All severities',
+        adminSortLabel: 'Sort:',
+        adminSortHighest: 'Highest Priority',
+        adminSortOldest: 'Oldest First',
+        adminSortNewest: 'Newest First',
+        adminTableId: 'ID',
+        adminTableTitle: 'Category & Location',
+        adminTableSeverity: 'Severity',
+        adminTableAiConfidence: 'AI Confidence',
+        adminTableStatus: 'Status',
+        adminTableAction: 'Action',
+        adminInspectCase: 'Inspect Case',
+        adminSimWorkflowTitle: 'Simulated Field Officer Workflow Controls',
+        adminSubmitProof: 'Submit Work Proof',
+        adminRejectAmbiguous: 'Reject Ambiguous Case',
+        adminReassign: 'Reassign Authority',
+        adminResolveTicket: 'Resolve Ticket',
+        adminWaIntakeTitle: 'Total WhatsApp Intake',
+        adminWaIntakeDesc: 'Direct citizen conversational incident logs via WhatsApp bot gateway.',
+        adminWaIntakeMeta: 'AUTOMATED BOT INTAKE',
+        adminWaTriageTitle: 'Pending Triage',
+        adminWaTriageDesc: 'WhatsApp cases awaiting municipal dispatch routing or verification.',
+        adminWaTriageMeta: 'ACTIVE DISPATCH QUEUE',
+        adminWaResolvedTitle: 'Resolved via Bot',
+        adminWaResolvedDesc: 'Incidents completed with photographic evidence verified by citizen.',
+        adminWaResolvedMeta: 'TWO-PARTY VERIFIED',
+        adminApproveContractor: 'Approve Contractor',
+        adminRejectContractor: 'Reject',
+
+        // Footer
+        footerCommunity: 'Community cleanup',
+        footerContractor: 'Contractor portal',
+        footerCopyright: '© 2026 Civil Works Authority · People\'s Republic of Bangladesh'
       },
       bn: {
+        // Navigation & Common
         home: 'হোম',
         reportIssue: 'অভিযোগ করুন',
         trackReport: 'ট্র্যাক করুন',
         publicMap: 'সিটি ম্যাপ',
         authorityPortal: 'কর্তৃপক্ষ পোর্টাল',
+        logout: 'লগআউট',
+        activeUser: 'দায়িত্বপ্রাপ্ত ইউজার',
+        loading: 'লোড হচ্ছে...',
+        statusLive: 'লাইভ পৌর নেটওয়ার্ক',
+
+        // Ticker & Header
         tickerStatus: 'নাগরিক সেবা ও পৌর অভিযোগ ব্যবস্থাপনা প্ল্যাটফর্ম · লাইভ মনিটরিং',
         tickerPill1: 'অ্যাপ ছাড়াই সরাসরি ব্রাউজার থেকে অভিযোগ',
         tickerPill2: 'গড় ব্যবস্থা গ্রহণ: ৪.২ ঘণ্টা',
         tickerPill3: 'চলমান অভিযোগ:',
         tickerPill4: 'ডিজিটাল বাংলাদেশ নাগরিক সেবা ২০২৬',
         govBadge: 'গণপ্রজাতন্ত্রী বাংলাদেশ · ডিজিটাল পৌর নাগরিক প্ল্যাটফর্ম',
+
+        // Landing Hero
         heroTitle1: 'এলাকায় কোনো নাগরিক সমস্যা দেখছেন?',
         heroTitle2: 'সরাসরি সিটি কর্তৃপক্ষকে জানান।',
         heroSubtext: 'একটি ছবি তুলুন, লোকেশন দিন এবং সমাধান না হওয়া পর্যন্ত সরাসরি ট্র্যাক করুন। কোনো অ্যাপ ইনস্টল বা পূর্ব নিবন্ধনের প্রয়োজন নেই।',
@@ -563,6 +762,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         check1: 'অ্যাকাউন্ট ছাড়াই তাৎক্ষণিক অভিযোগ',
         check2: 'এসএমএস ও ট্র্যাকিং নম্বর',
         check3: 'ছবিসহ সমাধান নিশ্চিতকরণ',
+
+        // Categories
         categoriesBadge: 'জরুরি নাগরিক সেবা',
         categoriesTitle: 'সমস্যার ধরন বেছে নিন',
         categoriesSub: 'দ্রুত সমাধানের জন্য নিচের ক্যাটাগরি থেকে সরাসরি অভিযোগ দাখিল করুন',
@@ -574,6 +775,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         catWasteSub: 'রাস্তায় আবর্জনার স্তূপ, উপচে পড়া ডাস্টবিন, দুর্গন্ধ',
         catLightsTitle: 'সড়ক বাতি ও বৈদ্যুতিক তার',
         catLightsSub: 'নষ্ট সড়ক বাতি, অন্ধকার পথ, বিপজ্জনকভাবে ঝুলন্ত তার',
+
+        // How It Works
         howItWorksTitle: 'রিপোর্ট. ট্র্যাক. যাচাই.',
         howItWorksSub: 'প্রতিটি পদক্ষেপে স্পষ্ট ও সুনির্দিষ্ট রেকর্ডসহ একটি সহজ প্রক্রিয়া।',
         step1Num: '০১',
@@ -588,6 +791,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         step3Title: 'যাচাই (Verify)',
         step3Desc: 'মেরামতের প্রমাণ ও ছবি দেখুন এবং সমাধান নিশ্চিত করা হয়েছে কি না যাচাই করুন।',
         step3Meta: 'আলোকচিত্র প্রমাণ অন্তর্ভুক্ত',
+
+        // Metrics
         metricsBadge: 'লাইভ কার্যক্রম পরিসংখ্যান',
         metric1Val: '১২,৮৪০',
         metric1Label: 'মোট গৃহীত অভিযোগ',
@@ -605,6 +810,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         metric4Label: 'উন্মুক্ত নাগরিক তথ্য',
         metric4Desc: 'জনস্বার্থে সকল রিপোর্ট উন্মুক্ত সিটি ম্যাপে দৃশ্যমান।',
         metric4Meta: 'স্বচ্ছ নাগরিক অডিট',
+
+        // Slider & Banner
         sliderBadge: 'সমাধানের বাস্তব প্রমাণ',
         sliderTitle: 'কাজের আগের ও পরের দৃশ্য (ইন্টারেক্টিভ স্লাইডার)',
         sliderSub: 'স্লাইডারটি টেনে দেখুন কীভাবে অভিযোগ অনুযায়ী পৌর মেরামত কাজ সম্পন্ন হয়েছে।',
@@ -612,14 +819,187 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         bannerTitle: 'আপনার এলাকায় কোনো জরুরি নাগরিক সমস্যা আছে?',
         bannerSub: 'ভাঙা রাস্তা, জলাবদ্ধতা বা আবর্জনার সমস্যা সরাসরি রিপোর্ট করুন এখনই। কোনো অ্যাপ লাগবে না।',
         hotline: 'পৌর নাগরিক হটলাইন: ১৬১০৪ / ৩১১',
-        bannerBtn: 'এখনই অভিযোগ দায়ের করুন'
+        bannerBtn: 'এখনই অভিযোগ দায়ের করুন',
+
+        // Citizen Report Flow
+        step1Pill: 'ধাপ ১: ছবি আপলোড',
+        step2Pill: 'ধাপ ২: বিস্তারিত তথ্য',
+        photoUploadTitle: 'সমস্যার পরিষ্কার ছবি তুলুন বা আপলোড করুন',
+        photoUploadSub: 'পরিষ্কার ছবি পৌর ফিল্ড ক্রুদের সমস্যা চিহ্নিত ও দ্রুত সমাধান করতে সরাসরি সাহায্য করে।',
+        dragDropText: 'এখানে ছবি টেনে আনুন অথবা ক্লিক করে ফাইল সিলেক্ট করুন',
+        browseFilesBtn: 'ছবি তুলুন / ব্রাউজ করুন',
+        photoLimitHint: 'সর্বোচ্চ ১০ মেগাবাইট (JPEG, PNG, WebP সমর্থিত)',
+        detailsTitle: 'অভিযোগের বিস্তারিত তথ্য দিন',
+        detailsSub: 'আমাদের এআই স্বয়ংক্রিয়ভাবে ক্যাটাগরি শনাক্ত করেছে। জমা দেওয়ার আগে তথ্য যাচাই বা সম্পাদনা করুন।',
+        categoryLabel: 'সমস্যার ধরণ (Category)',
+        issueTitleLabel: 'অভিযোগের শিরোনাম',
+        issueTitlePlaceholder: 'উদাঃ গেটের সামনে ভাঙা ফুটপাত ও গর্ত',
+        descriptionLabel: 'বিস্তারিত বিবরণ',
+        descriptionPlaceholder: 'সমস্যার বিবরণ দিন (উদাঃ গর্তের গভীরতা, আশেপাশের পরিচিত ভবন বা ল্যান্ডমার্ক)...',
+        locationLabel: 'লোকেশন / ঠিকানা',
+        locationPlaceholder: 'রাস্তা, এলাকা বা পরিচিত স্থান লিখুন',
+        aiSuggestedLabel: 'পরামর্শকৃত বিবরণ (AI-তৈরি)',
+        useSuggestionBtn: 'এই বিবরণটি ব্যবহার করুন',
+        submittingBtn: 'অভিযোগ জমা হচ্ছে...',
+        submitReportBtn: 'অভিযোগ দাখিল করুন',
+        backBtn: 'আগের ধাপে ফিরুন',
+
+        // Track Report
+        trackPageTitle: 'অভিযোগ ট্র্যাক করুন',
+        trackPageSub: 'আপনার রিপোর্ট আইডি দিন এবং বর্তমান অগ্রগতি, দায়িত্বপ্রাপ্ত পৌর দপ্তর ও প্রমাণের ছবি দেখুন।',
+        searchIdPlaceholder: 'রিপোর্ট আইডি দিন (উদাঃ CP-88390)',
+        trackActionBtn: 'ট্র্যাক করুন',
+        seePublicReportBtn: 'পাবলিক রিপোর্ট দেখুন',
+        reportProgressTitle: 'অভিযোগের অগ্রগতি',
+        responsibleAuthority: 'দায়িত্বপ্রাপ্ত পৌর কর্তৃপক্ষ',
+        gazetteVerified: 'গ্যাজেট ভেরিফায়েড',
+        statutoryVerified: 'বিধিবদ্ধ সীমানা যাচাইকৃত',
+        locationInferred: 'লোকেশন ভিত্তিক শনাক্ত',
+        resAndEvidence: 'সমাধান ও প্রমাণ যাচাই',
+        citizenConfirmed: 'নাগরিক কর্তৃক সমাধান নিশ্চিতকৃত',
+        awaitingCitizen: 'নাগরিক যাচাইয়ের অপেক্ষায়',
+        gate01Title: 'ফিল্ড অফিসারের কাজের প্রমাণ',
+        gate01Desc: 'মাঠপর্যায়ের ফিল্ড ক্রুদের দাখিলকৃত আলোকচিত্র ও মেরামতের সমাপ্তি লগ।',
+        gate02Title: 'নাগরিক যাচাইকরণ',
+        gate02Desc: 'অভিযোগকারী নাগরিক কর্তৃক ঘটনাস্থল পরিদর্শন এবং সন্তুষ্টি সাপেক্ষে টোকেন অনুমোদন।',
+        gateMunicipalLog: 'পৌর লগ',
+        gateTwoPartyAudit: 'দ্বিপাক্ষিক অডিট',
+        gateSubmitted: '✓ দাখিলকৃত',
+        gatePending: 'অপেক্ষমাণ',
+        gateVerified: '✓ যাচাইকৃত',
+        citizenVerificationGate: 'নাগরিক যাচাইকরণ গেট',
+        citizenConfirmPrompt: 'সমস্যাটি কি সন্তোষজনকভাবে সমাধান হয়েছে?',
+        citizenConfirmYes: '✓ হ্যাঁ, কাজ সম্পন্ন হয়েছে',
+        citizenConfirmNo: '✕ না, এখনো ঠিক হয়নি / পুনরায় খুলুন',
+        citizenNotesPlaceholder: 'পৌর কর্তৃপক্ষের জন্য আপনার মন্তব্য লিখুন...',
+        submittingVerification: 'যাচাইকরণ জমা হচ্ছে...',
+        submitCitizenFeedback: 'নাগরিক যাচাই জমা দিন',
+        accountabilityReceiptTitle: 'ট্যাম্পার-প্রুফ দায়বদ্ধতা রসিদ',
+        sha256Proof: 'SHA-256 অডিট সিল',
+
+        // Map
+        mapTitle: 'লাইভ পৌর মানচিত্র',
+        mapFilterAll: 'সকল রিপোর্ট',
+        mapFilterRoads: 'রাস্তা ও ম্যানহোল',
+        mapFilterDrainage: 'জলাবদ্ধতা',
+        mapFilterWaste: 'বর্জ্য ও পরিচ্ছন্নতা',
+        mapFilterLights: 'সড়ক বাতি',
+        mapLegendReported: 'রিপোর্ট গৃহীত',
+        mapLegendInProgress: 'চলমান কাজ',
+        mapLegendResolved: 'সমাধানকৃত',
+
+        // Youth Community Escrow
+        youthTitle: 'যুব নাগরিক এসক্রো তহবিল',
+        youthSub: 'পৌরসভার সরাসরি অনুমোদন ও সুরক্ষিত অর্থায়নে এলাকাভিত্তিক নাগরিক উদ্যোগ ও রাস্তাঘাট মেরামত।',
+        youthStep1Title: 'প্রস্তাবনা দাখিল',
+        youthStep1Desc: 'এলাকার জরুরি সংস্কার কাজের জন্য পরিকল্পনা, প্রয়োজনীয় সামগ্রী ও খরচের হিসাব দাখিল করুন।',
+        youthStep1Meta: 'পৌর এস্টিমেট ডিসপ্যাচ',
+        youthStep2Title: 'এসক্রো ফান্ড লক',
+        youthStep2Desc: 'পৌর কর্মকর্তা প্রস্তাবনা যাচাই করে কাজ শুরুর জন্য নিশ্চিত সরকারি অর্থ এসক্রোতে বরাদ্দ করেন।',
+        youthStep2Meta: 'সরকারি জামানত ফান্ড',
+        youthStep3Title: 'যাচাই ও পেমেন্ট',
+        youthStep3Desc: 'কাজ শেষে পরের ছবি ও ভাউচার জমা দিয়ে যাচাই সাপেক্ষে তাৎক্ষণিক পেমেন্ট ছাড় নিন।',
+        youthStep3Meta: 'যাচাইকৃত পেমেন্ট রিলিজ',
+        proposalLedgerTitle: 'আপনার দাখিলকৃত প্রস্তাবনাসমূহ',
+        newProposalTitle: 'নতুন কমিউনিটি মেরামত প্রস্তাব জমা দিন',
+        estimatePriceLabel: 'আনুমানিক বাজেট (টাকা)',
+        estimatedHoursLabel: 'প্রয়োজনীয় সময় (ঘণ্টা)',
+        planDetailsPlaceholder: 'প্রয়োজনীয় উপকরণ, নিরাপদ সরঞ্জাম ও কাজের পর্যায়ক্রমিক বিবরণ লিখুন...',
+        sendProposalBtn: 'পৌর কর্তৃপক্ষের কাছে প্রস্তাব পাঠান',
+
+        // Contractor Portal
+        contractorHubTitle: 'ঠিকাদার সেবা কেন্দ্র',
+        contractorHubSub: 'অফিসিয়াল পৌর ঠিকাদার কার্যক্রম, কাজের আদেশ গ্রহণ ও মেরামতের রিপোর্ট প্রদান।',
+        assignedOrdersTitle: 'বরাদ্দকৃত কাজের আদেশসমূহ',
+        acceptOrderBtn: 'কাজের আদেশ গ্রহণ',
+        rejectOrderBtn: 'প্রত্যাখ্যান',
+        startWorkBtn: 'মাঠপর্যায়ে কাজ শুরু করুন',
+        uploadProofPrompt: 'কাজের শেষের ছবি সিলেক্ট করুন',
+        submitWorkForReviewBtn: 'অনুমোদনের জন্য কাজ দাখিল করুন',
+        waitingVerificationNotice: 'কাজের প্রমাণ দাখিল করা হয়েছে। পৌর কর্তৃপক্ষের যাচাইয়ের অপেক্ষায়।',
+
+        // Admin Command Center
+        adminMunicipalCommand: 'নাগরিক সেবা ও পৌর নিয়ন্ত্রণ কেন্দ্র · পৌর কমান্ড',
+        adminDigitalCadastre: 'ডিজিটাল ক্যাডাস্ট্রে',
+        adminOperationsHub: 'অপারেশন হাব',
+        adminOfficerSubtitle: 'সরাসরি দায়িত্বপ্রাপ্ত পৌর কর্মকর্তা · ',
+        adminOfficerUser: 'দায়িত্বপ্রাপ্ত ইউজার',
+        adminNavQueue: 'কার্যক্রম তালিকা',
+        adminNavReview: 'মানবীয় পর্যালোচনা',
+        adminNavProofs: 'প্রমাণ যাচাই',
+        adminNavMap: 'মানচিত্র',
+        adminNavContractors: 'ঠিকাদারবৃন্দ',
+        adminNavWhatsApp: 'হোয়াটসঅ্যাপ',
+        adminNavYouth: 'যুব এসক্রো',
+        adminKpi1Label: 'মানবীয় পর্যালোচনা',
+        adminKpi1Desc: 'রাউটিং বা সীমানা সংক্রান্ত জটিলতা যা কর্মকর্তার অনুমোদন প্রয়োজন।',
+        adminKpi1Meta: 'জরুরি ট্রায়াজ কিউ',
+        adminKpi2Label: 'প্রমাণ যাচাই',
+        adminKpi2Desc: 'ফিল্ড টিমের দাখিলকৃত মেরামতের প্রমাণ যা চূড়ান্ত অনুমোদনের অপেক্ষায়।',
+        adminKpi2Meta: 'দ্বিপাক্ষিক যাচাইকরণ',
+        adminKpi3Label: 'এসএলএ মেয়াদোত্তীর্ণ',
+        adminKpi3Desc: 'পৌর বিধিবদ্ধ সময়সীমা অতিক্রম করা অমীমাংসিত অভিযোগ।',
+        adminKpi3Meta: 'এসএলএ সতর্কতা পতাকা',
+        adminKpi4Label: 'চলমান কাজ',
+        adminKpi4Desc: 'বরাদ্দকৃত কাজের আদেশ যা বর্তমানে ফিল্ডে চলমান রয়েছে।',
+        adminKpi4Meta: 'পৌর ডিসপ্যাচ সিঙ্ক',
+        adminFindFilterTitle: 'অভিযোগ অনুসন্ধান ও ফিল্টার',
+        adminShowingText: 'প্রদর্শিত',
+        adminOfText: 'মোট',
+        adminIncidentsText: 'টি পৌর অভিযোগের মধ্যে',
+        adminResetFilters: 'সকল ফিল্টার রিসেট করুন',
+        adminSearchPlaceholder: 'আইডি, এলাকা বা ধরন দিয়ে খুঁজুন…',
+        adminAgeAny: 'যেকোনো সময়',
+        adminAge24h: 'গত ২৪ ঘণ্টা',
+        adminAge7d: 'গত ৭ দিন',
+        adminAge15d: 'গত ১৫ দিন',
+        adminAge30d: 'গত ৩০ দিন',
+        adminStatusAll: 'সকল স্ট্যাটাস',
+        adminStatusNeedsAction: 'ব্যবস্থা নেওয়া দরকার',
+        adminStatusAssigned: 'বরাদ্দকৃত',
+        adminStatusUnresolved: 'অমীমাংসিত',
+        adminStatusResolved: 'সমাধানকৃত',
+        adminCategoryAll: 'সকল ক্যাটাগরি',
+        adminSeverityAll: 'সকল তীব্রতা',
+        adminSortLabel: 'ক্রমানুসার:',
+        adminSortHighest: 'সর্বোচ্চ অগ্রাধিকার',
+        adminSortOldest: 'সবচেয়ে পুরোনো আগে',
+        adminSortNewest: 'নতুন আগে',
+        adminTableId: 'আইডি',
+        adminTableTitle: 'ক্যাটাগরি ও অবস্থান',
+        adminTableSeverity: 'তীব্রতা',
+        adminTableAiConfidence: 'এআই কনফিডেন্স',
+        adminTableStatus: 'স্ট্যাটাস',
+        adminTableAction: 'পদক্ষেপ',
+        adminInspectCase: 'পরিদর্শন করুন',
+        adminSimWorkflowTitle: 'ফিল্ড অফিসার ওয়ার্কফ্লো অ্যাকশন (সিমুলেশন)',
+        adminSubmitProof: 'কাজের প্রমাণ ছবি দাখিল',
+        adminRejectAmbiguous: 'ত্রুটিপূর্ণ অভিযোগ প্রত্যাখ্যান',
+        adminReassign: 'অন্য দপ্তরে স্থানান্তর',
+        adminResolveTicket: 'অভিযোগ সমাধান সম্পন্ন',
+        adminWaIntakeTitle: 'মোট হোয়াটসঅ্যাপ অভিযোগ',
+        adminWaIntakeDesc: 'হোয়াটসঅ্যাপ বট গেটওয়ের মাধ্যমে সরাসরি নাগরিক চ্যাট থেকে গৃহীত রিপোর্ট।',
+        adminWaIntakeMeta: 'স্বয়ংক্রিয় বট ইনটেক',
+        adminWaTriageTitle: 'অপেক্ষমাণ ট্রায়াজ',
+        adminWaTriageDesc: 'পৌর ডিসপ্যাচ বা যাচাইকরণের অপেক্ষায় থাকা হোয়াটসঅ্যাপ কেস।',
+        adminWaTriageMeta: 'সক্রিয় ডিসপ্যাচ কিউ',
+        adminWaResolvedTitle: 'বট দ্বারা সমাধানকৃত',
+        adminWaResolvedDesc: 'নাগরিক কর্তৃক ছবিসহ যাচাই ও সম্পন্ন হওয়া অভিযোগ।',
+        adminWaResolvedMeta: 'দ্বিপাক্ষিক যাচাইকৃত',
+        adminApproveContractor: 'ঠিকাদার অনুমোদন',
+        adminRejectContractor: 'প্রত্যাখ্যান',
+
+        // Footer
+        footerCommunity: 'যুব নাগরিক উদ্যোগ',
+        footerContractor: 'ঠিকাদার পোর্টাল',
+        footerCopyright: '© ২০২৬ গণপ্রজাতন্ত্রী বাংলাদেশ পৌর কর্তৃপক্ষ'
       }
     };
 
     // --- MAIN APP COMPONENT ---
     export default function App() {
       const [activeTab, setActiveTab] = useState('landing');
-      const [lang, setLang] = useState(() => localStorage.getItem('urbanfix-lang') || 'bn');
+      const [lang, setLang] = useState(() => localStorage.getItem('urbanfix-lang') || 'en');
       const [darkMode, setDarkMode] = useState(() => localStorage.getItem('urbanfix-theme') === 'dark');
       const [reports, setReports] = useState(INITIAL_REPORTS);
       const [reportsTruncated, setReportsTruncated] = useState(false);
@@ -1925,14 +2305,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 {/* STEPPER HEADER */}
                 <div className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Report a Civic Problem</h1>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Add a photo, location, and a short description.</p>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{lang === 'bn' ? 'নাগরিক সমস্যার অভিযোগ দায়ের' : 'Report a Civic Problem'}</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'bn' ? 'ছবি তুলুন, লোকেশন দিন এবং সংক্ষেপে বিবরণ লিখুন।' : 'Add a photo, location, and a short description.'}</p>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     {[
-                      { step: 1, label: 'Photo' },
-                      { step: 2, label: 'Details' },
-                      { step: 3, label: 'Done' }
+                      { step: 1, label: lang === 'bn' ? 'ছবি' : 'Photo' },
+                      { step: 2, label: lang === 'bn' ? 'বিস্তারিত' : 'Details' },
+                      { step: 3, label: lang === 'bn' ? 'সম্পন্ন' : 'Done' }
                     ].map((s, idx) => (
                       <React.Fragment key={s.step}>
                         <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border transition-all ${
@@ -1961,16 +2341,16 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <Icon name="camera" className="w-8 h-8" />
                       </div>
                       <div className="max-w-md">
-                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Add a photo of the problem</h3>
+                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t.photoUploadTitle}</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                          A clear photo helps the responsible team understand what needs fixing and automatically pinpoints location when available.
+                          {t.photoUploadSub}
                         </p>
                       </div>
                       
                       <div className="flex flex-col items-center gap-3 w-full sm:w-auto">
                         <label className="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2">
                           <Icon name="upload-cloud" className="w-4 h-4 text-white" />
-                          <span>{isAnalyzing ? 'Checking photo…' : 'Select or Take Photo'}</span>
+                          <span>{isAnalyzing ? (lang === 'bn' ? 'ছবি যাচাই হচ্ছে…' : 'Checking photo…') : t.browseFilesBtn}</span>
                           <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handlePhotoUpload} disabled={isAnalyzing} className="hidden" />
                         </label>
                         <button 
@@ -1985,12 +2365,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           }} 
                           className="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 underline underline-offset-4 transition-colors pt-1"
                         >
-                          I cannot add a photo
+                          {lang === 'bn' ? 'ছবি ছাড়া অভিযোগ করতে চাই' : 'I cannot add a photo'}
                         </button>
                       </div>
 
                       <div className="text-xs text-slate-400 pt-2 font-mono">
-                        JPEG, PNG or WebP · Up to 4 MB
+                        {t.photoLimitHint}
                       </div>
                     </div>
                   </div>
@@ -2003,8 +2383,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       {/* EVIDENCE PREVIEW / SCANNER */}
                       <div>
                         <div className="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
-                          <span>Photo preview</span>
-                          {uploadedImage && <span className="text-emerald-600 dark:text-emerald-400 font-semibold">● Usable photo</span>}
+                          <span>{lang === 'bn' ? 'ছবির প্রিভিউ' : 'Photo preview'}</span>
+                          {uploadedImage && <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{lang === 'bn' ? '● স্পষ্ট ছবি' : '● Usable photo'}</span>}
                         </div>
                         {uploadedImage ? (
                           <div className="ai-laser-container relative w-full h-64 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-950">
@@ -2016,7 +2396,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                 <div className="absolute bottom-3 inset-x-3 z-30 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl p-3 text-center shadow-lg">
                                   <div className="text-xs font-semibold text-emerald-400 flex items-center justify-center gap-2">
                                     <Icon name="scan" className="w-4 h-4 text-emerald-400 animate-spin" />
-                                    Analyzing civic evidence…
+                                    {lang === 'bn' ? 'এআই ছবি বিশ্লেষণ করছে…' : 'Analyzing civic evidence…'}
                                   </div>
                                 </div>
                               </>
@@ -2025,8 +2405,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         ) : (
                           <div className="w-full h-64 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-xs text-slate-400 bg-slate-50 dark:bg-slate-900/40 p-6 text-center">
                             <Icon name="image-off" className="w-8 h-8 text-slate-400 mb-2" />
-                            <span>No photo supplied</span>
-                            <span className="text-[10px] text-slate-400 mt-1">Incident will be logged for authority inspection</span>
+                            <span>{lang === 'bn' ? 'ছবি সংযুক্ত করা হয়নি' : 'No photo supplied'}</span>
+                            <span className="text-[10px] text-slate-400 mt-1">{lang === 'bn' ? 'পৌর পরিদর্শনের জন্য নথিভুক্ত হবে' : 'Incident will be logged for authority inspection'}</span>
                           </div>
                         )}
                       </div>
@@ -2037,8 +2417,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           <div className="h-64 flex flex-col items-center justify-center space-y-4 py-8 bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-xl">
                             <Icon name="scan" className="w-8 h-8 text-emerald-600 dark:text-emerald-400 animate-spin" />
                             <div className="text-center px-4">
-                              <div className="text-sm font-bold text-slate-900 dark:text-white">Checking your photo</div>
-                              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">We are identifying the type of civic problem.</div>
+                              <div className="text-sm font-bold text-slate-900 dark:text-white">
+                                {lang === 'bn' ? 'আপনার ছবি বিশ্লেষণ করা হচ্ছে...' : 'Checking your photo'}
+                              </div>
+                              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                {lang === 'bn' ? 'পৌর সমস্যার ধরন ও বিবরণ যাচাই করা হচ্ছে।' : 'We are identifying the type of civic problem.'}
+                              </div>
                             </div>
                           </div>
                         ) : (
@@ -2048,35 +2432,40 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                 <div>
                                   <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
                                     <Icon name="sparkles" className="w-3.5 h-3.5 text-emerald-500" />
-                                    <span>Suggested description (AI-generated)</span>
+                                    <span>{lang === 'bn' ? 'পরামর্শকৃত বিবরণ · Suggested description (AI-generated)' : 'Suggested description (AI-generated)'}</span>
                                   </div>
                                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                                    Draft based on visual recognition. You can customize below.
+                                    {lang === 'bn' ? 'ছবি শনাক্তকরণের ভিত্তিতে স্বয়ংক্রিয় খসড়া। নিচে প্রয়োজনে পরিবর্তন করতে পারেন।' : 'Draft based on visual recognition. You can customize below.'}
                                   </p>
                                 </div>
                                 {aiAnalysis?.summary ? (
                                   <button
                                     type="button"
+                                    aria-label="Use this suggestion"
                                     onClick={() => setReportForm(form => ({ ...form, description: aiAnalysis.summary }))}
-                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5"
+                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5 cursor-pointer"
                                   >
                                     <Icon name="sparkles" className="w-3.5 h-3.5" />
-                                    <span>Use this suggestion</span>
+                                    <span>{lang === 'bn' ? 'এই প্রস্তাবনা ব্যবহার করুন' : 'Use this suggestion'}</span>
                                   </button>
                                 ) : null}
                               </div>
                               <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 mt-2.5 leading-relaxed bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                {aiAnalysis?.summary || 'Your photo is ready. Add the location and a short description below.'}
+                                {aiAnalysis?.summary || (lang === 'bn' ? 'আপনার ছবি আপলোড সম্পন্ন হয়েছে। নিচে অবস্থান ও বিবরণ দিন।' : 'Your photo is ready. Add the location and a short description below.')}
                               </p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 text-xs pt-1">
                               <div>
-                                <span className="text-slate-500 dark:text-slate-400 block font-medium">Issue type</span>
+                                <span className="text-slate-500 dark:text-slate-400 block font-medium">
+                                  {lang === 'bn' ? 'সমস্যার ধরন' : 'Issue type'}
+                                </span>
                                 <span className="text-slate-900 dark:text-white font-bold truncate block mt-0.5">{aiAnalysis?.category || reportForm.category}</span>
                               </div>
                               <div>
-                                <span className="text-slate-500 dark:text-slate-400 block font-medium">Urgency</span>
+                                <span className="text-slate-500 dark:text-slate-400 block font-medium">
+                                  {lang === 'bn' ? 'জরুরি মাত্রা' : 'Urgency'}
+                                </span>
                                 <span className={`font-bold block mt-0.5 ${
                                   (aiAnalysis?.severity || reportForm.severity) === 'Critical' ? 'text-red-500' : 'text-amber-500'
                                 }`}>
@@ -2090,8 +2479,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                 <Icon name="alert-triangle" className="w-4 h-4 text-amber-500 shrink-0" />
                                 <span>
                                   {aiAnalysis?.visual_verification === 'unverified'
-                                    ? 'AI visual verification is currently unavailable. Your report will be routed to municipal officers for human review.'
-                                    : 'AI could not verify a civic issue in this photo with high confidence. You may describe it below for officer review.'}
+                                    ? (lang === 'bn' ? 'এআই ভিজ্যুয়াল যাচাই এই মুহূর্তে অনুপলব্ধ। প্রতিবেদনটি সংশ্লিষ্ট কর্মকর্তার পর্যালোচনার জন্য পাঠানো হবে।' : 'AI visual verification is currently unavailable. Your report will be routed to municipal officers for human review.')
+                                    : (lang === 'bn' ? 'এআই এই ছবিতে উচ্চ নিশ্চয়তার সাথে পৌর সমস্যা চিহ্নিত করতে পারেনি। পর্যালোচনার জন্য নিচে বিবরণ লিখুন।' : 'AI could not verify a civic issue in this photo with high confidence. You may describe it below for officer review.')}
                                 </span>
                               </div>
                             )}
@@ -2108,19 +2497,19 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             <div>
                               <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 font-mono">
                                 <Icon name="map-pin" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                Location found in photo
+                                {lang === 'bn' ? 'ছবিতে অবস্থান শনাক্ত হয়েছে' : 'Location found in photo'}
                               </div>
                               <div className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 font-mono">
                                 {photoLocation.latitude.toFixed(5)}, {photoLocation.longitude.toFixed(5)}
-                                {photoLocation.captured_at ? ` · Captured ${new Date(photoLocation.captured_at).toLocaleTimeString()}` : ''}
+                                {photoLocation.captured_at ? ` · ${lang === 'bn' ? 'গৃহীত' : 'Captured'} ${new Date(photoLocation.captured_at).toLocaleTimeString()}` : ''}
                               </div>
                             </div>
                             <button 
                               type="button" 
                               onClick={usePhotoLocation} 
-                              className="shrink-0 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all"
+                              className="shrink-0 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
                             >
-                              Use this location
+                              {lang === 'bn' ? 'এই অবস্থান ব্যবহার করুন' : 'Use this location'}
                             </button>
                           </div>
                         )}
@@ -2128,25 +2517,25 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         {/* LOCATION PICKER & ADDRESS INPUT */}
                         <div>
                           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Where is the problem? <span className="text-emerald-600">*</span>
+                            {lang === 'bn' ? 'সমস্যার অবস্থান কোথায়?' : 'Where is the problem?'} <span className="text-emerald-600">*</span>
                           </label>
                           <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-3.5 py-2.5 text-sm focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500">
                             <Icon name="map-pin" className="w-4 h-4 text-emerald-600 shrink-0" />
                             <input 
                               type="text" 
                               value={reportForm.location}
-                              placeholder="Enter street, area or landmark"
+                              placeholder={lang === 'bn' ? 'রাস্তা, এলাকা বা পরিচিত স্থান লিখুন (Enter street, area or landmark)' : 'Enter street, area or landmark'}
                               onChange={(e) => setReportForm({...reportForm, location: e.target.value, locationSource: reportForm.latitude == null ? 'manual' : reportForm.locationSource, locationConfirmed: true})}
                               className="bg-transparent text-slate-900 dark:text-white focus:outline-none w-full text-xs sm:text-sm placeholder-slate-400"
                             />
                             <button 
                               type="button" 
                               onClick={captureLocation} 
-                              className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                              className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                 reportForm.locationSource === 'device_gps' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500'
                               }`}
                             >
-                              {reportForm.locationSource === 'device_gps' ? '✓ Location added' : 'Use my location'}
+                              {reportForm.locationSource === 'device_gps' ? (lang === 'bn' ? '✓ অবস্থান যুক্ত' : '✓ Location added') : (lang === 'bn' ? 'আমার অবস্থান নিন' : 'Use my location')}
                             </button>
                           </div>
 
@@ -2154,14 +2543,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             <button 
                               type="button" 
                               onClick={() => setShowLocationMap(value => !value)} 
-                              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-semibold flex items-center gap-1 transition-colors"
+                              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                             >
                               <Icon name={showLocationMap ? 'chevron-up' : 'map'} className="w-3.5 h-3.5" />
-                              {showLocationMap ? 'Hide map' : 'Choose on map'}
+                              {showLocationMap ? (lang === 'bn' ? 'ম্যাপ লুকান' : 'Hide map') : (lang === 'bn' ? 'ম্যাপে চিহ্নিত করুন' : 'Choose on map')}
                             </button>
                             {reportForm.locationSource && (
                               <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
-                                Location added
+                                {lang === 'bn' ? 'অবস্থান নিশ্চিত' : 'Location added'}
                               </span>
                             )}
                           </div>
@@ -2176,13 +2565,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         {/* PRIVATE REPORTER CONTACT */}
                         <div>
                           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            Phone or email <span className="text-slate-400 font-normal">(optional)</span>
+                            {lang === 'bn' ? 'ফোন নম্বর বা ইমেইল' : 'Phone or email'} <span className="text-slate-400 font-normal">({lang === 'bn' ? 'ঐচ্ছিক' : 'optional'})</span>
                           </label>
                           <input 
                             type="text" 
                             value={reportForm.reporterContact} 
                             onChange={e => setReportForm({...reportForm, reporterContact: e.target.value})} 
-                            placeholder="For updates about this report"
+                            placeholder={lang === 'bn' ? 'রিপোর্টের অগ্রগতির আপডেটের জন্য (ঐচ্ছিক)' : 'For updates about this report'}
                             className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" 
                           />
                         </div>
@@ -2190,13 +2579,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         {/* DESCRIPTION */}
                         <div>
                           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            What happened? <span className="text-emerald-600">*</span>
+                            {lang === 'bn' ? 'কী সমস্যা হয়েছে?' : 'What happened?'} <span className="text-emerald-600">*</span>
                           </label>
                           <textarea 
                             rows={3}
                             value={reportForm.description}
                             onChange={(e) => setReportForm({...reportForm, description: e.target.value})}
-                            placeholder="Briefly describe the problem"
+                            placeholder={lang === 'bn' ? 'সমস্যার সংক্ষিপ্ত বিবরণ লিখুন (Briefly describe the problem)...' : 'Briefly describe the problem'}
                             className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                           />
                         </div>
@@ -2204,12 +2593,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         {/* ACTION BUTTONS */}
                         <div className="flex items-center justify-between pt-3">
                           <button 
+                            type="button"
                             onClick={() => setReportStep(1)} 
-                            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                           >
-                            ← Change photo
+                            {lang === 'bn' ? '← ছবি পরিবর্তন' : '← Change photo'}
                           </button>
                           <button 
+                            type="button"
+                            aria-label="Submit report"
                             onClick={handleFinalSubmit}
                             disabled={isSubmitting || (aiAnalysis?.is_civic_issue === false && aiAnalysis?.confidence >= 0.75)}
                             className="px-8 py-3.5 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
@@ -2217,11 +2609,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             {isSubmitting ? (
                               <>
                                 <Icon name="refresh-cw" className="w-4 h-4 animate-spin text-white" />
-                                <span>Submitting…</span>
+                                <span>{lang === 'bn' ? 'দাখিল হচ্ছে…' : 'Submitting…'}</span>
                               </>
                             ) : (
                               <>
-                                <span>Submit report</span>
+                                <span>{lang === 'bn' ? 'অভিযোগ দাখিল করুন' : 'Submit report'}</span>
                                 <Icon name="arrow-right" className="w-4 h-4 text-white" />
                               </>
                             )}
@@ -2241,15 +2633,34 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50">
                     <Icon name="check" className="h-7 w-7" />
                   </div>
-                  <h1 id="report-success-title" className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">Report submitted</h1>
-                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Save this report ID. You can use it to check progress anytime.</p>
+                  <h1 id="report-success-title" className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
+                    {lang === 'bn' ? 'অভিযোগ সফলভাবে দাখিল হয়েছে' : 'Report submitted'}
+                  </h1>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                    {lang === 'bn' ? 'এই রিপোর্ট আইডি নম্বরটি সংরক্ষণ করুন। যেকোনো সময় অগ্রগতি ট্র্যাক করতে পারবেন।' : 'Save this report ID. You can use it to check progress anytime.'}
+                  </p>
                   <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 px-6 py-5">
-                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Your report ID</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {lang === 'bn' ? 'আপনার রিপোর্ট আইডি নম্বর' : 'Your report ID'}
+                    </div>
                     <div className="mt-1 font-mono text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{submittedReportId}</div>
                   </div>
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    <button onClick={() => { navigator.clipboard?.writeText(submittedReportId); showToast('Report ID copied.'); }} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 px-5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all">Copy report ID</button>
-                    <button onClick={() => setSubmittedReportId('')} className="min-h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all px-5">Track this report</button>
+                    <button 
+                      onClick={() => { 
+                        navigator.clipboard?.writeText(submittedReportId); 
+                        showToast(lang === 'bn' ? 'রিপোর্ট আইডি কপি করা হয়েছে।' : 'Report ID copied.'); 
+                      }} 
+                      className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 px-5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all cursor-pointer"
+                    >
+                      {lang === 'bn' ? 'আইডি কপি করুন' : 'Copy report ID'}
+                    </button>
+                    <button 
+                      onClick={() => setSubmittedReportId('')} 
+                      className="min-h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all px-5 cursor-pointer"
+                    >
+                      {lang === 'bn' ? 'এই রিপোর্ট ট্র্যাক করুন' : 'Track this report'}
+                    </button>
                   </div>
                 </section>
               </div>
@@ -2259,21 +2670,21 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               <div className="max-w-xl mx-auto px-4 py-16">
                 <div className="rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-6 sm:p-10 space-y-5 reveal-up">
                   <div>
-                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Citizen Transparency</span>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">Track a Report</h1>
+                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{lang === 'bn' ? 'উন্মুক্ত নাগরিক তথ্য' : 'Citizen Transparency'}</span>
+                    <h1 aria-label="Track a Report" className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">{t.trackPageTitle}</h1>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                      Enter your report ID to see its current status, responsible municipal authority, and completion evidence.
+                      {t.trackPageSub}
                     </p>
                   </div>
                   <div>
-                    <label htmlFor="tracking-id" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Report ID</label>
+                    <label htmlFor="tracking-id" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{lang === 'bn' ? 'রিপোর্ট আইডি নম্বর' : 'Report ID'}</label>
                     <div className="flex flex-col sm:flex-row gap-2.5">
                       <input 
                         id="tracking-id"
                         value={trackingQuery} 
                         onChange={e => setTrackingQuery(e.target.value)} 
                         onKeyDown={e => e.key === 'Enter' && trackById()} 
-                        placeholder="CP-ABC123 or ABC123"
+                        placeholder={lang === 'bn' ? 'উদাঃ CP-88390 বা 88390 (CP-ABC123 or ABC123)' : 'CP-ABC123 or ABC123'}
                         className="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-4 py-3 text-slate-900 dark:text-white font-mono text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                       />
                       <button 
@@ -2281,13 +2692,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         disabled={trackingBusy}
                         className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all disabled:opacity-50"
                       >
-                        {trackingBusy ? 'Finding…' : 'Track'}
+                        {trackingBusy ? (lang === 'bn' ? 'অনুসন্ধান চলছে…' : 'Finding…') : t.trackActionBtn}
                       </button>
                     </div>
                   </div>
                   {trackingError && <div role="alert" className="text-xs text-red-600 dark:text-red-400 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 p-3">{trackingError}</div>}
-                  <button onClick={openJudgeDemo} className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1.5">
-                    See public report
+                  <button aria-label="See public report" onClick={openJudgeDemo} className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1.5 cursor-pointer">
+                    {t.seePublicReportBtn}
                   </button>
                 </div>
               </div>
@@ -2329,14 +2740,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         value={trackingQuery} 
                         onChange={e => setTrackingQuery(e.target.value)} 
                         onKeyDown={e => e.key === 'Enter' && trackById()} 
-                        placeholder="Search ID" 
+                        placeholder={lang === 'bn' ? 'আইডি লিখুন' : 'Search ID'} 
                         className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-3.5 py-2 text-xs font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 w-36" 
                       />
                       <button 
                         onClick={trackById} 
                         className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all"
                       >
-                        Track
+                        {t.trackActionBtn}
                       </button>
                     </div>
                     <select 
@@ -2358,7 +2769,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
                       <h2 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-mono flex items-center gap-2">
                         <Icon name="clock" className="w-4 h-4 text-emerald-600" />
-                        Report progress
+                        {t.reportProgressTitle}
                       </h2>
                     </div>
                     
@@ -2377,18 +2788,18 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                        <span>Responsible Public Authority</span>
+                        <span>{t.responsibleAuthority}</span>
                         <div className="flex flex-wrap items-center gap-1">
                           <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                            {selectedReport.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
+                            {selectedReport.assigned_authority?.authority_data_status === 'gazette_verified' ? t.gazetteVerified : (lang === 'bn' ? 'প্রস্তাবিত কর্তৃপক্ষ' : 'Candidate Authority')}
                           </span>
                           {selectedReport.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
                             <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                              Statutory Verified
+                              {t.statutoryVerified}
                             </span>
                           ) : (
                             <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                              Location Inferred
+                              {t.locationInferred}
                             </span>
                           )}
                         </div>
@@ -2452,7 +2863,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     {/* RESOLUTION VERIFICATION */}
                     <div>
-                      <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-2 font-bold uppercase tracking-wider">// RESOLUTION VERIFICATION GATES</div>
+                      <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-2 font-bold uppercase tracking-wider">// {t.resAndEvidence}</div>
                       <div className="border border-[#1E293B] rounded-2xl overflow-hidden bg-[#0A101D] shadow-2xl">
                         <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#1E293B]">
                           {/* Gate 01: Field Officer Evidence */}
@@ -2466,16 +2877,16 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                   <Icon name="landmark" className="w-4 h-4" />
                                 </div>
                               </div>
-                              <h4 className="font-headline text-base font-bold text-white mb-1.5 tracking-tight">Field Officer Evidence</h4>
-                              <p className="text-xs text-slate-400 leading-relaxed">Photographic proof and work-order completion logs from dispatch crew.</p>
+                              <h4 className="font-headline text-base font-bold text-white mb-1.5 tracking-tight">{t.gate01Title}</h4>
+                              <p className="text-xs text-slate-400 leading-relaxed">{t.gate01Desc}</p>
                             </div>
                             <div className="mt-6 pt-3 border-t border-[#1E293B] flex items-center justify-between font-mono text-[10px]">
                               <span className="flex items-center gap-1.5 text-slate-400">
                                 <span className={`w-2 h-2 rounded-[2px] ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-[#10B981]' : 'bg-[#F59E0B]'}`}></span>
-                                <span>MUNICIPAL LOG</span>
+                                <span>{t.gateMunicipalLog}</span>
                               </span>
                               <span className={`font-bold uppercase tracking-wider ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-[#10B981]' : 'text-[#F59E0B]'}`}>
-                                {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? '✓ SUBMITTED' : 'PENDING'}
+                                {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? t.gateSubmitted : t.gatePending}
                               </span>
                             </div>
                           </div>
@@ -2491,16 +2902,16 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                   <Icon name="check" className="w-4 h-4" />
                                 </div>
                               </div>
-                              <h4 className="font-headline text-base font-bold text-white mb-1.5 tracking-tight">Citizen Verification</h4>
-                              <p className="text-xs text-slate-400 leading-relaxed">Reporter on-site inspection and token approval before final ticket closure.</p>
+                              <h4 className="font-headline text-base font-bold text-white mb-1.5 tracking-tight">{t.gate02Title}</h4>
+                              <p className="text-xs text-slate-400 leading-relaxed">{t.gate02Desc}</p>
                             </div>
                             <div className="mt-6 pt-3 border-t border-[#1E293B] flex items-center justify-between font-mono text-[10px]">
                               <span className="flex items-center gap-1.5 text-slate-400">
                                 <span className={`w-2 h-2 rounded-[2px] ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-[#10B981]' : 'bg-[#F59E0B]'}`}></span>
-                                <span>TWO-PARTY AUDIT</span>
+                                <span>{t.gateTwoPartyAudit}</span>
                               </span>
                               <span className={`font-bold uppercase tracking-wider ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-[#10B981]' : 'text-[#F59E0B]'}`}>
-                                {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? '✓ VERIFIED' : 'PENDING'}
+                                {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? t.gateVerified : t.gatePending}
                               </span>
                             </div>
                           </div>
@@ -2547,10 +2958,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
                           <div className="flex items-center gap-2">
                             <Icon name="shield-check" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                            <span className="text-xs font-bold text-slate-900 dark:text-white tracking-wider uppercase">Citizen Verification Gate</span>
+                            <span className="text-xs font-bold text-slate-900 dark:text-white tracking-wider uppercase">{t.citizenVerificationGate}</span>
                           </div>
                           <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                            Simulated Authority Workflow
+                            {lang === 'bn' ? 'পৌর অডিট ও যাচাইকরণ' : 'Simulated Authority Workflow'}
                           </span>
                         </div>
 
@@ -2560,14 +2971,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold font-mono text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
                                 <Icon name="circle-check" className="w-4 h-4" />
-                                RESOLUTION CONFIRMED BY CITIZEN
+                                {t.citizenConfirmed}
                               </span>
                               <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300">
-                                Status: Resolved
+                                {lang === 'bn' ? 'স্ট্যাটাস: সমাধানকৃত' : 'Status: Resolved'}
                               </span>
                             </div>
                             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                              The reporter confirmed this incident was successfully fixed on site.
+                              {lang === 'bn' ? 'অভিযোগকারী নাগরিক সরেজমিনে পরিদর্শন করে সমস্যাটি সফলভাবে সমাধান হয়েছে বলে নিশ্চিত করেছেন।' : 'The reporter confirmed this incident was successfully fixed on site.'}
                             </p>
                             {selectedReport.citizen_verification?.note && (
                               <div className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 italic">
@@ -2580,18 +2991,18 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold font-mono text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
                                 <Icon name="alert-triangle" className="w-4 h-4" />
-                                RESOLUTION DISPUTED · REOPENED
+                                {lang === 'bn' ? 'নাগরিক আপত্তি · পুনরায় চালু' : 'RESOLUTION DISPUTED · REOPENED'}
                               </span>
                               <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">
-                                Reopened - Needs Review
+                                {selectedReport.status}
                               </span>
                             </div>
                             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                              The citizen reported that the problem was not satisfactorily fixed. Authority field crew has been notified to re-inspect.
+                              {lang === 'bn' ? 'নাগরিক জানিয়েছেন সমস্যাটি সঠিকভাবে সমাধান হয়নি। পুনরায় পরিদর্শনের জন্য ফিল্ড ক্রুকে নির্দেশ দেওয়া হয়েছে।' : 'The citizen reported that the problem was not satisfactorily fixed. Authority field crew has been notified to re-inspect.'}
                             </p>
                             {selectedReport.citizen_verification?.note && (
                               <div className="text-xs text-amber-700 dark:text-amber-400 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 italic">
-                                Dispute reason: "{selectedReport.citizen_verification.note}"
+                                {lang === 'bn' ? 'আপত্তির কারণ: ' : 'Dispute reason: '}"{selectedReport.citizen_verification.note}"
                               </div>
                             )}
                           </div>
@@ -2600,7 +3011,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           <div className="space-y-4">
                             {(selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note) && (
                               <div className="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3.5 text-xs">
-                                <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold mb-1">FIELD OFFICER COMPLETION NOTE</div>
+                                <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold mb-1">{lang === 'bn' ? 'পৌর ফিল্ড অফিসারের সমাপ্তি নোট' : 'FIELD OFFICER COMPLETION NOTE'}</div>
                                 <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
                                   {selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note}
                                 </p>
@@ -2609,14 +3020,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                             <div>
                               <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                <span>REPORTER VERIFICATION TOKEN</span>
+                                <span>{lang === 'bn' ? 'নাগরিক যাচাই টোকেন' : 'REPORTER VERIFICATION TOKEN'}</span>
                                 {sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) && (
-                                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">✓ Active on this device</span>
+                                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">{lang === 'bn' ? '✓ ডিভাইসে সক্রিয়' : '✓ Active on this device'}</span>
                                 )}
                               </div>
                               <input
                                 type="text"
-                                placeholder="Paste or verify reporter token..."
+                                placeholder={lang === 'bn' ? 'রিপোর্টার টোকেন দিন (Paste or verify reporter token...)' : 'Paste or verify reporter token...'}
                                 value={verificationToken || (selectedReport ? sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) || '' : '')}
                                 onChange={(e) => setVerificationToken(e.target.value)}
                                 className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
@@ -2625,11 +3036,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                             <div>
                               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                FEEDBACK / NOTES (Required if rejecting or reporting partial fix)
+                                {lang === 'bn' ? 'মতামত বা নোট (সমস্যা সমাধান না হলে আবশ্যক)' : 'FEEDBACK / NOTES (Required if rejecting or reporting partial fix)'}
                               </label>
                               <textarea
                                 rows={2}
-                                placeholder="Enter inspection feedback or reason for dispute..."
+                                placeholder={t.citizenNotesPlaceholder}
                                 value={citizenFeedback}
                                 onChange={(e) => setCitizenFeedback(e.target.value)}
                                 className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
@@ -2638,27 +3049,30 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                               <button
+                                aria-label="Confirm Fixed"
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('fixed')}
                                 className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                               >
                                 <Icon name="check" className="w-4 h-4" />
-                                <span>Confirm Fixed</span>
+                                <span>{t.citizenConfirmYes}</span>
                               </button>
                               <button
+                                aria-label="Partially Fixed"
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('partially_fixed')}
                                 className="py-2.5 px-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                               >
-                                <span>Partially Fixed</span>
+                                <span>{lang === 'bn' ? 'আংশিক সমাধান' : 'Partially Fixed'}</span>
                               </button>
                               <button
+                                aria-label="Reject & Reopen"
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('not_fixed')}
                                 className="py-2.5 px-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-100 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                               >
                                 <Icon name="x" className="w-4 h-4" />
-                                <span>Reject & Reopen</span>
+                                <span>{t.citizenConfirmNo}</span>
                               </button>
                             </div>
                           </div>
@@ -2761,13 +3175,19 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-6 reveal-up">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 rounded-2xl shadow-sm">
                   <div>
-                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Public reports</div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1 tracking-tight">Issues near you</h1>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Select a marker to see the problem and its current status.</p>
+                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">{lang === 'bn' ? 'উন্মুক্ত নাগরিক রিপোর্ট' : 'Public reports'}</div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1 tracking-tight">{lang === 'bn' ? 'আপনার আশেপাশের নাগরিক সমস্যা' : 'Issues near you'}</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'bn' ? 'ম্যাপে মার্কার সিলেক্ট করে সমস্যার বিস্তারিত ও বর্তমান অগ্রগতি দেখুন।' : 'Select a marker to see the problem and its current status.'}</p>
                   </div>
                   
                   <div className="flex items-center gap-2 flex-wrap">
-                    {['All', 'Roads', 'Sanitation', 'Water'].map((f) => {
+                    {[
+                      { id: 'All', label: lang === 'bn' ? 'সকল রিপোর্ট' : 'All' },
+                      { id: 'Roads', label: lang === 'bn' ? 'রাস্তা ও ম্যানহোল' : 'Roads' },
+                      { id: 'Sanitation', label: lang === 'bn' ? 'বর্জ্য ও পরিচ্ছন্নতা' : 'Sanitation' },
+                      { id: 'Water', label: lang === 'bn' ? 'ড্রেন ও পানি' : 'Water' }
+                    ].map((fItem) => {
+                      const f = fItem.id;
                       const count = reports.filter(rep => f === 'All' || (f === 'Roads' && /road/i.test(rep.category)) || (f === 'Sanitation' && /waste|sanitation/i.test(rep.category)) || (f === 'Water' && /water|drain|sewer/i.test(rep.category))).length;
                       return (
                         <button 
@@ -2779,7 +3199,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               : 'bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                           }`}
                         >
-                          <span>{f}</span>
+                          <span>{fItem.label}</span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${mapFilter === f ? 'bg-emerald-700 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}>
                             {count}
                           </span>
@@ -2798,19 +3218,19 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2 text-xs">
                     <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10B981]" /> 
-                      <span className="font-medium">Verified by Citizen</span>
+                      <span className="font-medium">{lang === 'bn' ? 'নাগরিক কর্তৃক যাচাইকৃত' : 'Verified by Citizen'}</span>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
                       <span className="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_6px_#0EA5E9]" /> 
-                      <span className="font-medium">In Progress</span>
+                      <span className="font-medium">{lang === 'bn' ? 'চলমান কাজ' : 'In Progress'}</span>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
                       <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> 
-                      <span className="font-medium">Assigned to Crew</span>
+                      <span className="font-medium">{lang === 'bn' ? 'ফিল্ড টিমে ন্যস্ত' : 'Assigned to Crew'}</span>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
                       <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_6px_#F43F5E]" /> 
-                      <span className="font-medium">Critical / Urgent</span>
+                      <span className="font-medium">{lang === 'bn' ? 'জরুরি / বিপজ্জনক' : 'Critical / Urgent'}</span>
                     </div>
                   </div>
                 </div>
@@ -2821,17 +3241,18 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {activeTab === 'community' && (
               <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
                 <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 rounded-2xl shadow-sm">
-                  <div className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 font-bold uppercase">SUPERVISED COMMUNITY ACTION</div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight">Propose Low-Risk Micro-Maintenance</h1>
+                  <div className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 font-bold uppercase">{lang === 'bn' ? 'তত্ত্বাবধানে নাগরিক উদ্যোগ' : 'SUPERVISED COMMUNITY ACTION'}</div>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight">{t.youthTitle}</h1>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                    Only low-risk cleanup and neighborhood beautification tasks appear here. High-voltage, deep trenches, and hazardous tasks are restricted to certified municipal crews.
+                    {t.youthSub}
                   </p>
                 </div>
 
                 {!authUser ? (
                   <AuthCard 
-                    title="Community Youth Worker Access" 
-                    subtitle="Register or log in to submit neighborhood repair proposals and request authority escrow funding." 
+                    lang={lang}
+                    title={lang === 'bn' ? 'যুব নাগরিক কর্মী প্রবেশদ্বার' : 'Community Youth Worker Access'} 
+                    subtitle={lang === 'bn' ? 'এলাকাভিত্তিক ক্ষুদ্র মেরামতের প্রস্তাব দাখিল ও এসক্রো তহবিলের জন্য লগইন করুন।' : 'Register or log in to submit neighborhood repair proposals and request authority escrow funding.'} 
                     mode={authMode} 
                     setMode={mode => { setAuthMode(mode); setAuthError(''); }} 
                     form={authForm} 
@@ -2842,13 +3263,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   />
                 ) : authUser.role !== 'youth' ? (
                   <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center space-y-4 shadow-sm">
-                    <p className="text-sm text-slate-600 dark:text-slate-400">The current active account is not registered as a youth worker.</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{lang === 'bn' ? 'বর্তমান সক্রিয় অ্যাকাউন্টটি যুব কর্মী হিসেবে নিবন্ধিত নয়।' : 'The current active account is not registered as a youth worker.'}</p>
                     <button 
                       onClick={logout} 
                       className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
                     >
                       <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
-                      <span>Log Out</span>
+                      <span>{t.logout}</span>
                     </button>
                   </div>
                 ) : (
@@ -2858,17 +3279,17 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <div className="flex items-center gap-2">
                           <span className="text-lg font-bold text-slate-900 dark:text-white">{authUser.name}</span>
                           <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                            VERIFIED CITIZEN
+                            {lang === 'bn' ? 'যাচাইকৃত নাগরিক' : 'VERIFIED CITIZEN'}
                           </span>
                         </div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{authUser.email} · Proposals & proof linked to escrow balance</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{authUser.email} · {lang === 'bn' ? 'প্রস্তাব ও প্রমাণ এসক্রো ব্যালেন্সের সাথে সংযুক্ত' : 'Proposals & proof linked to escrow balance'}</div>
                       </div>
                       <button 
                         onClick={logout} 
                         className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
                       >
                         <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
-                        <span>Log Out</span>
+                        <span>{t.logout}</span>
                       </button>
                     </div>
 
@@ -2887,15 +3308,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               </div>
                             </div>
                             <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
-                              Submit Proposal
+                              {t.youthStep1Title}
                             </h3>
                             <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                              Draft a repair plan, materials needed, and budget estimate for an eligible neighborhood issue.
+                              {t.youthStep1Desc}
                             </p>
                           </div>
                           <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
                             <span className="w-2 h-2 rounded-[2px] bg-[#38BDF8]"></span>
-                            <span>Civic Estimate Dispatch</span>
+                            <span>{t.youthStep1Meta}</span>
                           </div>
                         </div>
 
@@ -2911,15 +3332,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               </div>
                             </div>
                             <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
-                              Escrow Lock
+                              {t.youthStep2Title}
                             </h3>
                             <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                              Municipal authority officers inspect the plan and lock guaranteed funds into escrow.
+                              {t.youthStep2Desc}
                             </p>
                           </div>
                           <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
                             <span className="w-2 h-2 rounded-[2px] bg-[#F59E0B]"></span>
-                            <span>Government Backed Funds</span>
+                            <span>{t.youthStep2Meta}</span>
                           </div>
                         </div>
 
@@ -2935,15 +3356,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               </div>
                             </div>
                             <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
-                              Verify & Payout
+                              {t.youthStep3Title}
                             </h3>
                             <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                              Submit timestamped photographic proof of resolution to immediately release the micro-grant.
+                              {t.youthStep3Desc}
                             </p>
                           </div>
                           <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
                             <span className="w-2 h-2 rounded-[2px] bg-[#10B981]"></span>
-                            <span>Direct MFS Payout</span>
+                            <span>{t.youthStep3Meta}</span>
                           </div>
                         </div>
                       </div>
@@ -3049,33 +3470,33 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               authUser?.role !== 'contractor' ? (
                 <div className="max-w-md mx-auto px-4 py-12 space-y-5 reveal-up">
                   <div className="flex bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1">
-                    <button onClick={() => setAuthMode('login')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${authMode === 'login' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>Login</button>
-                    <button onClick={() => setAuthMode('register')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${authMode === 'register' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>Register</button>
+                    <button onClick={() => setAuthMode('login')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${authMode === 'login' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>{lang === 'bn' ? 'লগইন' : 'Login'}</button>
+                    <button onClick={() => setAuthMode('register')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${authMode === 'register' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>{lang === 'bn' ? 'নিবন্ধন' : 'Register'}</button>
                   </div>
                   <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm">
                     <div>
-                      <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Service Partner Network</span>
-                      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">Contractor Service Hub</h1>
+                      <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{lang === 'bn' ? 'পৌর সেবা পার্টনার নেটওয়ার্ক' : 'Service Partner Network'}</span>
+                      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{t.contractorHubTitle}</h1>
                     </div>
                     {authMode === 'register' && (
-                      <input value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} placeholder="Business or contractor name" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                      <input value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} placeholder={lang === 'bn' ? 'প্রতিষ্ঠান বা ঠিকাদারের নাম' : 'Business or contractor name'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     )}
-                    <input type="email" value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} placeholder="Contractor email" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                    <input type="email" value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} placeholder={lang === 'bn' ? 'ঠিকাদার ইমেইল' : 'Contractor email'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     {authMode === 'register' && (
                       <>
-                        <input value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} placeholder="Phone number" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
-                        <input value={contractorForm.service_area} onChange={e => setContractorForm({...contractorForm, service_area: e.target.value})} placeholder="Service area (e.g. Zone 4)" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
-                        <input value={contractorForm.skills} onChange={e => setContractorForm({...contractorForm, skills: e.target.value})} placeholder="Skills (Roads, Asphalt, Plumbing, Electrical)" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                        <input value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} placeholder={lang === 'bn' ? 'ফোন নম্বর' : 'Phone number'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                        <input value={contractorForm.service_area} onChange={e => setContractorForm({...contractorForm, service_area: e.target.value})} placeholder={lang === 'bn' ? 'কাজের এলাকা (উদাঃ জোন ৪)' : 'Service area (e.g. Zone 4)'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                        <input value={contractorForm.skills} onChange={e => setContractorForm({...contractorForm, skills: e.target.value})} placeholder={lang === 'bn' ? 'দক্ষতা (রাস্তা, পিচ, প্লাম্বিং, বৈদ্যুতিক)' : 'Skills (Roads, Asphalt, Plumbing, Electrical)'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                         <input value={contractorForm.payout_account_id} onChange={e => setContractorForm({...contractorForm, payout_account_id: e.target.value})} placeholder="Stripe Connect account (acct_…)" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                       </>
                     )}
-                    <input type="password" value={authForm.password} onChange={e => setAuthForm({...authForm, password: e.target.value})} placeholder="Password" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                    <input type="password" value={authForm.password} onChange={e => setAuthForm({...authForm, password: e.target.value})} placeholder={lang === 'bn' ? 'পাসওয়ার্ড' : 'Password'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     {authMode === 'register' && (
-                      <input type="password" value={authForm.confirmPassword} onChange={e => setAuthForm({...authForm, confirmPassword: e.target.value})} placeholder="Confirm password" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                      <input type="password" value={authForm.confirmPassword} onChange={e => setAuthForm({...authForm, confirmPassword: e.target.value})} placeholder={lang === 'bn' ? 'পাসওয়ার্ড নিশ্চিত করুন' : 'Confirm password'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     )}
                     {authError && <div className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 p-3 rounded-xl">{authError}</div>}
                     <button onClick={authenticateContractor} disabled={authBusy} className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all disabled:opacity-40 cursor-pointer">
-                      {authBusy ? 'Authenticating…' : authMode === 'register' ? 'Submit Registration' : 'Contractor Sign In'}
+                      {authBusy ? (lang === 'bn' ? 'যাচাই হচ্ছে…' : 'Authenticating…') : authMode === 'register' ? (lang === 'bn' ? 'নিবন্ধন সম্পন্ন করুন' : 'Submit Registration') : (lang === 'bn' ? 'ঠিকাদার সাইন ইন' : 'Contractor Sign In')}
                     </button>
                   </div>
                   {authUser && (
@@ -3085,7 +3506,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
                       >
                         <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
-                        <span>Log out of current session</span>
+                        <span>{t.logout}</span>
                       </button>
                     </div>
                   )}
@@ -3094,28 +3515,28 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 rounded-2xl shadow-sm">
                     <div>
-                      <div className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 font-bold uppercase">CONTRACTOR OPERATIONS PORTAL</div>
-                      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">{contractorProfile?.name || 'Contractor Hub'}</h1>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">Status: {contractorProfile?.approval_status || 'Approved'} · Rating: ★ {contractorProfile?.rating || '5.0'}</p>
+                      <div className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 font-bold uppercase">{t.contractorHubTitle}</div>
+                      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">{contractorProfile?.name || (lang === 'bn' ? 'ঠিকাদার হাব' : 'Contractor Hub')}</h1>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">{lang === 'bn' ? 'অনুমোদন: ' : 'Status: '}{contractorProfile?.approval_status || (lang === 'bn' ? 'অনুমোদিত' : 'Approved')} · {lang === 'bn' ? 'রেটিং: ' : 'Rating: '}★ {contractorProfile?.rating || '5.0'}</p>
                     </div>
                     <button 
                       onClick={logout} 
                       className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
                     >
                       <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
-                      <span>Log Out</span>
+                      <span>{t.logout}</span>
                     </button>
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Assigned Work Orders</h2>
+                    <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t.assignedOrdersTitle}</h2>
                     {contractorJobs.map(job => (
                       <div key={job.offer_id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4 shadow-sm">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
                             <div className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">{job.offer_id} · {job.complaint_id}</div>
                             <h3 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">{job.issue_title}</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">{job.work_location_area} · Budget: BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">{job.work_location_area} · {lang === 'bn' ? 'বাজেট:' : 'Budget:'} BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
                           </div>
                           <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-1 rounded-full h-fit">
                             {job.status}
@@ -3125,37 +3546,37 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           {job.status === 'Sent' && (
                             <>
                               <button onClick={() => updateContractorJob(job, 'Rejected')} className="px-4 py-2 rounded-xl border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 text-xs font-semibold transition-colors cursor-pointer">
-                                Reject
+                                {t.rejectOrderBtn}
                               </button>
                               <button onClick={() => updateContractorJob(job, 'Accepted')} className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer">
-                                Accept Order
+                                {t.acceptOrderBtn}
                               </button>
                             </>
                           )}
                           {job.status === 'Accepted' && (
                             <button onClick={() => updateContractorJob(job, 'In Progress')} className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors shadow-sm cursor-pointer">
-                              Start Work On-Site
+                              {t.startWorkBtn}
                             </button>
                           )}
                           {job.status === 'In Progress' && (
                             <div className="w-full grid gap-3 sm:grid-cols-2">
-                              <label className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-500 dark:text-slate-400 cursor-pointer"><span>{contractorProofs[job.offer_id]?.image?.name || 'Choose completion photo'}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),image:e.target.files?.[0] || null}})} /></label>
+                              <label className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-500 dark:text-slate-400 cursor-pointer"><span>{contractorProofs[job.offer_id]?.image?.name || t.uploadProofPrompt}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),image:e.target.files?.[0] || null}})} /></label>
                               <input type="url" value={contractorProofs[job.offer_id]?.report_url || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),report_url:e.target.value}})} placeholder="Public Google Drive report link" className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-900 dark:text-white" />
-                              <textarea value={contractorProofs[job.offer_id]?.note || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),note:e.target.value}})} placeholder="Short completion summary" rows="2" className="sm:col-span-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-900 dark:text-white resize-none" />
+                              <textarea value={contractorProofs[job.offer_id]?.note || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),note:e.target.value}})} placeholder={lang === 'bn' ? 'কাজের সংক্ষিপ্ত বিবরণ...' : 'Short completion summary'} rows="2" className="sm:col-span-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-900 dark:text-white resize-none" />
                               <label className="sm:col-span-2 flex items-start gap-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
                                 <input type="checkbox" checked={Boolean(contractorProofs[job.offer_id]?.public_access_confirmed)} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),public_access_confirmed:e.target.checked}})} className="mt-0.5 accent-emerald-600" />
-                                <span>I confirm the Google Drive report is set to <strong className="text-slate-900 dark:text-white">Anyone with the link can view</strong>.</span>
+                                <span>{lang === 'bn' ? 'আমি নিশ্চিত করছি যে গুগল ড্রাইভ রিপোর্টটি উন্মুক্ত রাখা হয়েছে' : 'I confirm the Google Drive report is set to'} <strong className="text-slate-900 dark:text-white">{lang === 'bn' ? 'যেকোনো ব্যক্তি দেখতে পাবেন' : 'Anyone with the link can view'}</strong>.</span>
                               </label>
-                              <button onClick={() => updateContractorJob(job, 'Proof Submitted')} className="sm:col-span-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer">Submit completed work for review</button>
+                              <button onClick={() => updateContractorJob(job, 'Proof Submitted')} className="sm:col-span-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer">{t.submitWorkForReviewBtn}</button>
                             </div>
                           )}
-                          {job.status === 'Proof Submitted' && <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Completion proof submitted. Waiting for authority verification.</p>}
+                          {job.status === 'Proof Submitted' && <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">{t.waitingVerificationNotice}</p>}
                         </div>
                       </div>
                     ))}
                     {!contractorJobs.length && (
                       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-12 text-center text-xs text-slate-500 dark:text-slate-400 shadow-sm">
-                        No active work orders currently assigned to your team.
+                        {lang === 'bn' ? 'বর্তমানে আপনার প্রতিষ্ঠানে কোনো সক্রিয় কাজের আদেশ নেই।' : 'No active work orders currently assigned to your team.'}
                       </div>
                     )}
                   </div>
@@ -3168,8 +3589,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               !['admin', 'officer'].includes(authUser?.role) ? (
                 <div className="max-w-4xl mx-auto px-4 py-10 space-y-5 reveal-up">
                   <AuthCard
-                    title="Municipal Authority Command Center"
-                    subtitle="Executive governance console for dispatch, SLA auditing, and public escrow releases."
+                    lang={lang}
+                    title={lang === 'bn' ? 'পৌর কর্তৃপক্ষ ও নাগরিক সেবা কমান্ড সেন্টার' : 'Municipal Authority Command Center'}
+                    subtitle={lang === 'bn' ? 'তাত্ক্ষণিক ট্রায়াজ, এসএলএ পর্যবেক্ষণ এবং ডিজিটাল ক্যাডাস্ট্রে নিয়ন্ত্রণ কনসোল।' : 'Executive governance console for dispatch, SLA auditing, and public escrow releases.'}
                     mode="login"
                     setMode={() => { }}
                     form={authForm}
@@ -3188,7 +3610,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
                       >
                         <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
-                        <span>Log out of {authUser.email}</span>
+                        <span>{lang === 'bn' ? `${authUser.email} থেকে লগআউট` : `Log out of ${authUser.email}`}</span>
                       </button>
                     </div>
                   )}
@@ -3202,31 +3624,31 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400 shadow-sm">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span>নাগরিক সেবা ও পৌর নিয়ন্ত্রণ কেন্দ্র · Municipal Command</span>
+                            <span>{t.adminMunicipalCommand}</span>
                           </span>
                           {authUser?.role === 'officer' && (
                             <span className="text-xs font-semibold px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300">
-                              কর্তৃপক্ষ: {authUser.authority_id}
+                              {lang === 'bn' ? 'কর্তৃপক্ষ: ' : 'Authority: '}{authUser.authority_id}
                             </span>
                           )}
                           <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300">
-                            DIGITAL CADASTRE
+                            {t.adminDigitalCadastre}
                           </span>
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-extrabold font-headline text-slate-900 dark:text-white tracking-tight">
-                          {authUser?.role === 'officer' ? `${authUser.name} Operations Hub` : 'Authority Command Dashboard'}
+                          {authUser?.role === 'officer' ? `${authUser.name} ${t.adminOperationsHub}` : (lang === 'bn' ? 'পৌর কর্তৃপক্ষ কমান্ড ড্যাশবোর্ড' : 'Authority Command Dashboard')}
                         </h1>
                         <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
                           {authUser?.role === 'officer'
-                            ? `সরাসরি দায়িত্বপ্রাপ্ত পৌর কর্মকর্তা · ${authUser.department || 'Road & Civil Infrastructure Maintenance'}`
-                            : 'সিটি করপোরেশন ও পৌর নির্বাহী ড্যাশবোর্ড: জরুরি অভিযোগ পর্যালোচনা, ফিল্ড টিমের কাজের প্রমাণ যাচাই ও নাগরিক সেবা নিশ্চিতকরণ।'}
+                            ? `${t.adminOfficerSubtitle}${authUser.department || (lang === 'bn' ? 'পৌর অবকাঠামো ও পয়ঃনিষ্কাশন বিভাগ' : 'Sewerage & Civil Infrastructure Division')}`
+                            : (lang === 'bn' ? 'সিটি করপোরেশন ও পৌর নির্বাহী ড্যাশবোর্ড: জরুরি অভিযোগ পর্যালোচনা, ফিল্ড টিমের কাজের প্রমাণ যাচাই ও নাগরিক সেবা নিশ্চিতকরণ।' : 'Municipal Executive Command: Triage ambiguous citizen reports, verify contractor completion evidence, and monitor ward SLAs.')}
                         </p>
                       </div>
 
                       {/* Active Officer Status & Prominent Red Log Out */}
                       <div className="flex items-center gap-4 shrink-0">
                         <div className="hidden sm:flex flex-col text-right">
-                          <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">দায়িত্বপ্রাপ্ত ইউজার</span>
+                          <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">{t.adminOfficerUser}</span>
                           <span className="text-sm font-bold text-slate-900 dark:text-white">{authUser?.name || authUser?.email}</span>
                         </div>
                         <button 
@@ -3235,7 +3657,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer border border-red-700"
                         >
                           <Icon name="log-out" className="w-4 h-4 text-white" />
-                          <span>Log Out</span>
+                          <span>{t.logout}</span>
                         </button>
                       </div>
                     </div>
@@ -3243,13 +3665,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     {/* SUB-NAVIGATION TAB RIBBON */}
                     <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none pt-1">
                       {[
-                        ['queue', 'list-filter', 'Work Queue'],
-                        ['review', 'user-check', `Human Review (${reports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
-                        ['proofs', 'clipboard-check', `Proof Reviews (${reports.filter(r => r.status === 'Evidence Uploaded').length})`],
-                        ['map', 'map', 'Spatial Map'],
-                        ['contractors', 'hard-hat', 'Contractors'],
-                        ['whatsapp', 'message-circle', 'WhatsApp'],
-                        ['funding', 'hand-coins', 'Youth Escrow']
+                        ['queue', 'list-filter', t.adminNavQueue],
+                        ['review', 'user-check', `${t.adminNavReview} (${reports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
+                        ['proofs', 'clipboard-check', `${t.adminNavProofs} (${reports.filter(r => r.status === 'Evidence Uploaded').length})`],
+                        ['map', 'map', t.adminNavMap],
+                        ['contractors', 'hard-hat', t.adminNavContractors],
+                        ['whatsapp', 'message-circle', t.adminNavWhatsApp],
+                        ['funding', 'hand-coins', t.adminNavYouth]
                       ].map(([id, icon, label]) => (
                         <button
                           key={id}
@@ -3273,48 +3695,48 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       {[
                         {
                           num: '01',
-                          label: 'Human Review',
+                          label: t.adminKpi1Label,
                           val: reports.filter(r => r.needs_review || r.status === 'Needs Review').length,
                           alert: true,
                           icon: 'user-check',
-                          desc: 'Routing ambiguity or boundary flags requiring officer sign-off.',
-                          meta: 'TRIAGE QUEUE: IMMEDIATE',
+                          desc: t.adminKpi1Desc,
+                          meta: t.adminKpi1Meta,
                           numColor: 'text-red-400',
                           badgeBg: 'bg-red-500/10 border-red-500/40 text-red-400',
                           bullet: 'bg-red-500',
                         },
                         {
                           num: '02',
-                          label: 'Proof Reviews',
+                          label: t.adminKpi2Label,
                           val: reports.filter(r => r.status === 'Evidence Uploaded').length,
                           alert: false,
                           icon: 'clipboard-check',
-                          desc: 'Resolution proofs submitted by crews awaiting confirmation.',
-                          meta: 'TWO-PARTY VERIFICATION',
+                          desc: t.adminKpi2Desc,
+                          meta: t.adminKpi2Meta,
                           numColor: 'text-[#38BDF8]',
                           badgeBg: 'bg-[#0C243C] border-[#0284C7]/50 text-[#38BDF8]',
                           bullet: 'bg-[#38BDF8]',
                         },
                         {
                           num: '03',
-                          label: 'SLA Overdue',
+                          label: t.adminKpi3Label,
                           val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length,
                           alert: true,
                           icon: 'clock',
-                          desc: 'Incidents exceeding statutory resolution deadlines across wards.',
-                          meta: 'SLA ESCALATION FLAG',
+                          desc: t.adminKpi3Desc,
+                          meta: t.adminKpi3Meta,
                           numColor: 'text-amber-400',
                           badgeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400',
                           bullet: 'bg-amber-400',
                         },
                         {
                           num: '04',
-                          label: 'Active Work',
+                          label: t.adminKpi4Label,
                           val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length,
                           alert: false,
                           icon: 'inbox',
-                          desc: 'Work orders assigned and currently in progress on site.',
-                          meta: 'MUNICIPAL DISPATCH SYNC',
+                          desc: t.adminKpi4Desc,
+                          meta: t.adminKpi4Meta,
                           numColor: 'text-[#10B981]',
                           badgeBg: 'bg-[#082820] border-[#059669]/50 text-[#10B981]',
                           bullet: 'bg-[#10B981]',
@@ -3370,11 +3792,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 shadow-sm space-y-5">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <h2 className="text-base font-bold text-slate-900 dark:text-white">Find and filter cases</h2>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Showing {filteredAdminReports.length} of {reports.length} municipal incidents</p>
+                          <h2 className="text-base font-bold text-slate-900 dark:text-white">{t.adminFindFilterTitle}</h2>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            {lang === 'bn' 
+                              ? `${t.adminOfText} ${reports.length}${t.adminIncidentsText} ${filteredAdminReports.length}টি ${t.adminShowingText}`
+                              : `${t.adminShowingText} ${filteredAdminReports.length} ${t.adminOfText} ${reports.length} ${t.adminIncidentsText}`}
+                          </p>
                         </div>
                         <button onClick={resetQueueFilters} className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer">
-                          Reset All Filters
+                          {t.adminResetFilters}
                         </button>
                       </div>
 
@@ -3382,41 +3808,41 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <input
                           type="search"
                           aria-label="Search incidents"
-                          placeholder="Search ID, area, type…"
+                          placeholder={t.adminSearchPlaceholder}
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
                           className="lg:col-span-2 rounded-xl px-4 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
                         />
                         <select aria-label="Reported within" value={queueFilters.days} onChange={e => setQueueFilters({ ...queueFilters, days: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
-                          <option value="all">Any age</option>
-                          <option value="1">Last 24 hours</option>
-                          <option value="7">Last 7 days</option>
-                          <option value="15">Last 15 days</option>
-                          <option value="30">Last 30 days</option>
+                          <option value="all">{t.adminAgeAny}</option>
+                          <option value="1">{t.adminAge24h}</option>
+                          <option value="7">{t.adminAge7d}</option>
+                          <option value="15">{t.adminAge15d}</option>
+                          <option value="30">{t.adminAge30d}</option>
                         </select>
                         <select aria-label="Work state" value={queueFilters.state} onChange={e => setQueueFilters({ ...queueFilters, state: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
-                          <option value="all">All statuses</option>
-                          <option value="needs_action">Needs action</option>
-                          <option value="assigned">Assigned</option>
-                          <option value="unresolved">Unresolved</option>
-                          <option value="resolved">Resolved</option>
+                          <option value="all">{t.adminStatusAll}</option>
+                          <option value="needs_action">{t.adminStatusNeedsAction}</option>
+                          <option value="assigned">{t.adminStatusAssigned}</option>
+                          <option value="unresolved">{t.adminStatusUnresolved}</option>
+                          <option value="resolved">{t.adminStatusResolved}</option>
                         </select>
                         <select aria-label="Category" value={queueFilters.category} onChange={e => setQueueFilters({ ...queueFilters, category: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
-                          <option value="all">All categories</option>
+                          <option value="all">{t.adminCategoryAll}</option>
                           {reportCategories.map(category => <option key={category} value={category}>{category}</option>)}
                         </select>
                         <select aria-label="Severity" value={queueFilters.severity} onChange={e => setQueueFilters({ ...queueFilters, severity: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
-                          <option value="all">All severities</option>
+                          <option value="all">{t.adminSeverityAll}</option>
                           {['Critical', 'High', 'Medium', 'Low'].map(level => <option key={level} value={level}>{level}</option>)}
                         </select>
                       </div>
 
                       <div className="flex items-center gap-2 pt-1 text-xs">
-                        <span className="text-slate-500 dark:text-slate-400 font-semibold">Sort:</span>
+                        <span className="text-slate-500 dark:text-slate-400 font-semibold">{t.adminSortLabel}</span>
                         {[
-                          ['priority', 'Highest Priority'],
-                          ['oldest', 'Oldest First'],
-                          ['newest', 'Newest First']
+                          ['priority', t.adminSortHighest],
+                          ['oldest', t.adminSortOldest],
+                          ['newest', t.adminSortNewest]
                         ].map(([value, label]) => (
                           <button
                             key={value}
@@ -3438,8 +3864,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   {adminView === 'map' && (
                     <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 sm:p-8 space-y-4">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-base font-bold text-slate-900 dark:text-white">Filtered Incident Telemetry Map</h2>
-                        <span className="text-xs text-slate-500 font-mono">{filteredAdminReports.filter(r => Number.isFinite(r.coordinates?.lat)).length} mapped coordinates</span>
+                        <h2 className="text-base font-bold text-slate-900 dark:text-white">{lang === 'bn' ? 'ফিল্টারকৃত অভিযোগ মানচিত্র' : 'Filtered Incident Telemetry Map'}</h2>
+                        <span className="text-xs text-slate-500 font-mono">{filteredAdminReports.filter(r => Number.isFinite(r.coordinates?.lat)).length} {lang === 'bn' ? 'ম্যাপযুক্ত পয়েন্ট' : 'mapped coordinates'}</span>
                       </div>
                       <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
                         <AuthorityMap reports={filteredAdminReports} useClusters={reportsTruncated} onSelect={report => { setSelectedReport(report); showToast(`${report.id}: ${report.status}`); }} />
@@ -3453,9 +3879,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       <div className="border border-[#1E293B] rounded-2xl overflow-hidden bg-[#0A101D] shadow-2xl">
                         <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1E293B]">
                           {[
-                            { num: '01', label: 'Total WhatsApp Intake', value: reports.filter(r => r.channel === 'WhatsApp').length, icon: 'message-square', desc: 'Direct citizen conversational incident logs via WhatsApp bot gateway.', meta: 'AUTOMATED BOT INTAKE', numColor: 'text-[#38BDF8]', badgeBg: 'bg-[#0C243C] border-[#0284C7]/50 text-[#38BDF8]', bullet: 'bg-[#38BDF8]' },
-                            { num: '02', label: 'Pending Triage', value: reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length, icon: 'clock', desc: 'WhatsApp cases awaiting municipal dispatch routing or verification.', meta: 'ACTIVE DISPATCH QUEUE', numColor: 'text-amber-400', badgeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400', bullet: 'bg-amber-400' },
-                            { num: '03', label: 'Resolved via Bot', value: reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length, icon: 'check-circle', desc: 'Incidents completed with photographic evidence verified by citizen.', meta: 'TWO-PARTY VERIFIED', numColor: 'text-[#10B981]', badgeBg: 'bg-[#082820] border-[#059669]/50 text-[#10B981]', bullet: 'bg-[#10B981]' }
+                            { num: '01', label: t.adminWaIntakeTitle, value: reports.filter(r => r.channel === 'WhatsApp').length, icon: 'message-square', desc: t.adminWaIntakeDesc, meta: t.adminWaIntakeMeta, numColor: 'text-[#38BDF8]', badgeBg: 'bg-[#0C243C] border-[#0284C7]/50 text-[#38BDF8]', bullet: 'bg-[#38BDF8]' },
+                            { num: '02', label: t.adminWaTriageTitle, value: reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length, icon: 'clock', desc: t.adminWaTriageDesc, meta: t.adminWaTriageMeta, numColor: 'text-amber-400', badgeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400', bullet: 'bg-amber-400' },
+                            { num: '03', label: t.adminWaResolvedTitle, value: reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length, icon: 'check-circle', desc: t.adminWaResolvedDesc, meta: t.adminWaResolvedMeta, numColor: 'text-[#10B981]', badgeBg: 'bg-[#082820] border-[#059669]/50 text-[#10B981]', bullet: 'bg-[#10B981]' }
                           ].map((stat, idx) => (
                             <div key={idx} className="p-6 sm:p-8 flex flex-col justify-between hover:bg-slate-900/50 transition-colors">
                               <div>
@@ -3500,10 +3926,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           {!contractor.verified && (
                             <div className="flex gap-2 shrink-0">
                               <button onClick={() => approveContractor(contractor, false)} className="px-4 py-2.5 rounded-xl border border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold transition-colors">
-                                Reject
+                                {t.adminRejectContractor}
                               </button>
                               <button onClick={() => approveContractor(contractor, true)} className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all">
-                                Approve Contractor
+                                {t.adminApproveContractor}
                               </button>
                             </div>
                           )}
@@ -3917,12 +4343,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <table className="w-full text-left border-collapse">
                           <thead>
                             <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                              <th className="py-4 px-6">ID</th>
-                              <th className="py-4 px-6">Category & Location</th>
-                              <th className="py-4 px-6">Severity</th>
-                              <th className="py-4 px-6">AI Confidence</th>
-                              <th className="py-4 px-6">Status</th>
-                              <th className="py-4 px-6 text-right">Action</th>
+                              <th className="py-4 px-6">{t.adminTableId}</th>
+                              <th className="py-4 px-6">{t.adminTableTitle}</th>
+                              <th className="py-4 px-6">{t.adminTableSeverity}</th>
+                              <th className="py-4 px-6">{t.adminTableAiConfidence}</th>
+                              <th className="py-4 px-6">{t.adminTableStatus}</th>
+                              <th className="py-4 px-6 text-right">{t.adminTableAction}</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
@@ -3975,7 +4401,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                       onClick={() => inspectIncident(item)}
                                       className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition-all cursor-pointer"
                                     >
-                                      Workspace
+                                      {lang === 'bn' ? 'কার্যক্ষেত্র' : 'Workspace'}
                                     </button>
                                   </div>
                                 </td>
