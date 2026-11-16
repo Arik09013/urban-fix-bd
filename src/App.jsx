@@ -1051,9 +1051,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
           {/* HEADER / NAVIGATION */}
           <header className="sticky top-0 z-50 bg-surface border-b-2 border-border-black">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <button aria-label="UrbanFix home" className="flex shrink-0 items-center gap-2 text-left focus:outline-none" onClick={() => setActiveTab('landing')}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-6">
+              <div className="flex items-center gap-4 lg:gap-6">
+                <button aria-label="UrbanFix home" className="flex shrink-0 items-center gap-2.5 text-left focus:outline-none cursor-pointer" onClick={() => setActiveTab('landing')}>
                   <div className="w-8 h-8 bg-primary-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
                     <Icon name="check" className="w-5 h-5 text-on-primary-container stroke-[3]" />
                   </div>
@@ -1062,19 +1062,18 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <span className="font-mono text-[9px] text-ink-subtle uppercase tracking-wider">Civic Engine</span>
                   </div>
                 </button>
-                <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 bg-surface-container border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]">
+                <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-surface-container border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]">
                   <span className="w-2 h-2 rounded-full bg-status-live-green shadow-[0_0_6px_#10B981]"></span>
-                  <span className="font-mono text-[10px] uppercase font-bold text-ink-primary">CADASTRE-SYNC: LIVE</span>
+                  <span className="font-mono text-[10px] uppercase font-bold text-ink-primary tracking-wider">CADASTRE-SYNC: LIVE</span>
                 </div>
               </div>
 
-              <nav className="hidden lg:flex min-w-0 items-center gap-1 font-mono text-xs uppercase" data-active-classes="bg-primary-container text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)]">
+              <nav className="hidden md:flex items-center gap-2 lg:gap-3 font-mono text-xs uppercase font-bold tracking-wide">
                 {[
-                  { id: 'landing', label: 'Home', icon: 'home' },
-                  { id: 'report', label: 'Report Issue', icon: 'camera' },
-                  { id: 'track', label: 'Track Report', icon: 'search' },
-                  { id: 'map', label: 'Public Map', icon: 'map' },
-                  { id: 'community', label: 'Community', icon: 'hand-coins' },
+                  { id: 'landing', label: 'Home' },
+                  { id: 'report', label: 'Report Issue' },
+                  { id: 'track', label: 'Track Report' },
+                  { id: 'map', label: 'Public Map' },
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
@@ -1082,33 +1081,24 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       key={tab.id}
                       onClick={() => { if (tab.id === 'track') { setSelectedReport(null); setSubmittedReportId(''); } setActiveTab(tab.id); }}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`px-3 py-1.5 border-2 transition-all flex items-center gap-1.5 ${
+                      className={`px-4 py-2 border-2 transition-all cursor-pointer ${
                         isActive 
-                          ? 'bg-primary-container text-on-primary-container font-bold border-border-black shadow-[2px_2px_0px_var(--shadow-color)]'
+                          ? 'bg-primary-container text-on-primary-container font-black border-border-black shadow-[2px_2px_0px_var(--shadow-color)]'
                           : 'border-transparent text-ink-secondary hover:border-border-black hover:bg-surface-container hover:text-ink-primary'
                       }`}
                     >
-                      <Icon name={tab.icon} className={`w-3.5 h-3.5 ${isActive ? 'text-on-primary-container' : 'text-ink-secondary'}`} />
-                      <span>{tab.label}</span>
+                      {tab.label}
                     </button>
                   );
                 })}
               </nav>
 
-              <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                <div className="hidden sm:flex items-center gap-2 bg-accent-cyan-light border-2 border-border-black px-2.5 py-1 shadow-[2px_2px_0px_var(--shadow-color)]">
-                  <span className="material-symbols-outlined text-accent-electric-cyan text-base">phone_in_talk</span>
-                  <div className="flex flex-col text-left">
-                    <span className="font-mono text-[8px] uppercase text-ink-subtle leading-none">Civic Hotline</span>
-                    <span className="font-mono text-xs text-ink-primary font-bold leading-tight">311 / 16104</span>
-                  </div>
-                </div>
-
+              <div className="flex shrink-0 items-center gap-3">
                 <button 
                   onClick={() => setDarkMode(value => !value)} 
                   aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`} 
                   title={`Switch to ${darkMode ? 'light' : 'dark'} mode`} 
-                  className="w-8 h-8 border-2 border-border-black bg-surface-clean text-ink-primary hover:bg-surface-container flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)] transition-colors"
+                  className="w-9 h-9 border-2 border-border-black bg-surface-clean text-ink-primary hover:bg-surface-container flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)] transition-colors cursor-pointer"
                 >
                   <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4 text-accent-electric-cyan" />
                 </button>
@@ -1116,9 +1106,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 <button 
                   onClick={() => setActiveTab('admin')}
                   aria-label="Authority Portal"
-                  className="px-3 py-1.5 font-mono text-xs font-bold border-2 border-border-black bg-surface-clean hover:bg-primary-container hover:text-on-primary-container text-ink-primary shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-2 font-mono text-xs font-bold border-2 border-border-black bg-surface-clean hover:bg-primary-container hover:text-on-primary-container text-ink-primary shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  <Icon name="shield-alert" className="w-3.5 h-3.5 text-accent-electric-cyan" />
+                  <Icon name="shield-alert" className="w-4 h-4 text-accent-electric-cyan" />
                   <span className="hidden sm:inline">Authority Portal</span>
                 </button>
               </div>
