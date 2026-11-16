@@ -3,15 +3,58 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light dark;
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #F1F5F9;
+  --bg-card: #FFFFFF;
+  --surface: #F8FAFC;
+  --surface-clean: #FFFFFF;
+  --surface-dim: #E2E8F0;
+  --canvas-paper: #F1F5F9;
+  --surface-container: #F1F5F9;
+  --surface-container-low: #F8FAFC;
+  --surface-container-high: #E2E8F0;
+  --surface-container-highest: #CBD5E1;
+  --border-black: #E2E8F0;
+  --ink-primary: #0F172A;
+  --ink-secondary: #475569;
+  --ink-subtle: #64748B;
+  --primary: #059669;
+  --on-primary: #FFFFFF;
+  --primary-container: #059669;
+  --on-primary-container: #FFFFFF;
+  --accent-cyan-light: #ECFDF5;
+  --accent-electric-cyan: #059669;
+  --shadow-color: rgba(15, 23, 42, 0.08);
+  --brand-sky: #059669;
+  --brand-cyan: #059669;
+  --brand-blue: #006A4E;
+}
+
+.dark {
   color-scheme: dark;
-  --bg-primary: #0a0d12;
-  --bg-secondary: #10151d;
-  --bg-card: #141a23;
-  --border-subtle: rgba(255, 255, 255, 0.1);
-  --border-highlight: rgba(56, 189, 248, 0.42);
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --bg-primary: #0B0F17;
+  --bg-secondary: #070A11;
+  --bg-card: #111827;
+  --surface: #0B0F17;
+  --surface-clean: #111827;
+  --surface-dim: #070A11;
+  --canvas-paper: #070A11;
+  --surface-container: #15223A;
+  --surface-container-low: #0F172A;
+  --surface-container-high: #1E293B;
+  --surface-container-highest: #334155;
+  --border-black: #334155;
+  --ink-primary: #F8FAFC;
+  --ink-secondary: #94A3B8;
+  --ink-subtle: #64748B;
+  --primary: #00A3C4;
+  --on-primary: #070A11;
+  --primary-container: #00A3C4;
+  --on-primary-container: #070A11;
+  --accent-cyan-light: #0E2A35;
+  --accent-electric-cyan: #38BDF8;
+  --shadow-color: #000000;
   --brand-sky: #38bdf8;
   --brand-cyan: #06b6d4;
   --brand-blue: #0284c7;
@@ -19,15 +62,21 @@
 
 html {
   scroll-behavior: auto;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 body {
   background-color: var(--bg-primary);
-  color: var(--text-primary);
+  color: var(--ink-primary);
   overflow-x: hidden;
   min-height: 100vh;
   line-height: 1.5;
+}
+
+/* Material Symbols alignment */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
 }
 
 /* Accessibility Tap & Focus */
@@ -44,7 +93,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid var(--accent-electric-cyan);
   outline-offset: 2px;
 }
 
@@ -53,12 +102,12 @@ select:focus-visible {
   left: 1rem;
   top: -5rem;
   z-index: 100;
-  background: #38bdf8;
-  color: #07111f;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 2px solid var(--border-black);
   padding: 0.75rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 700;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+  font-weight: 800;
+  box-shadow: 3px 3px 0px var(--shadow-color);
   transition: top 0.2s ease-in-out;
 }
 
@@ -75,35 +124,49 @@ select:focus-visible {
   display: none;
 }
 
-/* Glassmorphism System */
+/* Neo-Brutalist Cadastre Panel System */
 .glass-panel {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-subtle);
-  box-shadow: none;
+  background: var(--surface-clean);
+  border: 2px solid var(--border-black);
+  box-shadow: 4px 4px 0px var(--shadow-color);
 }
 
 .glass-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  box-shadow: none;
-  transition: border-color 0.15s ease;
-}
-
-.glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: none;
+  background: var(--surface-container);
+  border: 2px solid var(--border-black);
+  box-shadow: 3px 3px 0px var(--shadow-color);
+  transition: all 0.15s ease;
 }
 
 .glass-input {
-  background: var(--bg-primary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-  transition: all 0.2s ease;
+  background: var(--surface-clean);
+  border: 2px solid var(--border-black);
+  color: var(--ink-primary);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  transition: all 0.15s ease;
 }
 
 .glass-input:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+  border-color: var(--accent-electric-cyan);
+  outline: none;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+/* Brutalist Button Utility */
+.brutal-btn {
+  border: 2px solid var(--border-black);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  transition: all 0.12s ease-in-out;
+}
+
+.brutal-btn:hover {
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  transform: translate(2px, 2px);
+}
+
+.brutal-btn:active {
+  box-shadow: 0px 0px 0px var(--shadow-color);
+  transform: translate(4px, 4px);
 }
 
 /* Animations */
@@ -179,7 +242,7 @@ select:focus-visible {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #38bdf8;
+  background: var(--accent-electric-cyan);
   box-shadow: none;
   pointer-events: none;
   z-index: 25;
@@ -192,14 +255,14 @@ select:focus-visible {
   transform: translate(-50%, -50%);
   width: 36px;
   height: 36px;
-  border-radius: 9999px;
-  background: #0ea5e9;
-  border: 3px solid #ffffff;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+  border-radius: 4px;
+  background: var(--primary-container);
+  border: 2px solid var(--border-black);
+  box-shadow: 2px 2px 0px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--on-primary-container);
   pointer-events: none;
   z-index: 30;
 }
@@ -333,72 +396,8 @@ html:not(.dark) {
 }
 
 html:not(.dark) body {
-  background-color: #F5F5F7 !important;
-  color: #0F172A !important;
-}
-
-html:not(.dark) [class*="bg-[#0B0F17]"],
-html:not(.dark) [class*="bg-[#070A11]"],
-html:not(.dark) [class*="bg-civic-obsidian"] {
-  background-color: #F5F5F7 !important;
-  color: #0F172A;
-}
-
-html:not(.dark) [class*="bg-slate-950"],
-html:not(.dark) [class*="bg-civic-navy"] {
-  background-color: #FFFFFF !important;
-  color: #0F172A;
-}
-
-html:not(.dark) [class*="bg-slate-900"],
-html:not(.dark) [class*="bg-civic-surface"] {
-  background-color: #F1F5F9 !important;
-  color: #0F172A;
-}
-
-html:not(.dark) [class*="bg-slate-800"],
-html:not(.dark) [class*="bg-civic-card"] {
-  background-color: #E2E8F0 !important;
-  color: #0F172A;
-}
-
-html:not(.dark) [class*="border-slate-800"],
-html:not(.dark) [class*="border-slate-700"],
-html:not(.dark) [class*="border-civic-border"] {
-  border-color: #CBD5E1 !important;
-}
-
-html:not(.dark) .glass-panel {
-  background: #FFFFFF !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
-  box-shadow: none !important;
-}
-
-html:not(.dark) .glass-card {
-  background: #FFFFFF !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
-  box-shadow: none !important;
-}
-
-html:not(.dark) .glass-input {
-  background: #FFFFFF !important;
-  border-color: #CBD5E1 !important;
-  color: #0F172A !important;
-}
-
-html:not(.dark) .text-white,
-html:not(.dark) [class*="text-slate-100"],
-html:not(.dark) [class*="text-slate-200"],
-html:not(.dark) [class*="text-slate-300"] {
-  color: #0F172A !important;
-}
-
-html:not(.dark) [class*="text-slate-400"] {
-  color: #475569 !important;
-}
-
-html:not(.dark) [class*="text-slate-500"] {
-  color: #64748B !important;
+  background-color: var(--bg-primary);
+  color: var(--ink-primary);
 }
 
 html:not(.dark) input,

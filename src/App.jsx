@@ -338,7 +338,7 @@ export const normalizeReport = (item) => {
       }
     ];
 
-    function AuthCard({ title, subtitle, mode, setMode, form, setForm, submit, busy, error, allowRegister = true, demoCredentials = false, onDemoOfficerLogin = null }) {
+    function AuthCard({ title, subtitle, mode, setMode, form, setForm, submit, busy, error, allowRegister = true, demoCredentials = false, onDemoOfficerLogin = null, lang = 'bn' }) {
       const [showPassword, setShowPassword] = useState(false);
       const registering = allowRegister && mode === 'register';
       const emailValid = !allowRegister || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim());
@@ -346,89 +346,706 @@ export const normalizeReport = (item) => {
       const passwordsMatch = !registering || form.password === form.confirmPassword;
       const canSubmit = !busy && emailValid && passwordValid && (!registering || (form.name.trim().length >= 2 && passwordsMatch));
       return (
-        <div className="max-w-md mx-auto glass-panel border border-slate-700/70 rounded-2xl p-6 sm:p-8 space-y-5">
-          <div className="text-center sm:text-left">
-            <div className="text-xs font-semibold text-sky-400 mb-2">
-              SECURE PORTAL
+        <div className="max-w-xl mx-auto bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl p-6 sm:p-10 space-y-6">
+          <div className="text-left border-b border-slate-200 dark:border-slate-700 pb-5">
+            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-3 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>{allowRegister ? (lang === 'bn' ? 'নাগরিক ও যুব কর্মী পোর্টাল · Civic Gate' : 'Civic & Youth Worker Portal · Civic Gate') : (lang === 'bn' ? 'পৌর কর্তৃপক্ষ লগইন · Municipal Admin Gate' : 'Municipal Authority Login · Municipal Admin Gate')}</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{title}</h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">{subtitle}</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold font-headline text-slate-900 dark:text-white tracking-tight">{title}</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{subtitle}</p>
           </div>
+
           {allowRegister && (
-            <div className="grid grid-cols-2 bg-slate-950/80 border border-slate-800/80 rounded-xl p-1 shadow-inner">
-              <button onClick={()=>setMode('login')} className={`py-2 rounded-lg text-xs font-semibold transition-all ${mode==='login'?'bg-sky-500 text-slate-950 shadow-md':'text-slate-400 hover:text-slate-200'}`}>Login</button>
-              <button onClick={()=>setMode('register')} className={`py-2 rounded-lg text-xs font-semibold transition-all ${mode==='register'?'bg-sky-500 text-slate-950 shadow-md':'text-slate-400 hover:text-slate-200'}`}>Register</button>
+            <div className="grid grid-cols-2 bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl">
+              <button onClick={()=>setMode('login')} className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${mode==='login'?'bg-emerald-600 text-white shadow-sm':'text-slate-600 dark:text-slate-300 hover:text-slate-900'}`}>{lang === 'bn' ? 'লগইন (Login)' : 'Login'}</button>
+              <button onClick={()=>setMode('register')} className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${mode==='register'?'bg-emerald-600 text-white shadow-sm':'text-slate-600 dark:text-slate-300 hover:text-slate-900'}`}>{lang === 'bn' ? 'নিবন্ধন (Register)' : 'Register'}</button>
             </div>
           )}
-          {allowRegister && mode==='register' && (
-            <>
-              <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name" autoComplete="name" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
-              <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone number (optional)" autoComplete="tel" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
-              <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder="Stripe Connect account for payments (acct_…)" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
-            </>
-          )}
+
+          {/* CREDENTIAL INPUTS - FRONT & CENTER */}
+          <div className="space-y-4">
+            {allowRegister && mode==='register' && (
+              <>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">{lang === 'bn' ? 'পূর্ণ নাম (Full Name)' : 'Full Name'}</label>
+                  <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder={lang === 'bn' ? 'আপনার নাম' : 'Full name'} autoComplete="name" className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">{lang === 'bn' ? 'ফোন নম্বর (Phone Number)' : 'Phone Number'}</label>
+                  <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="01XXXXXXXXX" autoComplete="tel" className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">{lang === 'bn' ? 'পেমেন্ট অ্যাকাউন্ট (MFS / Stripe)' : 'Payout Account (MFS / Stripe)'}</label>
+                  <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder={lang === 'bn' ? 'অ্যাকাউন্ট নম্বর (ঐচ্ছিক)' : 'Account details (optional)'} className="w-full rounded-xl p-3.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"/>
+                </div>
+              </>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+                <span>{allowRegister ? (lang === 'bn' ? 'ইমেইল অ্যাড্রেস (Email Address)' : 'Email Address') : (lang === 'bn' ? 'অফিসার ইউজারনেম (Admin / Officer Username)' : 'Admin / Officer Username')}</span>
+                {!allowRegister && <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">e.g. admin or officer.ccc</span>}
+              </label>
+              <input 
+                type={allowRegister ? 'email' : 'text'} 
+                value={form.email} 
+                onChange={e => setForm({...form, email: e.target.value})} 
+                placeholder={allowRegister ? (lang === 'bn' ? 'ইমেইল লিখুন' : 'Email address') : (lang === 'bn' ? 'অ্যাডমিন ইউজারনেম' : 'Admin username')} 
+                autoComplete="username" 
+                className="w-full rounded-xl p-3.5 text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+                <span>{lang === 'bn' ? 'পাসওয়ার্ড (Password)' : 'Password'}</span>
+                {!allowRegister && <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">admin or demo password</span>}
+              </label>
+              <div className="relative">
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  value={form.password} 
+                  onChange={e => setForm({...form, password: e.target.value})} 
+                  placeholder={lang === 'bn' ? 'পাসওয়ার্ড লিখুন' : 'Password'} 
+                  autoComplete={mode === 'register' ? 'new-password' : 'current-password'} 
+                  onKeyDown={e => e.key === 'Enter' && canSubmit && submit()} 
+                  className="w-full rounded-xl p-3.5 pr-16 text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm focus:outline-none"
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(value => !value)} 
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-emerald-600 cursor-pointer px-1 py-0.5"
+                >
+                  {showPassword ? (lang === 'bn' ? 'লুকান' : 'Hide') : (lang === 'bn' ? 'দেখান' : 'Show')}
+                </button>
+              </div>
+            </div>
+
+            {registering && (
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{lang === 'bn' ? 'পাসওয়ার্ড নিশ্চিত করুন (Confirm Password)' : 'Confirm Password'}</label>
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  value={form.confirmPassword} 
+                  onChange={e => setForm({...form, confirmPassword: e.target.value})} 
+                  placeholder={lang === 'bn' ? 'আবার পাসওয়ার্ড লিখুন' : 'Confirm password'} 
+                  autoComplete="new-password" 
+                  onKeyDown={e => e.key === 'Enter' && canSubmit && submit()} 
+                  className={`w-full rounded-xl p-3.5 text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900 border shadow-sm focus:outline-none ${form.confirmPassword && !passwordsMatch ? 'border-red-500' : 'border-slate-300 dark:border-slate-700'}`}
+                />
+                <div className="flex justify-between text-[11px] px-1 mt-1 font-medium">
+                  <span className={passwordValid ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}>{passwordValid ? (lang === 'bn' ? '✓ ৮+ অক্ষর' : '✓ 8+ chars') : (lang === 'bn' ? 'কমপক্ষে ৮ অক্ষর' : 'Min 8 chars')}</span>
+                  {form.confirmPassword && <span className={passwordsMatch ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}>{passwordsMatch ? (lang === 'bn' ? '✓ মিল আছে' : '✓ Match') : (lang === 'bn' ? 'পাসওয়ার্ড মিলেনি' : 'Mismatch')}</span>}
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div role="alert" className="rounded-xl border border-red-200 dark:border-red-800/60 bg-red-50 dark:bg-red-950/30 p-3.5 text-xs text-red-600 dark:text-red-400 flex items-center gap-2">
+                <Icon name="alert-circle" className="w-4 h-4 text-red-500 shrink-0"/>
+                <span>{error}</span>
+              </div>
+            )}
+
+            <button 
+              onClick={() => submit()} 
+              disabled={!canSubmit} 
+              className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Icon name="shield-check" className="w-5 h-5 text-white" />
+              <span>{busy ? (lang === 'bn' ? 'প্রবেশ করা হচ্ছে…' : 'Signing in…') : mode === 'register' ? (lang === 'bn' ? 'অ্যাকাউন্ট তৈরি করুন →' : 'Create Account →') : (lang === 'bn' ? 'লগইন করুন ও প্রবেশ করুন →' : 'Sign In & Enter Console →')}</span>
+            </button>
+          </div>
+
+          {/* QUICK DEMO LOGIN SHORTCUTS */}
           {demoCredentials && (
-            <div className="space-y-2.5">
-              <button type="button" onClick={() => setForm({...form, email:'admin', password:'admin'})} className="w-full rounded-xl border border-sky-500/30 bg-sky-500/10 p-3 text-left text-xs text-sky-300 hover:bg-sky-500/20 transition-colors">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold">Judge demo access (Administrator)</span>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold">Admin</span>
+            <div className="border-t border-slate-200 dark:border-slate-700 pt-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{lang === 'bn' ? 'দ্রুত পরীক্ষামূলক লগইন (Demo Access)' : 'Quick Demo Access'}</span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">1-CLICK ACCESS</span>
+              </div>
+
+              <button 
+                type="button" 
+                onClick={() => setForm({...form, email: 'admin', password: 'admin'})} 
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 p-3.5 text-left hover:border-emerald-500/50 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/20 transition-all cursor-pointer flex items-center justify-between gap-3 group shadow-sm"
+              >
+                <div>
+                  <div className="font-bold text-xs text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
+                    {lang === 'bn' ? '⚡ বিচারক ও অ্যাডমিন টেস্ট অ্যাক্সেস' : '⚡ Judge demo access (Administrator)'}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {lang === 'bn' ? 'স্বয়ংক্রিয় পূরণ: ইউজারনেম: admin · পাসওয়ার্ড: admin' : 'Fills: username: admin · password: admin'}
+                  </div>
                 </div>
-                <span className="font-mono text-[11px] text-slate-400">Username: admin · Global access</span>
+                <span className="shrink-0 text-xs px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold shadow-sm">
+                  {lang === 'bn' ? 'অ্যাডমিন পূরণ' : 'FILL ADMIN'}
+                </span>
               </button>
-              <div className="p-3 rounded-xl border border-amber-500/20 bg-amber-500/5 space-y-2">
-                <div className="text-[10px] font-mono uppercase text-amber-300 font-bold flex items-center justify-between">
-                  <span>Simulated Authority Officers</span>
-                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200">DEMO ONLY</span>
+
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-2.5">
+                <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                  <span>{lang === 'bn' ? 'সিটি করপোরেশন ও পৌর অফিসার (Direct Officer Login)' : 'Municipal Corporation & Officer Login'}</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">{lang === 'bn' ? 'তাৎক্ষণিক সেশন' : 'Instant Session'}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-1.5">
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { code: 'officer.ccc', label: 'CCC (Chattogram)', auth: 'AUTH-CCC' },
-                    { code: 'officer.dncc', label: 'DNCC (Dhaka N)', auth: 'AUTH-DNCC' },
-                    { code: 'officer.dscc', label: 'DSCC (Dhaka S)', auth: 'AUTH-DSCC' },
-                    { code: 'officer.dwasa', label: 'DWASA (Water/Sewer)', auth: 'AUTH-DWASA' },
+                    { code: 'officer.ccc', label: 'CCC (চট্টগ্রাম)', auth: 'AUTH-CCC' },
+                    { code: 'officer.dncc', label: 'DNCC (ঢাকা উত্তর)', auth: 'AUTH-DNCC' },
+                    { code: 'officer.dscc', label: 'DSCC (ঢাকা দক্ষিণ)', auth: 'AUTH-DSCC' },
+                    { code: 'officer.dwasa', label: 'DWASA (পানি ও ড্রেনেজ)', auth: 'AUTH-DWASA' },
                   ].map(item => (
                     <button
                       key={item.code}
                       type="button"
                       data-testid={`login-${item.code}`}
                       onClick={() => onDemoOfficerLogin ? onDemoOfficerLogin(item.code) : setForm({...form, email: item.code})}
-                      className="rounded-lg border border-slate-700/80 bg-slate-900/90 p-2 text-left text-[11px] text-slate-300 hover:border-sky-500/50 hover:bg-slate-800 transition-colors"
+                      className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm cursor-pointer"
                     >
-                      <div className="font-bold text-sky-300 truncate">{item.label}</div>
-                      <div className="font-mono text-[10px] text-slate-400">{item.code}</div>
+                      <div className="font-semibold">{item.label}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">{item.code}</div>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
           )}
-          <input type={allowRegister?'email':'text'} value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder={allowRegister ? 'Email address' : 'Admin username'} autoComplete="username" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
-          <div className="relative">
-            <input type={showPassword?'text':'password'} value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Password" autoComplete={mode==='register'?'new-password':'current-password'} onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className="w-full glass-input rounded-xl p-3 pr-16 text-sm focus:outline-none"/>
-            <button type="button" onClick={()=>setShowPassword(value=>!value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono text-slate-400 hover:text-sky-400">{showPassword?'Hide':'Show'}</button>
-          </div>
-          {registering && (
-            <>
-              <input type={showPassword?'text':'password'} value={form.confirmPassword} onChange={e=>setForm({...form,confirmPassword:e.target.value})} placeholder="Confirm password" autoComplete="new-password" onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className={`w-full glass-input rounded-xl p-3 text-sm focus:outline-none ${form.confirmPassword && !passwordsMatch?'border-red-500/60':'border-slate-800'}`}/>
-              <div className="flex justify-between text-[10px] font-mono px-1">
-                <span className={passwordValid?'text-emerald-400':'text-slate-500'}>{passwordValid?'✓ 8+ chars':'Min 8 characters'}</span>
-                {form.confirmPassword && <span className={passwordsMatch?'text-emerald-400':'text-red-400'}>{passwordsMatch?'✓ Passwords match':'Passwords do not match'}</span>}
-              </div>
-            </>
-          )}
-          {error && <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300 flex items-center gap-2"><Icon name="alert-circle" className="w-4 h-4 text-red-400 shrink-0"/><span>{error}</span></div>}
-          <button onClick={()=>submit()} disabled={!canSubmit} className="w-full py-3.5 rounded-xl bg-sky-400 hover:bg-sky-300 disabled:opacity-40 text-slate-950 font-bold text-sm transition-colors">
-            {busy?'Authenticating…':mode==='register'?'Create account':'Sign in'}
-          </button>
         </div>
       );
     }
 
+    // --- BILINGUAL BANGLADESH CIVIC TRANSLATION DICTIONARY ---
+    const I18N = {
+      en: {
+        // Navigation & Common
+        home: 'Home',
+        reportIssue: 'Report Issue',
+        trackReport: 'Track Report',
+        publicMap: 'Public Map',
+        authorityPortal: 'Authority Portal',
+        logout: 'Log Out',
+        activeUser: 'Active User',
+        loading: 'Loading...',
+        statusLive: 'Live Municipal Network',
+
+        // Ticker & Header
+        tickerStatus: 'CITIZEN SERVICES · LIVE CITY MONITORING',
+        tickerPill1: 'NO APP DOWNLOAD REQUIRED',
+        tickerPill2: 'AVG DISPATCH: 4.2 HRS',
+        tickerPill3: 'ACTIVE INCIDENTS:',
+        tickerPill4: 'MUNICIPAL AUDIT 2026',
+        govBadge: 'PEOPLE\'S REPUBLIC OF BANGLADESH · CIVIC PLATFORM',
+
+        // Landing Hero
+        heroTitle1: 'See a problem in your area?',
+        heroTitle2: 'Report it directly to authorities.',
+        heroSubtext: 'Take a photo, share the location, and track municipal action in real time. No app download or prior registration required.',
+        reportBtn: 'Report an Issue',
+        trackBtn: 'Track a Report',
+        check1: 'No account needed',
+        check2: 'Get a report ID',
+        check3: 'See proof when fixed',
+
+        // Categories
+        categoriesBadge: 'POPULAR CATEGORIES',
+        categoriesTitle: 'Common Municipal Issues',
+        categoriesSub: 'Select a category below for rapid AI categorization and direct department routing',
+        catRoadsTitle: 'Roads & Potholes',
+        catRoadsSub: 'Damaged asphalt, potholes, open manholes, footpaths',
+        catDrainageTitle: 'Waterlogging & Drains',
+        catDrainageSub: 'Monsoon overflow, blocked drains, CWASA/DWASA lines',
+        catWasteTitle: 'Waste & Sanitation',
+        catWasteSub: 'Overflowing dumpsters, roadside waste, uncollected garbage',
+        catLightsTitle: 'Street Lights & Cables',
+        catLightsSub: 'Broken streetlights, dangling live wires, electric poles',
+
+        // How It Works
+        howItWorksTitle: 'Report. Track. Verify.',
+        howItWorksSub: 'A simple process, with a clear record at every step.',
+        step1Num: '01',
+        step1Title: 'Report',
+        step1Desc: 'Take or upload a photo, add the location, and briefly describe the problem.',
+        step1Meta: 'STEP DURATION: < 60 SECONDS',
+        step2Num: '02',
+        step2Title: 'Track',
+        step2Desc: 'Save your report ID and check progress whenever you need to.',
+        step2Meta: 'REAL-TIME MUNICIPAL DISPATCH SYNC',
+        step3Num: '03',
+        step3Title: 'Verify',
+        step3Desc: 'See the repair evidence and whether the resolution has been confirmed.',
+        step3Meta: 'INCLUDES PHOTOGRAPHIC PROOF',
+
+        // Metrics
+        metricsBadge: 'LIVE PERFORMANCE METRICS',
+        metric1Val: '12,840',
+        metric1Label: 'Incidents Logged',
+        metric1Desc: 'Citizen reports received across municipal wards.',
+        metric1Meta: 'All City Corporations',
+        metric2Val: '89.4%',
+        metric2Label: 'Resolution Rate',
+        metric2Desc: 'Verified fixes backed by citizen confirmation.',
+        metric2Meta: 'Citizen Verified',
+        metric3Val: '18.2h',
+        metric3Label: 'Avg Dispatch Turn',
+        metric3Desc: 'Average time from report submission to field crew mobilization.',
+        metric3Meta: 'Statutory SLA',
+        metric4Val: '100%',
+        metric4Label: 'Public Transparency',
+        metric4Desc: 'All verified cases accessible on the public map.',
+        metric4Meta: 'Open Citizen Ledger',
+
+        // Slider & Banner
+        sliderBadge: 'RESOLUTION EVIDENCE',
+        sliderTitle: 'Interactive Before & After Verification',
+        sliderSub: 'Drag the slider to compare original citizen reports with verified municipal repairs.',
+        sliderTag: 'TWO-PARTY AUDITED',
+        bannerTitle: 'Spot a civic hazard right now? No app required.',
+        bannerSub: 'Open camera, pin your coordinates, and UrbanFix routes directly to the assigned zone authority.',
+        hotline: 'Civic Helpline: 16104 / 311',
+        bannerBtn: 'Report Issue Now',
+
+        // Citizen Report Flow
+        step1Pill: 'Step 1: Upload Photo',
+        step2Pill: 'Step 2: Details',
+        photoUploadTitle: 'Take or upload a clear photo of the issue',
+        photoUploadSub: 'Clear photos enable municipal field teams to locate and resolve the hazard quickly.',
+        dragDropText: 'Drag and drop photo here, or browse files',
+        browseFilesBtn: 'Take Photo / Browse',
+        photoLimitHint: 'Supports JPEG, PNG, WebP up to 10MB',
+        detailsTitle: 'Provide Issue Details',
+        detailsSub: 'Our AI has pre-categorized your issue. Review or edit details below before submission.',
+        categoryLabel: 'Category',
+        issueTitleLabel: 'Issue Title',
+        issueTitlePlaceholder: 'e.g. Broken pavement near gate',
+        descriptionLabel: 'Description',
+        descriptionPlaceholder: 'Briefly describe the problem (e.g. depth of pothole, exact building nearby)...',
+        locationLabel: 'Location / Address',
+        locationPlaceholder: 'Enter street, area or landmark',
+        aiSuggestedLabel: 'Suggested description (AI-generated)',
+        useSuggestionBtn: 'Use this suggestion',
+        submittingBtn: 'Submitting Incident...',
+        submitReportBtn: 'Submit Report',
+        backBtn: 'Back to Photo',
+
+        // Track Report
+        trackPageTitle: 'Track a Report',
+        trackPageSub: 'Enter your report ID to see its current status, responsible municipal authority, and completion evidence.',
+        searchIdPlaceholder: 'Search ID (e.g. CP-88390)',
+        trackActionBtn: 'Track',
+        seePublicReportBtn: 'See public report',
+        reportProgressTitle: 'Report progress',
+        responsibleAuthority: 'Responsible Public Authority',
+        gazetteVerified: 'Gazette Verified',
+        statutoryVerified: 'Statutory Verified',
+        locationInferred: 'Location Inferred',
+        resAndEvidence: 'RESOLUTION & EVIDENCE',
+        citizenConfirmed: 'Citizen Confirmed & Resolved',
+        awaitingCitizen: 'Awaiting Citizen Verification',
+        gate01Title: 'Field Officer Evidence',
+        gate01Desc: 'Photographic proof and work-order completion logs from dispatch crew.',
+        gate02Title: 'Citizen Verification',
+        gate02Desc: 'Reporter on-site inspection and token approval before final ticket closure.',
+        gateMunicipalLog: 'MUNICIPAL LOG',
+        gateTwoPartyAudit: 'TWO-PARTY AUDIT',
+        gateSubmitted: '✓ SUBMITTED',
+        gatePending: 'PENDING',
+        gateVerified: '✓ VERIFIED',
+        citizenVerificationGate: 'Citizen Verification Gate',
+        citizenConfirmPrompt: 'Was this issue fixed satisfactorily?',
+        citizenConfirmYes: '✓ Yes, Issue Fixed',
+        citizenConfirmNo: '✕ Not Fixed / Reopen',
+        citizenNotesPlaceholder: 'Add optional inspection feedback for municipal records...',
+        submittingVerification: 'Submitting verification...',
+        submitCitizenFeedback: 'Submit Citizen Verification',
+        accountabilityReceiptTitle: 'Tamper-Evident Accountability Receipt',
+        sha256Proof: 'SHA-256 Audit Seal',
+
+        // Map
+        mapTitle: 'Live Municipal Incident Map',
+        mapFilterAll: 'All Reports',
+        mapFilterRoads: 'Roads & Potholes',
+        mapFilterDrainage: 'Waterlogging & Drains',
+        mapFilterWaste: 'Waste & Sanitation',
+        mapFilterLights: 'Street Lights',
+        mapLegendReported: 'Reported',
+        mapLegendInProgress: 'In Progress',
+        mapLegendResolved: 'Resolved',
+
+        // Youth Community Escrow
+        youthTitle: 'Youth Civic Escrow',
+        youthSub: 'Community-led micro-repairs and street cleanups backed by guaranteed municipal escrow funds.',
+        youthStep1Title: 'Submit Proposal',
+        youthStep1Desc: 'Draft a repair plan, materials needed, and budget estimate for an eligible neighborhood issue.',
+        youthStep1Meta: 'Civic Estimate Dispatch',
+        youthStep2Title: 'Escrow Lock',
+        youthStep2Desc: 'Municipal authority officers inspect the plan and lock guaranteed funds into escrow.',
+        youthStep2Meta: 'Government Backed Funds',
+        youthStep3Title: 'Verify & Payout',
+        youthStep3Desc: 'Complete work, submit photographic proof, and receive instant verified payout release.',
+        youthStep3Meta: 'Verified Payout Release',
+        proposalLedgerTitle: 'Your Proposal Ledger',
+        newProposalTitle: 'Submit New Community Action Proposal',
+        estimatePriceLabel: 'Budget Estimate (BDT)',
+        estimatedHoursLabel: 'Hours Required',
+        planDetailsPlaceholder: 'Detail materials needed, safe tools, clean-up steps, and expected completion result...',
+        sendProposalBtn: 'Send Proposal to Authority',
+
+        // Contractor Portal
+        contractorHubTitle: 'Contractor Operations Portal',
+        contractorHubSub: 'Official municipal contractor operations, dispatch work orders, and completion reporting.',
+        assignedOrdersTitle: 'Assigned Work Orders',
+        acceptOrderBtn: 'Accept Order',
+        rejectOrderBtn: 'Reject',
+        startWorkBtn: 'Start Work On-Site',
+        uploadProofPrompt: 'Choose completion photo',
+        submitWorkForReviewBtn: 'Submit completed work for review',
+        waitingVerificationNotice: 'Completion proof submitted. Waiting for authority verification.',
+
+        // Admin Command Center
+        adminMunicipalCommand: 'Citizen Services · Municipal Command',
+        adminDigitalCadastre: 'DIGITAL CADASTRE',
+        adminOperationsHub: 'Operations Hub',
+        adminOfficerSubtitle: 'Designated Municipal Officer · ',
+        adminOfficerUser: 'Designated Officer',
+        adminNavQueue: 'Work Queue',
+        adminNavReview: 'Human Review',
+        adminNavProofs: 'Proof Reviews',
+        adminNavMap: 'Spatial Map',
+        adminNavContractors: 'Contractors',
+        adminNavWhatsApp: 'WhatsApp',
+        adminNavYouth: 'Youth Escrow',
+        adminKpi1Label: 'Human Review',
+        adminKpi1Desc: 'Routing ambiguity or boundary flags requiring officer sign-off.',
+        adminKpi1Meta: 'TRIAGE QUEUE: IMMEDIATE',
+        adminKpi2Label: 'Proof Reviews',
+        adminKpi2Desc: 'Resolution proofs submitted by crews awaiting confirmation.',
+        adminKpi2Meta: 'TWO-PARTY VERIFICATION',
+        adminKpi3Label: 'SLA Overdue',
+        adminKpi3Desc: 'Incidents exceeding statutory resolution deadlines across wards.',
+        adminKpi3Meta: 'SLA ESCALATION FLAG',
+        adminKpi4Label: 'Active Work',
+        adminKpi4Desc: 'Work orders assigned and currently in progress on site.',
+        adminKpi4Meta: 'MUNICIPAL DISPATCH SYNC',
+        adminFindFilterTitle: 'Find and filter cases',
+        adminShowingText: 'Showing',
+        adminOfText: 'of',
+        adminIncidentsText: 'municipal incidents',
+        adminResetFilters: 'Reset All Filters',
+        adminSearchPlaceholder: 'Search ID, area, type…',
+        adminAgeAny: 'Any age',
+        adminAge24h: 'Last 24 hours',
+        adminAge7d: 'Last 7 days',
+        adminAge15d: 'Last 15 days',
+        adminAge30d: 'Last 30 days',
+        adminStatusAll: 'All statuses',
+        adminStatusNeedsAction: 'Needs action',
+        adminStatusAssigned: 'Assigned',
+        adminStatusUnresolved: 'Unresolved',
+        adminStatusResolved: 'Resolved',
+        adminCategoryAll: 'All categories',
+        adminSeverityAll: 'All severities',
+        adminSortLabel: 'Sort:',
+        adminSortHighest: 'Highest Priority',
+        adminSortOldest: 'Oldest First',
+        adminSortNewest: 'Newest First',
+        adminTableId: 'ID',
+        adminTableTitle: 'Category & Location',
+        adminTableSeverity: 'Severity',
+        adminTableAiConfidence: 'AI Confidence',
+        adminTableStatus: 'Status',
+        adminTableAction: 'Action',
+        adminInspectCase: 'Inspect Case',
+        adminSimWorkflowTitle: 'Simulated Field Officer Workflow Controls',
+        adminSubmitProof: 'Submit Work Proof',
+        adminRejectAmbiguous: 'Reject Ambiguous Case',
+        adminReassign: 'Reassign Authority',
+        adminResolveTicket: 'Resolve Ticket',
+        adminWaIntakeTitle: 'Total WhatsApp Intake',
+        adminWaIntakeDesc: 'Direct citizen conversational incident logs via WhatsApp bot gateway.',
+        adminWaIntakeMeta: 'AUTOMATED BOT INTAKE',
+        adminWaTriageTitle: 'Pending Triage',
+        adminWaTriageDesc: 'WhatsApp cases awaiting municipal dispatch routing or verification.',
+        adminWaTriageMeta: 'ACTIVE DISPATCH QUEUE',
+        adminWaResolvedTitle: 'Resolved via Bot',
+        adminWaResolvedDesc: 'Incidents completed with photographic evidence verified by citizen.',
+        adminWaResolvedMeta: 'TWO-PARTY VERIFIED',
+        adminApproveContractor: 'Approve Contractor',
+        adminRejectContractor: 'Reject',
+
+        // Footer
+        footerCommunity: 'Community cleanup',
+        footerContractor: 'Contractor portal',
+        footerCopyright: '© 2026 Civil Works Authority · People\'s Republic of Bangladesh'
+      },
+      bn: {
+        // Navigation & Common
+        home: 'হোম',
+        reportIssue: 'অভিযোগ করুন',
+        trackReport: 'ট্র্যাক করুন',
+        publicMap: 'সিটি ম্যাপ',
+        authorityPortal: 'কর্তৃপক্ষ পোর্টাল',
+        logout: 'লগআউট',
+        activeUser: 'দায়িত্বপ্রাপ্ত ইউজার',
+        loading: 'লোড হচ্ছে...',
+        statusLive: 'লাইভ পৌর নেটওয়ার্ক',
+
+        // Ticker & Header
+        tickerStatus: 'নাগরিক সেবা ও পৌর অভিযোগ ব্যবস্থাপনা প্ল্যাটফর্ম · লাইভ মনিটরিং',
+        tickerPill1: 'অ্যাপ ছাড়াই সরাসরি ব্রাউজার থেকে অভিযোগ',
+        tickerPill2: 'গড় ব্যবস্থা গ্রহণ: ৪.২ ঘণ্টা',
+        tickerPill3: 'চলমান অভিযোগ:',
+        tickerPill4: 'ডিজিটাল বাংলাদেশ নাগরিক সেবা ২০২৬',
+        govBadge: 'গণপ্রজাতন্ত্রী বাংলাদেশ · ডিজিটাল পৌর নাগরিক প্ল্যাটফর্ম',
+
+        // Landing Hero
+        heroTitle1: 'এলাকায় কোনো নাগরিক সমস্যা দেখছেন?',
+        heroTitle2: 'সরাসরি সিটি কর্তৃপক্ষকে জানান।',
+        heroSubtext: 'একটি ছবি তুলুন, লোকেশন দিন এবং সমাধান না হওয়া পর্যন্ত সরাসরি ট্র্যাক করুন। কোনো অ্যাপ ইনস্টল বা পূর্ব নিবন্ধনের প্রয়োজন নেই।',
+        reportBtn: 'অভিযোগ দায়ের করুন',
+        trackBtn: 'অভিযোগ ট্র্যাক করুন',
+        check1: 'অ্যাকাউন্ট ছাড়াই তাৎক্ষণিক অভিযোগ',
+        check2: 'এসএমএস ও ট্র্যাকিং নম্বর',
+        check3: 'ছবিসহ সমাধান নিশ্চিতকরণ',
+
+        // Categories
+        categoriesBadge: 'জরুরি নাগরিক সেবা',
+        categoriesTitle: 'সমস্যার ধরন বেছে নিন',
+        categoriesSub: 'দ্রুত সমাধানের জন্য নিচের ক্যাটাগরি থেকে সরাসরি অভিযোগ দাখিল করুন',
+        catRoadsTitle: 'ভাঙা রাস্তা ও ম্যানহোল',
+        catRoadsSub: 'ভাঙা পিচ, বিপজ্জনক গর্ত, খোলা ম্যানহোল, ফুটপাত ক্ষতি',
+        catDrainageTitle: 'জলাবদ্ধতা ও ড্রেন',
+        catDrainageSub: 'বৃষ্টির পানি জমে থাকা, বন্ধ নালা, ড্রেন উপচে পড়া',
+        catWasteTitle: 'বর্জ্য ও ময়লা-আবর্জনা',
+        catWasteSub: 'রাস্তায় আবর্জনার স্তূপ, উপচে পড়া ডাস্টবিন, দুর্গন্ধ',
+        catLightsTitle: 'সড়ক বাতি ও বৈদ্যুতিক তার',
+        catLightsSub: 'নষ্ট সড়ক বাতি, অন্ধকার পথ, বিপজ্জনকভাবে ঝুলন্ত তার',
+
+        // How It Works
+        howItWorksTitle: 'রিপোর্ট. ট্র্যাক. যাচাই.',
+        howItWorksSub: 'প্রতিটি পদক্ষেপে স্পষ্ট ও সুনির্দিষ্ট রেকর্ডসহ একটি সহজ প্রক্রিয়া।',
+        step1Num: '০১',
+        step1Title: 'রিপোর্ট (Report)',
+        step1Desc: 'একটি ছবি তুলুন বা আপলোড করুন, লোকেশন দিন এবং সংক্ষেপে সমস্যাটি লিখুন।',
+        step1Meta: 'ধাপের সময়সীমা: < ৬০ সেকেন্ড',
+        step2Num: '০২',
+        step2Title: 'ট্র্যাক (Track)',
+        step2Desc: 'আপনার রিপোর্ট আইডি সংরক্ষণ করুন এবং প্রয়োজনমতো যেকোনো সময় অগ্রগতি দেখুন।',
+        step2Meta: 'রিয়েল-টাইম পৌর ডিসপ্যাচ সিঙ্ক',
+        step3Num: '০৩',
+        step3Title: 'যাচাই (Verify)',
+        step3Desc: 'মেরামতের প্রমাণ ও ছবি দেখুন এবং সমাধান নিশ্চিত করা হয়েছে কি না যাচাই করুন।',
+        step3Meta: 'আলোকচিত্র প্রমাণ অন্তর্ভুক্ত',
+
+        // Metrics
+        metricsBadge: 'লাইভ কার্যক্রম পরিসংখ্যান',
+        metric1Val: '১২,৮৪০',
+        metric1Label: 'মোট গৃহীত অভিযোগ',
+        metric1Desc: 'বিভিন্ন সিটি করপোরেশন ও পৌরসভায় দায়েরকৃত নাগরিক অভিযোগ।',
+        metric1Meta: 'সকল পৌর ওয়ার্ড',
+        metric2Val: '৮৯.৪%',
+        metric2Label: 'সফল সমাধানের হার',
+        metric2Desc: 'নাগরিক কর্তৃক ছবিসহ যাচাইকৃত সম্পূর্ণ সমাধান।',
+        metric2Meta: 'নাগরিক কর্তৃক অনুমোদিত',
+        metric3Val: '১৮.২ ঘণ্টা',
+        metric3Label: 'গড় ব্যবস্থা গ্রহণের সময়',
+        metric3Desc: 'অভিযোগ প্রাপ্তি থেকে ফিল্ড টিম মোতায়েনের গড় সময়।',
+        metric3Meta: 'পৌর মানদণ্ড',
+        metric4Val: '১০০%',
+        metric4Label: 'উন্মুক্ত নাগরিক তথ্য',
+        metric4Desc: 'জনস্বার্থে সকল রিপোর্ট উন্মুক্ত সিটি ম্যাপে দৃশ্যমান।',
+        metric4Meta: 'স্বচ্ছ নাগরিক অডিট',
+
+        // Slider & Banner
+        sliderBadge: 'সমাধানের বাস্তব প্রমাণ',
+        sliderTitle: 'কাজের আগের ও পরের দৃশ্য (ইন্টারেক্টিভ স্লাইডার)',
+        sliderSub: 'স্লাইডারটি টেনে দেখুন কীভাবে অভিযোগ অনুযায়ী পৌর মেরামত কাজ সম্পন্ন হয়েছে।',
+        sliderTag: 'দ্বিপাক্ষিক যাচাইকৃত',
+        bannerTitle: 'আপনার এলাকায় কোনো জরুরি নাগরিক সমস্যা আছে?',
+        bannerSub: 'ভাঙা রাস্তা, জলাবদ্ধতা বা আবর্জনার সমস্যা সরাসরি রিপোর্ট করুন এখনই। কোনো অ্যাপ লাগবে না।',
+        hotline: 'পৌর নাগরিক হটলাইন: ১৬১০৪ / ৩১১',
+        bannerBtn: 'এখনই অভিযোগ দায়ের করুন',
+
+        // Citizen Report Flow
+        step1Pill: 'ধাপ ১: ছবি আপলোড',
+        step2Pill: 'ধাপ ২: বিস্তারিত তথ্য',
+        photoUploadTitle: 'সমস্যার পরিষ্কার ছবি তুলুন বা আপলোড করুন',
+        photoUploadSub: 'পরিষ্কার ছবি পৌর ফিল্ড ক্রুদের সমস্যা চিহ্নিত ও দ্রুত সমাধান করতে সরাসরি সাহায্য করে।',
+        dragDropText: 'এখানে ছবি টেনে আনুন অথবা ক্লিক করে ফাইল সিলেক্ট করুন',
+        browseFilesBtn: 'ছবি তুলুন / ব্রাউজ করুন',
+        photoLimitHint: 'সর্বোচ্চ ১০ মেগাবাইট (JPEG, PNG, WebP সমর্থিত)',
+        detailsTitle: 'অভিযোগের বিস্তারিত তথ্য দিন',
+        detailsSub: 'আমাদের এআই স্বয়ংক্রিয়ভাবে ক্যাটাগরি শনাক্ত করেছে। জমা দেওয়ার আগে তথ্য যাচাই বা সম্পাদনা করুন।',
+        categoryLabel: 'সমস্যার ধরণ (Category)',
+        issueTitleLabel: 'অভিযোগের শিরোনাম',
+        issueTitlePlaceholder: 'উদাঃ গেটের সামনে ভাঙা ফুটপাত ও গর্ত',
+        descriptionLabel: 'বিস্তারিত বিবরণ',
+        descriptionPlaceholder: 'সমস্যার বিবরণ দিন (উদাঃ গর্তের গভীরতা, আশেপাশের পরিচিত ভবন বা ল্যান্ডমার্ক)...',
+        locationLabel: 'লোকেশন / ঠিকানা',
+        locationPlaceholder: 'রাস্তা, এলাকা বা পরিচিত স্থান লিখুন',
+        aiSuggestedLabel: 'পরামর্শকৃত বিবরণ (AI-তৈরি)',
+        useSuggestionBtn: 'এই বিবরণটি ব্যবহার করুন',
+        submittingBtn: 'অভিযোগ জমা হচ্ছে...',
+        submitReportBtn: 'অভিযোগ দাখিল করুন',
+        backBtn: 'আগের ধাপে ফিরুন',
+
+        // Track Report
+        trackPageTitle: 'অভিযোগ ট্র্যাক করুন',
+        trackPageSub: 'আপনার রিপোর্ট আইডি দিন এবং বর্তমান অগ্রগতি, দায়িত্বপ্রাপ্ত পৌর দপ্তর ও প্রমাণের ছবি দেখুন।',
+        searchIdPlaceholder: 'রিপোর্ট আইডি দিন (উদাঃ CP-88390)',
+        trackActionBtn: 'ট্র্যাক করুন',
+        seePublicReportBtn: 'পাবলিক রিপোর্ট দেখুন',
+        reportProgressTitle: 'অভিযোগের অগ্রগতি',
+        responsibleAuthority: 'দায়িত্বপ্রাপ্ত পৌর কর্তৃপক্ষ',
+        gazetteVerified: 'গ্যাজেট ভেরিফায়েড',
+        statutoryVerified: 'বিধিবদ্ধ সীমানা যাচাইকৃত',
+        locationInferred: 'লোকেশন ভিত্তিক শনাক্ত',
+        resAndEvidence: 'সমাধান ও প্রমাণ যাচাই',
+        citizenConfirmed: 'নাগরিক কর্তৃক সমাধান নিশ্চিতকৃত',
+        awaitingCitizen: 'নাগরিক যাচাইয়ের অপেক্ষায়',
+        gate01Title: 'ফিল্ড অফিসারের কাজের প্রমাণ',
+        gate01Desc: 'মাঠপর্যায়ের ফিল্ড ক্রুদের দাখিলকৃত আলোকচিত্র ও মেরামতের সমাপ্তি লগ।',
+        gate02Title: 'নাগরিক যাচাইকরণ',
+        gate02Desc: 'অভিযোগকারী নাগরিক কর্তৃক ঘটনাস্থল পরিদর্শন এবং সন্তুষ্টি সাপেক্ষে টোকেন অনুমোদন।',
+        gateMunicipalLog: 'পৌর লগ',
+        gateTwoPartyAudit: 'দ্বিপাক্ষিক অডিট',
+        gateSubmitted: '✓ দাখিলকৃত',
+        gatePending: 'অপেক্ষমাণ',
+        gateVerified: '✓ যাচাইকৃত',
+        citizenVerificationGate: 'নাগরিক যাচাইকরণ গেট',
+        citizenConfirmPrompt: 'সমস্যাটি কি সন্তোষজনকভাবে সমাধান হয়েছে?',
+        citizenConfirmYes: '✓ হ্যাঁ, কাজ সম্পন্ন হয়েছে',
+        citizenConfirmNo: '✕ না, এখনো ঠিক হয়নি / পুনরায় খুলুন',
+        citizenNotesPlaceholder: 'পৌর কর্তৃপক্ষের জন্য আপনার মন্তব্য লিখুন...',
+        submittingVerification: 'যাচাইকরণ জমা হচ্ছে...',
+        submitCitizenFeedback: 'নাগরিক যাচাই জমা দিন',
+        accountabilityReceiptTitle: 'ট্যাম্পার-প্রুফ দায়বদ্ধতা রসিদ',
+        sha256Proof: 'SHA-256 অডিট সিল',
+
+        // Map
+        mapTitle: 'লাইভ পৌর মানচিত্র',
+        mapFilterAll: 'সকল রিপোর্ট',
+        mapFilterRoads: 'রাস্তা ও ম্যানহোল',
+        mapFilterDrainage: 'জলাবদ্ধতা',
+        mapFilterWaste: 'বর্জ্য ও পরিচ্ছন্নতা',
+        mapFilterLights: 'সড়ক বাতি',
+        mapLegendReported: 'রিপোর্ট গৃহীত',
+        mapLegendInProgress: 'চলমান কাজ',
+        mapLegendResolved: 'সমাধানকৃত',
+
+        // Youth Community Escrow
+        youthTitle: 'যুব নাগরিক এসক্রো তহবিল',
+        youthSub: 'পৌরসভার সরাসরি অনুমোদন ও সুরক্ষিত অর্থায়নে এলাকাভিত্তিক নাগরিক উদ্যোগ ও রাস্তাঘাট মেরামত।',
+        youthStep1Title: 'প্রস্তাবনা দাখিল',
+        youthStep1Desc: 'এলাকার জরুরি সংস্কার কাজের জন্য পরিকল্পনা, প্রয়োজনীয় সামগ্রী ও খরচের হিসাব দাখিল করুন।',
+        youthStep1Meta: 'পৌর এস্টিমেট ডিসপ্যাচ',
+        youthStep2Title: 'এসক্রো ফান্ড লক',
+        youthStep2Desc: 'পৌর কর্মকর্তা প্রস্তাবনা যাচাই করে কাজ শুরুর জন্য নিশ্চিত সরকারি অর্থ এসক্রোতে বরাদ্দ করেন।',
+        youthStep2Meta: 'সরকারি জামানত ফান্ড',
+        youthStep3Title: 'যাচাই ও পেমেন্ট',
+        youthStep3Desc: 'কাজ শেষে পরের ছবি ও ভাউচার জমা দিয়ে যাচাই সাপেক্ষে তাৎক্ষণিক পেমেন্ট ছাড় নিন।',
+        youthStep3Meta: 'যাচাইকৃত পেমেন্ট রিলিজ',
+        proposalLedgerTitle: 'আপনার দাখিলকৃত প্রস্তাবনাসমূহ',
+        newProposalTitle: 'নতুন কমিউনিটি মেরামত প্রস্তাব জমা দিন',
+        estimatePriceLabel: 'আনুমানিক বাজেট (টাকা)',
+        estimatedHoursLabel: 'প্রয়োজনীয় সময় (ঘণ্টা)',
+        planDetailsPlaceholder: 'প্রয়োজনীয় উপকরণ, নিরাপদ সরঞ্জাম ও কাজের পর্যায়ক্রমিক বিবরণ লিখুন...',
+        sendProposalBtn: 'পৌর কর্তৃপক্ষের কাছে প্রস্তাব পাঠান',
+
+        // Contractor Portal
+        contractorHubTitle: 'ঠিকাদার সেবা কেন্দ্র',
+        contractorHubSub: 'অফিসিয়াল পৌর ঠিকাদার কার্যক্রম, কাজের আদেশ গ্রহণ ও মেরামতের রিপোর্ট প্রদান।',
+        assignedOrdersTitle: 'বরাদ্দকৃত কাজের আদেশসমূহ',
+        acceptOrderBtn: 'কাজের আদেশ গ্রহণ',
+        rejectOrderBtn: 'প্রত্যাখ্যান',
+        startWorkBtn: 'মাঠপর্যায়ে কাজ শুরু করুন',
+        uploadProofPrompt: 'কাজের শেষের ছবি সিলেক্ট করুন',
+        submitWorkForReviewBtn: 'অনুমোদনের জন্য কাজ দাখিল করুন',
+        waitingVerificationNotice: 'কাজের প্রমাণ দাখিল করা হয়েছে। পৌর কর্তৃপক্ষের যাচাইয়ের অপেক্ষায়।',
+
+        // Admin Command Center
+        adminMunicipalCommand: 'নাগরিক সেবা ও পৌর নিয়ন্ত্রণ কেন্দ্র · পৌর কমান্ড',
+        adminDigitalCadastre: 'ডিজিটাল ক্যাডাস্ট্রে',
+        adminOperationsHub: 'অপারেশন হাব',
+        adminOfficerSubtitle: 'সরাসরি দায়িত্বপ্রাপ্ত পৌর কর্মকর্তা · ',
+        adminOfficerUser: 'দায়িত্বপ্রাপ্ত ইউজার',
+        adminNavQueue: 'কার্যক্রম তালিকা',
+        adminNavReview: 'মানবীয় পর্যালোচনা',
+        adminNavProofs: 'প্রমাণ যাচাই',
+        adminNavMap: 'মানচিত্র',
+        adminNavContractors: 'ঠিকাদারবৃন্দ',
+        adminNavWhatsApp: 'হোয়াটসঅ্যাপ',
+        adminNavYouth: 'যুব এসক্রো',
+        adminKpi1Label: 'মানবীয় পর্যালোচনা',
+        adminKpi1Desc: 'রাউটিং বা সীমানা সংক্রান্ত জটিলতা যা কর্মকর্তার অনুমোদন প্রয়োজন।',
+        adminKpi1Meta: 'জরুরি ট্রায়াজ কিউ',
+        adminKpi2Label: 'প্রমাণ যাচাই',
+        adminKpi2Desc: 'ফিল্ড টিমের দাখিলকৃত মেরামতের প্রমাণ যা চূড়ান্ত অনুমোদনের অপেক্ষায়।',
+        adminKpi2Meta: 'দ্বিপাক্ষিক যাচাইকরণ',
+        adminKpi3Label: 'এসএলএ মেয়াদোত্তীর্ণ',
+        adminKpi3Desc: 'পৌর বিধিবদ্ধ সময়সীমা অতিক্রম করা অমীমাংসিত অভিযোগ।',
+        adminKpi3Meta: 'এসএলএ সতর্কতা পতাকা',
+        adminKpi4Label: 'চলমান কাজ',
+        adminKpi4Desc: 'বরাদ্দকৃত কাজের আদেশ যা বর্তমানে ফিল্ডে চলমান রয়েছে।',
+        adminKpi4Meta: 'পৌর ডিসপ্যাচ সিঙ্ক',
+        adminFindFilterTitle: 'অভিযোগ অনুসন্ধান ও ফিল্টার',
+        adminShowingText: 'প্রদর্শিত',
+        adminOfText: 'মোট',
+        adminIncidentsText: 'টি পৌর অভিযোগের মধ্যে',
+        adminResetFilters: 'সকল ফিল্টার রিসেট করুন',
+        adminSearchPlaceholder: 'আইডি, এলাকা বা ধরন দিয়ে খুঁজুন…',
+        adminAgeAny: 'যেকোনো সময়',
+        adminAge24h: 'গত ২৪ ঘণ্টা',
+        adminAge7d: 'গত ৭ দিন',
+        adminAge15d: 'গত ১৫ দিন',
+        adminAge30d: 'গত ৩০ দিন',
+        adminStatusAll: 'সকল স্ট্যাটাস',
+        adminStatusNeedsAction: 'ব্যবস্থা নেওয়া দরকার',
+        adminStatusAssigned: 'বরাদ্দকৃত',
+        adminStatusUnresolved: 'অমীমাংসিত',
+        adminStatusResolved: 'সমাধানকৃত',
+        adminCategoryAll: 'সকল ক্যাটাগরি',
+        adminSeverityAll: 'সকল তীব্রতা',
+        adminSortLabel: 'ক্রমানুসার:',
+        adminSortHighest: 'সর্বোচ্চ অগ্রাধিকার',
+        adminSortOldest: 'সবচেয়ে পুরোনো আগে',
+        adminSortNewest: 'নতুন আগে',
+        adminTableId: 'আইডি',
+        adminTableTitle: 'ক্যাটাগরি ও অবস্থান',
+        adminTableSeverity: 'তীব্রতা',
+        adminTableAiConfidence: 'এআই কনফিডেন্স',
+        adminTableStatus: 'স্ট্যাটাস',
+        adminTableAction: 'পদক্ষেপ',
+        adminInspectCase: 'পরিদর্শন করুন',
+        adminSimWorkflowTitle: 'ফিল্ড অফিসার ওয়ার্কফ্লো অ্যাকশন (সিমুলেশন)',
+        adminSubmitProof: 'কাজের প্রমাণ ছবি দাখিল',
+        adminRejectAmbiguous: 'ত্রুটিপূর্ণ অভিযোগ প্রত্যাখ্যান',
+        adminReassign: 'অন্য দপ্তরে স্থানান্তর',
+        adminResolveTicket: 'অভিযোগ সমাধান সম্পন্ন',
+        adminWaIntakeTitle: 'মোট হোয়াটসঅ্যাপ অভিযোগ',
+        adminWaIntakeDesc: 'হোয়াটসঅ্যাপ বট গেটওয়ের মাধ্যমে সরাসরি নাগরিক চ্যাট থেকে গৃহীত রিপোর্ট।',
+        adminWaIntakeMeta: 'স্বয়ংক্রিয় বট ইনটেক',
+        adminWaTriageTitle: 'অপেক্ষমাণ ট্রায়াজ',
+        adminWaTriageDesc: 'পৌর ডিসপ্যাচ বা যাচাইকরণের অপেক্ষায় থাকা হোয়াটসঅ্যাপ কেস।',
+        adminWaTriageMeta: 'সক্রিয় ডিসপ্যাচ কিউ',
+        adminWaResolvedTitle: 'বট দ্বারা সমাধানকৃত',
+        adminWaResolvedDesc: 'নাগরিক কর্তৃক ছবিসহ যাচাই ও সম্পন্ন হওয়া অভিযোগ।',
+        adminWaResolvedMeta: 'দ্বিপাক্ষিক যাচাইকৃত',
+        adminApproveContractor: 'ঠিকাদার অনুমোদন',
+        adminRejectContractor: 'প্রত্যাখ্যান',
+
+        // Footer
+        footerCommunity: 'যুব নাগরিক উদ্যোগ',
+        footerContractor: 'ঠিকাদার পোর্টাল',
+        footerCopyright: '© ২০২৬ গণপ্রজাতন্ত্রী বাংলাদেশ পৌর কর্তৃপক্ষ'
+      }
+    };
+
     // --- MAIN APP COMPONENT ---
     export default function App() {
       const [activeTab, setActiveTab] = useState('landing');
-      const [darkMode, setDarkMode] = useState(() => localStorage.getItem('urbanfix-theme') !== 'light');
+      const [lang, setLang] = useState(() => localStorage.getItem('urbanfix-lang') || 'en');
+      const [darkMode, setDarkMode] = useState(() => localStorage.getItem('urbanfix-theme') === 'dark');
       const [reports, setReports] = useState(INITIAL_REPORTS);
       const [reportsTruncated, setReportsTruncated] = useState(false);
       const [selectedReport, setSelectedReport] = useState(null);
@@ -508,8 +1125,15 @@ export const normalizeReport = (item) => {
       useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode);
         localStorage.setItem('urbanfix-theme', darkMode ? 'dark' : 'light');
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', darkMode ? '#0B0F17' : '#f5f5f7');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', darkMode ? '#0B0F17' : '#059669');
       }, [darkMode]);
+
+      useEffect(() => {
+        localStorage.setItem('urbanfix-lang', lang);
+        document.documentElement.lang = lang;
+      }, [lang]);
+
+      const t = I18N[lang] || I18N.bn;
 
       useEffect(() => {
         loadSession();
@@ -1104,105 +1728,117 @@ export const normalizeReport = (item) => {
       const featuredReport = reports[0];
 
       return (
-        <div className="min-h-screen flex flex-col bg-[#0B0F17] transition-colors duration-200">
+        <div className="min-h-screen flex flex-col bg-surface font-sans text-ink-primary transition-colors duration-200">
           <a href="#main-content" className="skip-link">Skip to main content</a>
-          {/* HEADER / NAVIGATION */}
-          <header className="sticky top-0 z-50 bg-[#070A11] border-b border-slate-800/80">
-            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-              <button aria-label="UrbanFix home" className="flex shrink-0 items-center gap-2.5 text-left rounded-xl focus:outline-none" onClick={() => setActiveTab('landing')}>
-                <img src="/assets/urbanfix-logo.svg" width="36" height="36" alt="" className="h-9 w-9 rounded-xl" />
-                <div className="font-extrabold text-lg tracking-tight text-white flex items-center font-sans whitespace-nowrap">
-                    <span>URBAN</span><span className="text-sky-400">FIX</span>
-                </div>
-              </button>
 
-              <nav className="hidden lg:flex min-w-0 items-center gap-1 p-1 rounded-xl bg-slate-900/50 border border-slate-800/80">
+          {/* TOP MUNICIPAL SERVICE TICKER RIBBON */}
+          <div className="w-full bg-emerald-950 text-emerald-100 border-b border-emerald-900 py-1.5 px-4 overflow-hidden whitespace-nowrap">
+            <div className="max-w-7xl mx-auto flex items-center justify-between text-xs font-sans">
+              <div className="inline-flex items-center gap-4 sm:gap-6 overflow-hidden">
+                <span className="flex items-center gap-2 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34D399]"></span>
+                  <span>{t.tickerStatus}</span>
+                </span>
+                <span className="text-emerald-700">|</span>
+                <span className="text-emerald-300 font-semibold hidden md:inline">{t.tickerPill1}</span>
+                <span className="text-emerald-700 hidden md:inline">|</span>
+                <span className="hidden sm:inline">{t.tickerPill2}</span>
+                <span className="text-emerald-700 hidden sm:inline">|</span>
+                <span className="text-amber-300 font-medium">{t.tickerPill3} {reports.length}</span>
+              </div>
+              <div className="hidden lg:flex items-center gap-3 text-emerald-200 text-[11px] font-medium">
+                <span>🏛️ {t.tickerPill4}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* HEADER / NAVIGATION */}
+          <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-6">
+              <div className="flex items-center gap-4 lg:gap-6">
+                <button aria-label="UrbanFix home" className="flex shrink-0 items-center gap-2.5 text-left focus:outline-none cursor-pointer" onClick={() => setActiveTab('landing')}>
+                  <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center shadow-sm">
+                    <Icon name="check" className="w-5 h-5 text-white stroke-[3]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-headline font-bold text-lg tracking-tight text-slate-900 dark:text-white leading-none">UrbanFix BD</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">{lang === 'bn' ? 'ডিজিটাল পৌর নাগরিক প্ল্যাটফর্ম' : 'Municipal Civic Portal'}</span>
+                  </div>
+                </button>
+                <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10B981]"></span>
+                  <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">{lang === 'bn' ? 'লাইভ পৌর নেটওয়ার্ক' : 'Live Civic Sync'}</span>
+                </div>
+              </div>
+
+              <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 text-xs font-semibold">
                 {[
-                  { id: 'landing', label: 'Home', icon: 'home' },
-                  { id: 'report', label: 'Report Issue', icon: 'camera' },
-                  { id: 'track', label: 'Track Report', icon: 'search' },
-                  { id: 'map', label: 'Public Map', icon: 'map' }
+                  { id: 'landing', label: t.home, enLabel: 'Home' },
+                  { id: 'report', label: t.reportIssue, enLabel: 'Report Issue' },
+                  { id: 'track', label: t.trackReport, enLabel: 'Track Report' },
+                  { id: 'map', label: t.publicMap, enLabel: 'Public Map' },
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => { if (tab.id === 'track') { setSelectedReport(null); setSubmittedReportId(''); } setActiveTab(tab.id); }}
+                      aria-label={tab.enLabel}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
                         isActive 
-                          ? 'bg-sky-400 text-slate-950 font-bold'
-                          : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800 shadow-sm'
+                          : 'border border-transparent text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
-                      <Icon name={tab.icon} className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
                       {tab.label}
                     </button>
                   );
                 })}
               </nav>
 
-              <div className="flex shrink-0 items-center">
-                <button onClick={() => setDarkMode(value => !value)} aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`} title={`Switch to ${darkMode ? 'light' : 'dark'} mode`} className="mr-2 w-9 h-9 rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:text-sky-400 flex items-center justify-center transition-colors">
-                  <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4" />
+              <div className="flex shrink-0 items-center gap-2.5 sm:gap-3">
+                {/* BILINGUAL LANGUAGE TOGGLE (বাংলা / EN) */}
+                <button 
+                  onClick={() => setLang(l => l === 'bn' ? 'en' : 'bn')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-xs font-bold shadow-sm hover:border-emerald-500 transition-all cursor-pointer"
+                  title="Switch Language / ভাষা পরিবর্তন করুন"
+                  aria-label="Language Toggle"
+                >
+                  <span className={lang === 'bn' ? 'text-emerald-700 dark:text-emerald-400 font-black' : 'text-slate-400 font-normal'}>বাং</span>
+                  <span className="text-slate-300 dark:text-slate-600 font-normal">|</span>
+                  <span className={lang === 'en' ? 'text-emerald-700 dark:text-emerald-400 font-black' : 'text-slate-400 font-normal'}>EN</span>
                 </button>
-                {authUser ? (
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    {authUser.role === 'officer' && (
-                      <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono font-bold">
-                        <Icon name="shield-check" className="w-3.5 h-3.5" />
-                        {authUser.authority_id}
-                      </span>
-                    )}
-                    {authUser.role === 'officer' && (
-                      <button
-                        onClick={handleSwitchAuthority}
-                        title="Switch Authority"
-                        aria-label="Switch Authority"
-                        data-testid="nav-switch-authority-btn"
-                        className="p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold text-amber-300 hover:text-amber-200 border border-amber-500/30 bg-amber-500/10 transition-colors flex items-center gap-1.5"
-                      >
-                        <Icon name="refresh-cw" className="w-3.5 h-3.5" />
-                        <span className="hidden md:inline">Switch</span>
-                      </button>
-                    )}
-                    <button
-                      onClick={() => logout('landing')}
-                      title="Log Out"
-                      aria-label="Log Out"
-                      data-testid="nav-logout-btn"
-                      className="p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold text-rose-300 hover:text-rose-200 border border-rose-500/30 bg-rose-500/10 transition-colors flex items-center gap-1.5"
-                    >
-                      <Icon name="log-out" className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Logout</span>
-                    </button>
-                    {activeTab !== 'admin' && ['admin', 'officer'].includes(authUser.role) && (
-                      <button 
-                        onClick={() => setActiveTab('admin')}
-                        aria-label="Authority Portal"
-                        className="p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-sky-400 border border-slate-700 transition-colors flex items-center gap-1.5"
-                      >
-                        <Icon name="shield-alert" className="w-3.5 h-3.5 text-sky-400" />
-                        <span className="hidden md:inline">Portal</span>
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <button 
-                    onClick={() => setActiveTab('admin')}
-                    aria-label="Authority Portal"
-                    className="p-2.5 sm:px-3.5 sm:py-2.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-sky-400 border border-slate-700 transition-colors flex items-center gap-1.5"
-                  >
-                    <Icon name="shield-alert" className="w-3.5 h-3.5 text-sky-400" />
-                    <span className="hidden sm:inline">Authority Portal</span>
-                  </button>
-                )}
+
+                {/* THEME TOGGLE */}
+                <button 
+                  onClick={() => setDarkMode(value => !value)} 
+                  aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`} 
+                  title={`Switch to ${darkMode ? 'light' : 'dark'} mode`} 
+                  className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center shadow-sm transition-colors cursor-pointer"
+                >
+                  <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                </button>
+
+                {/* AUTHORITY PORTAL BUTTON */}
+                <button 
+                  onClick={() => setActiveTab('admin')}
+                  aria-label="Authority Portal"
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 cursor-pointer shadow-sm ${
+                    activeTab === 'admin'
+                      ? 'bg-emerald-600 text-white font-bold border-emerald-700'
+                      : 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
+                  }`}
+                >
+                  <Icon name="shield-alert" className="w-4 h-4 text-emerald-400" />
+                  <span className="hidden sm:inline">{t.authorityPortal}</span>
+                </button>
               </div>
             </div>
           </header>
 
           {/* MOBILE BOTTOM NAVIGATION */}
-          <nav aria-label="Mobile navigation" className="mobile-nav lg:hidden fixed bottom-0 inset-x-0 z-50 bg-[#070A11] border-t border-slate-800 px-2 pt-2 grid grid-cols-4 shadow-[0_-8px_20px_rgba(0,0,0,0.35)]">
+          <nav aria-label="Mobile navigation" className="mobile-nav lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-2 py-1.5 grid grid-cols-4 shadow-lg">
             {[
               ['landing','home','Home'], ['report','camera','Report'], ['track','search','Track'],
               ['map','map','Map']
@@ -1213,8 +1849,8 @@ export const normalizeReport = (item) => {
                   key={id} 
                   aria-current={isActive ? 'page' : undefined} 
                   onClick={() => { if (id === 'track') { setSelectedReport(null); setSubmittedReportId(''); } setActiveTab(id); }}
-                  className={`min-w-0 min-h-12 rounded-lg flex flex-col items-center justify-center gap-1 py-1 text-[10px] font-semibold transition-colors ${
-                    isActive ? 'text-sky-400 bg-sky-500/15' : 'text-slate-500 hover:text-slate-300'
+                  className={`min-w-0 min-h-12 rounded-xl flex flex-col items-center justify-center gap-0.5 py-1 text-[10px] font-semibold transition-all ${
+                    isActive ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-bold' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                   }`}
                 >
                   <Icon name={icon} className="w-4 h-4"/>
@@ -1226,126 +1862,513 @@ export const normalizeReport = (item) => {
 
           {/* TOAST NOTIFICATION */}
           {toast && (
-            <div role="status" aria-live="polite" className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-50 reveal-up">
-              <div className="glass-panel border border-sky-500/40 text-slate-100 px-4 py-3 rounded-xl shadow-xl flex items-center gap-3">
-                <Icon name="activity" className="w-4 h-4 text-sky-400 shrink-0" />
-                <span className="text-xs sm:text-sm font-medium leading-snug">{toast}</span>
+            <div role="status" aria-live="polite" className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-50">
+              <div className="bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-100 border border-slate-700 dark:border-slate-600 px-4 py-3 rounded-xl shadow-xl flex items-center gap-3">
+                <Icon name="activity" className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="text-xs font-medium leading-snug">{toast}</span>
               </div>
             </div>
           )}
 
           {/* MAIN BODY ROUTING */}
           <main id="main-content" className="flex-1" tabIndex="-1">
-            {/* 1. LANDING PAGE */}
+            {/* 1. LANDING PAGE (GovTech Civic Trust Design System) */}
             {activeTab === 'landing' && (
-              <div className="relative overflow-hidden">
-                <div aria-hidden="true" className="surface-grid absolute inset-0 pointer-events-none" />
-                <div aria-hidden="true" className="aurora-glow absolute top-0 inset-x-0 h-[600px] pointer-events-none" />
+              <div className="flex flex-col w-full">
+                {/* HERO SECTION */}
+                <section aria-labelledby="hero-title" className="w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12 md:py-20 transition-colors">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                      {/* Left Column: Primary Messaging & Trigger Actions */}
+                      <div className="lg:col-span-7 flex flex-col justify-between">
+                        <div className="flex flex-col">
+                          {/* Official Republic Badge */}
+                          <div className="inline-flex items-center gap-2 self-start bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-800 dark:text-emerald-300 shadow-sm mb-5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>🏛️ {t.govBadge}</span>
+                          </div>
 
-                <section aria-labelledby="hero-title" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-14 sm:pb-20">
-                  <div className="grid lg:grid-cols-[1.05fr_.95fr] items-center gap-12 lg:gap-16">
-                    <div className="reveal-up max-w-3xl">
-                      <h1 id="hero-title" className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.035em] text-white leading-[1.08]">
-                        See a problem in your area?<br />
-                        <span className="text-sky-400">
-                          Report it here.
-                        </span>
-                      </h1>
-                      
-                      <p className="mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-slate-300 max-w-2xl font-normal">
-                        Take a photo, share the location, and track what happens next. You do not need an account.
-                      </p>
+                          {/* Massive Punchy Headline */}
+                          <h1 id="hero-title" className="font-headline text-3xl sm:text-5xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.2] mb-4">
+                            {t.heroTitle1}<br/>
+                            <span className="text-emerald-600 dark:text-emerald-400">
+                              {t.heroTitle2}
+                            </span>
+                          </h1>
 
-                      <div className="mt-8 flex flex-col sm:flex-row gap-3.5">
-                        <button 
-                          onClick={() => { setReportStep(1); setActiveTab('report'); }} 
-                          className="group w-full sm:w-auto h-12 px-7 rounded-lg font-bold bg-sky-400 hover:bg-sky-300 text-slate-950 transition-colors flex items-center justify-center gap-2.5 text-sm cursor-pointer"
-                        >
-                          <Icon name="camera" className="w-5 h-5 text-slate-950 stroke-[2.5]" />
-                          <span>Report an Issue</span>
-                          <Icon name="arrow-right" className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                        </button>
-                        <button 
-                          onClick={() => { setSelectedReport(null); setTrackingError(''); setActiveTab('track'); }}
-                          className="w-full sm:w-auto h-12 px-7 rounded-lg font-semibold border border-slate-700 hover:border-slate-500 text-slate-200 hover:text-white transition-colors flex items-center justify-center gap-2 text-sm"
-                        >
-                          <Icon name="search" className="w-4 h-4 text-sky-400" />
-                          <span>Track a Report</span>
-                        </button>
-                      </div>
+                          {/* Subtext */}
+                          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mb-7 leading-relaxed font-normal">
+                            {t.heroSubtext}
+                          </p>
 
-                      <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-400">
-                        {['No account needed', 'Get a report ID', 'See proof when fixed'].map(item => (
-                          <span key={item} className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
-                              <Icon name="check" className="w-2.5 h-2.5 text-emerald-400" />
+                          {/* Action CTAs: GovTech Primary & Secondary Buttons */}
+                          <div className="flex flex-wrap items-center gap-3.5 mb-8">
+                            <button 
+                              onClick={() => { setReportStep(1); setActiveTab('report'); }}
+                              aria-label="Report an Issue"
+                              className="inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold text-sm sm:text-base px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer" 
+                              data-path="report-issue"
+                            >
+                              <Icon name="camera" className="w-5 h-5 text-white" />
+                              <span>{t.reportBtn} →</span>
+                            </button>
+                            <button 
+                              onClick={() => { setSelectedReport(null); setTrackingError(''); setActiveTab('track'); }}
+                              aria-label="Track a Report"
+                              className="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 text-slate-800 dark:text-slate-100 font-semibold text-sm sm:text-base border border-slate-300 dark:border-slate-700 px-6 py-3.5 rounded-xl shadow-sm hover:shadow transition-all cursor-pointer" 
+                              data-path="track-report"
+                            >
+                              <Icon name="search" className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                              <span>{t.trackBtn}</span>
+                            </button>
+                          </div>
+
+                          {/* Trust / Value Proposition Checklist */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold">✓</div>
+                              <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{t.check1}</span>
                             </div>
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="reveal-up-delay relative max-w-xl lg:ml-auto w-full">
-                      <div className="relative rounded-2xl glass-panel border border-slate-700/80 p-6 sm:p-7">
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                          <div className="text-sm font-semibold text-white">A public report</div>
-                          <span className="text-xs text-slate-400">{featuredReport?.data_label === 'Demo' ? 'Example' : 'Recent'}</span>
-                        </div>
-                        {featuredReport && (
-                          <div className="py-5">
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <h2 className="text-base font-semibold text-white">{featuredReport.title}</h2>
-                                <p className="mt-1 text-sm text-slate-400">{featuredReport.location}</p>
-                              </div>
-                              <span className="shrink-0 rounded-full border border-slate-700 px-2.5 py-1 text-xs text-slate-300">{featuredReport.status}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold">✓</div>
+                              <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{t.check2}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold">✓</div>
+                              <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{t.check3}</span>
                             </div>
                           </div>
-                        )}
+                        </div>
+                      </div>
 
-                        <button 
-                          onClick={() => setActiveTab('map')} 
-                          className="w-full min-h-12 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 hover:border-sky-500/40 text-xs sm:text-sm font-semibold text-slate-200 transition-all flex items-center justify-center gap-2 shadow-sm"
-                        >
-                          <Icon name="map-pin" className="w-4 h-4 text-sky-400" />
-                          <span>View public reports</span>
-                        </button>
+                      {/* Right Column: Featured Public Report Card */}
+                      <div className="lg:col-span-5 w-full">
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden flex flex-col relative transition-all">
+                          {/* Card Header Ribbon */}
+                          <div className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 px-5 py-3 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Icon name="globe" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{lang === 'bn' ? 'সাম্প্রতিক নাগরিক রিপোর্ট' : 'Recent Public Report'}</span>
+                            </div>
+                            <span className="bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                              {lang === 'bn' ? 'সরাসরি পর্যবেক্ষণ' : 'Live Incident'}
+                            </span>
+                          </div>
+
+                          {/* Card Visual Evidence / Image container */}
+                          <div className="relative h-52 bg-slate-100 dark:bg-slate-900 overflow-hidden group">
+                            <img 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                              alt="Civic report evidence"
+                              src={featuredReport?.beforeImage || featuredReport?.image_url || "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800"} 
+                            />
+                            <div className="absolute bottom-2 left-2 bg-slate-900/85 text-white px-2.5 py-1 rounded-lg text-[10px] font-mono flex items-center gap-1.5 backdrop-blur-sm">
+                              <Icon name="camera" className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>PHOTO-LOG #{featuredReport?.id || '4092-B'}</span>
+                            </div>
+                          </div>
+
+                          {/* Incident Details */}
+                          <div className="p-5 flex flex-col gap-3">
+                            <div className="flex items-center justify-between">
+                              {/* Status Pill */}
+                              <div className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-full">
+                                <span className={`w-2 h-2 rounded-full ${featuredReport?.status === 'Resolved' ? 'bg-emerald-500 shadow-[0_0_6px_#10B981]' : 'bg-amber-500 animate-ping'}`}></span>
+                                <span className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300">{featuredReport?.status || 'In Progress'}</span>
+                              </div>
+                              <span className="text-[11px] text-slate-400 font-medium">{lang === 'bn' ? 'আজকের আপডেট' : 'Updated recently'}</span>
+                            </div>
+
+                            {/* Incident Title and Description */}
+                            <h2 className="font-headline text-sm font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
+                              {featuredReport?.title || 'Severe waterlogging and overflow along Muradpur main road following morning rainfall.'}
+                            </h2>
+
+                            {/* Location Tag Meta */}
+                            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg text-xs text-slate-700 dark:text-slate-300">
+                              <Icon name="map-pin" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                              <span className="font-medium truncate">
+                                {featuredReport?.location || 'Muradpur Junction, Ward 08'}
+                              </span>
+                            </div>
+
+                            {/* Metadata Key-Value Spec Grid */}
+                            <div className="grid grid-cols-2 gap-2 border-t border-slate-200 dark:border-slate-700 pt-2.5 text-[11px]">
+                              <div>
+                                <span className="text-slate-400 block text-[10px]">{lang === 'bn' ? 'অভিযোগ নং:' : 'Report ID:'}</span>
+                                <span className="font-bold font-mono text-slate-800 dark:text-slate-200">#{featuredReport?.id || 'UF-2026-0841'}</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 block text-[10px]">{lang === 'bn' ? 'দায়িত্বপ্রাপ্ত দপ্তর:' : 'Assigned Dept:'}</span>
+                                <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">{featuredReport?.department || 'Road Maintenance'}</span>
+                              </div>
+                            </div>
+
+                            {/* Card Action Button */}
+                            <div className="mt-1 pt-2 border-t border-slate-200 dark:border-slate-700">
+                              <button 
+                                onClick={() => setActiveTab('map')} 
+                                className="w-full flex items-center justify-between bg-emerald-50 dark:bg-slate-700/60 hover:bg-emerald-600 hover:text-white text-emerald-800 dark:text-emerald-300 px-3.5 py-2 rounded-xl transition-colors text-xs font-semibold cursor-pointer"
+                              >
+                                <span>{lang === 'bn' ? 'সকল উন্মুক্ত রিপোর্ট দেখুন' : 'View all public reports'}</span>
+                                <Icon name="arrow-right" className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-
                 </section>
 
-                {/* 4-STEP ACCOUNTABLE PIPELINE SECTION */}
-                <section aria-labelledby="workflow-title" className="relative border-t border-slate-800/80 bg-slate-950/40 py-14 sm:py-20">
+                {/* QUICK CITIZEN ISSUE CATEGORIES */}
+                <section className="w-full bg-slate-50 dark:bg-slate-900/50 py-12 md:py-16 border-b border-slate-200 dark:border-slate-800 transition-colors">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-2xl mb-10">
-                      <div className="text-xs text-sky-400 font-semibold uppercase">How it works</div>
-                      <h2 id="workflow-title" className="mt-3 text-3xl sm:text-4xl font-bold tracking-tight text-white">
-                        Report. Track. Verify.
+                    <div className="max-w-2xl mb-8">
+                      <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                        {t.categoriesBadge}
+                      </div>
+                      <h2 className="font-headline text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {t.categoriesTitle}
                       </h2>
-                      <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-400">
-                        A simple process, with a clear record at every step.
+                      <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                        {t.categoriesSub}
                       </p>
                     </div>
 
-                    <div className="grid sm:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {[
-                        { step: '01', title: 'Report', desc: 'Take or upload a photo, add the location, and briefly describe the problem.' },
-                        { step: '02', title: 'Track', desc: 'Save your report ID and check progress whenever you need to.' },
-                        { step: '03', title: 'Verify', desc: 'See the repair evidence and whether the resolution has been confirmed.' }
-                      ].map((item) => (
-                        <article key={item.step} className="border-t border-slate-700 pt-5 flex flex-col justify-between">
+                        {
+                          title: t.catRoadsTitle,
+                          desc: t.catRoadsSub,
+                          icon: 'hammer',
+                          color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                          cat: 'Road Infrastructure'
+                        },
+                        {
+                          title: t.catDrainageTitle,
+                          desc: t.catDrainageSub,
+                          icon: 'droplets',
+                          color: 'bg-blue-50 text-blue-700 border-blue-200',
+                          cat: 'Drainage & Sewerage'
+                        },
+                        {
+                          title: t.catWasteTitle,
+                          desc: t.catWasteSub,
+                          icon: 'trash-2',
+                          color: 'bg-amber-50 text-amber-700 border-amber-200',
+                          cat: 'Waste Management'
+                        },
+                        {
+                          title: t.catLightsTitle,
+                          desc: t.catLightsSub,
+                          icon: 'zap',
+                          color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                          cat: 'Street Lighting'
+                        }
+                      ].map((item, idx) => (
+                        <div 
+                          key={idx}
+                          onClick={() => {
+                            setReportForm(prev => ({ ...prev, category: item.cat }));
+                            setReportStep(1);
+                            setActiveTab('report');
+                          }}
+                          className="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-emerald-500 dark:hover:border-emerald-500 transition-all cursor-pointer flex flex-col justify-between group"
+                        >
                           <div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-mono font-bold text-sky-400">{item.step}</span>
+                            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
+                              <Icon name={item.icon} className="w-5 h-5" />
                             </div>
-                            <h3 className="mt-5 text-base font-bold text-white">{item.title}</h3>
-                            <p className="mt-2 text-xs sm:text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                            <h3 className="font-headline font-bold text-base text-slate-900 dark:text-white mb-1 group-hover:text-emerald-600 transition-colors">
+                              {item.title}
+                            </h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                              {item.desc}
+                            </p>
                           </div>
-                        </article>
+                          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            <span>{lang === 'bn' ? 'অভিযোগ করুন' : 'Report Now'}</span>
+                            <span className="group-hover:translate-x-1 transition-transform">→</span>
+                          </div>
+                        </div>
                       ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* "HOW IT WORKS" 3-STEP PROCESS SECTION */}
+                <section aria-labelledby="workflow-title" className="w-full bg-[#050B14] py-14 md:py-20 text-white border-y border-slate-800 transition-colors">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Section Header */}
+                    <div className="max-w-2xl mb-8">
+                      <h2 id="workflow-title" className="font-headline text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
+                        {t.howItWorksTitle}
+                      </h2>
+                      <p className="text-sm sm:text-base text-slate-400">
+                        {t.howItWorksSub}
+                      </p>
+                    </div>
+
+                    {/* Unified 3-Column Box Container Matching Reference Image */}
+                    <div className="border border-[#1E293B] rounded-xl overflow-hidden bg-[#0A101D] shadow-2xl">
+                      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1E293B]">
+                        {/* Step 01: Report */}
+                        <div className="p-6 md:p-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-6">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#38BDF8] select-none tracking-tight">
+                                {t.step1Num || '01'}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#0C243C] border border-[#0284C7]/60 flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="camera" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-xl font-bold text-white mb-2">
+                              {t.step1Title}
+                            </h3>
+                            <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                              {t.step1Desc}
+                            </p>
+                          </div>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-[#38BDF8] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.step1Meta}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Step 02: Track */}
+                        <div className="p-6 md:p-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-6">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-white select-none tracking-tight">
+                                {t.step2Num || '02'}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#131D2D] border border-[#223247] flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="search" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-xl font-bold text-white mb-2">
+                              {t.step2Title}
+                            </h3>
+                            <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                              {t.step2Desc}
+                            </p>
+                          </div>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-[#38BDF8] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.step2Meta}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Step 03: Verify */}
+                        <div className="p-6 md:p-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-6">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#10B981] select-none tracking-tight">
+                                {t.step3Num || '03'}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#082820] border border-[#059669]/60 flex items-center justify-center text-[#10B981]">
+                                <Icon name="check" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-xl font-bold text-white mb-2">
+                              {t.step3Title}
+                            </h3>
+                            <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                              {t.step3Desc}
+                            </p>
+                          </div>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-[#10B981] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.step3Meta}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* LIVE PERFORMANCE METRICS STRIP (Contiguous Cadastre Box Container) */}
+                <section className="w-full bg-[#030712] py-12 md:py-16 border-b border-slate-800 transition-colors">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="border border-[#1E293B] rounded-2xl overflow-hidden bg-[#0A101D] shadow-2xl">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#1E293B]">
+                        {/* Metric 01: Total Logged */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-white select-none tracking-tight">
+                                {t.metric1Val}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#131D2D] border border-[#223247] flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="inbox" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.metric1Label}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.metric1Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#38BDF8] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.metric1Meta}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Metric 02: Resolution Rate */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#10B981] select-none tracking-tight">
+                                {t.metric2Val}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#082820] border border-[#059669]/60 flex items-center justify-center text-[#10B981]">
+                                <Icon name="check-circle" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.metric2Label}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.metric2Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#10B981] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.metric2Meta}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Metric 03: Avg Dispatch Turn */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#F59E0B] select-none tracking-tight">
+                                {t.metric3Val}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#241B08] border border-[#D97706]/60 flex items-center justify-center text-[#F59E0B]">
+                                <Icon name="clock" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.metric3Label}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.metric3Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#F59E0B] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.metric3Meta}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Metric 04: Open Transparency */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#38BDF8] select-none tracking-tight">
+                                {t.metric4Val}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#0C243C] border border-[#0284C7]/60 flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="shield-check" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.metric4Label}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.metric4Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#38BDF8] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.metric4Meta}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* INTERACTIVE BEFORE/AFTER SHOWCASE */}
+                <section className="w-full bg-white dark:bg-slate-900 py-12 md:py-16 border-b border-slate-200 dark:border-slate-800 transition-colors">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-10 shadow-sm">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <div>
+                          <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                            {t.sliderBadge}
+                          </div>
+                          <h2 className="font-headline text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {t.sliderTitle}
+                          </h2>
+                          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                            {t.sliderSub}
+                          </p>
+                        </div>
+                        <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-800 dark:text-emerald-300 self-start md:self-auto shadow-sm">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span>{t.sliderTag}</span>
+                        </div>
+                      </div>
+
+                      <InteractiveBeforeAfter
+                        beforeImage={featuredReport?.beforeImage || "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800"}
+                        afterImage={featuredReport?.afterImage || "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&q=80&w=800"}
+                        altBefore="Original reported defect"
+                        altAfter="Verified municipal repair"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                {/* EMERGENCY CALLOUT & DIRECT CITIZEN DISPATCH BANNER */}
+                <section className="w-full bg-slate-50 dark:bg-slate-900/50 py-12 md:py-16 transition-colors">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white rounded-3xl p-7 sm:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+                      <div className="flex flex-col max-w-xl text-left">
+                        <div className="inline-flex items-center gap-2 text-emerald-200 text-xs uppercase font-bold tracking-wider mb-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                          <span>{lang === 'bn' ? 'জরুরি পৌর সাহায্য' : 'URGENT CITIZEN HOTLINE'}</span>
+                        </div>
+                        <h2 className="font-headline text-xl sm:text-2xl font-black tracking-tight mb-2">
+                          {t.bannerTitle}
+                        </h2>
+                        <p className="text-sm text-emerald-100 font-normal leading-relaxed">
+                          {t.bannerSub}
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto shrink-0">
+                        <div className="flex items-center justify-center gap-2 bg-emerald-900/70 border border-emerald-500/50 px-4 py-3 rounded-xl text-xs sm:text-sm font-bold text-white shadow-sm">
+                          <span className="material-symbols-outlined text-lg text-amber-300">call</span>
+                          <span>{t.hotline}</span>
+                        </div>
+                        <button 
+                          onClick={() => { setReportStep(1); setActiveTab('report'); }} 
+                          className="flex items-center justify-center gap-2 bg-white text-emerald-800 hover:bg-emerald-50 px-6 py-3 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
+                        >
+                          <span>{t.bannerBtn}</span>
+                          <Icon name="arrow-right" className="w-4 h-4 text-emerald-800" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -1356,31 +2379,31 @@ export const normalizeReport = (item) => {
             {activeTab === 'report' && (
               <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14">
                 {/* STEPPER HEADER */}
-                <div className="mb-8 border-b border-slate-800 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Report a Civic Problem</h1>
-                    <p className="text-sm text-slate-400 mt-1">Add a photo, location, and a short description.</p>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{lang === 'bn' ? 'নাগরিক সমস্যার অভিযোগ দায়ের' : 'Report a Civic Problem'}</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'bn' ? 'ছবি তুলুন, লোকেশন দিন এবং সংক্ষেপে বিবরণ লিখুন।' : 'Add a photo, location, and a short description.'}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-xs font-mono">
+                  <div className="flex items-center gap-2 text-xs">
                     {[
-                      { step: 1, label: 'Photo' },
-                      { step: 2, label: 'Details' },
-                      { step: 3, label: 'Done' }
+                      { step: 1, label: lang === 'bn' ? 'ছবি' : 'Photo' },
+                      { step: 2, label: lang === 'bn' ? 'বিস্তারিত' : 'Details' },
+                      { step: 3, label: lang === 'bn' ? 'সম্পন্ন' : 'Done' }
                     ].map((s, idx) => (
                       <React.Fragment key={s.step}>
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                        <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border transition-all ${
                           reportStep === s.step 
-                            ? 'bg-sky-500/20 border-sky-500/50 text-sky-300 font-bold'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500/40 text-emerald-700 dark:text-emerald-400 font-bold'
                             : reportStep > s.step 
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-semibold' 
-                            : 'bg-slate-900/60 border-slate-800 text-slate-500'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800 text-emerald-600 font-semibold' 
+                            : 'bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-400'
                         }`}>
-                          <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] bg-slate-950 font-mono">
+                          <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${reportStep >= s.step ? 'bg-emerald-600 text-white' : 'bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
                             {reportStep > s.step ? '✓' : s.step}
                           </span>
                           <span className="hidden sm:inline">{s.label}</span>
                         </div>
-                        {idx < 2 && <span className="text-slate-700 text-xs">→</span>}
+                        {idx < 2 && <span className="text-slate-400 text-xs">→</span>}
                       </React.Fragment>
                     ))}
                   </div>
@@ -1388,20 +2411,22 @@ export const normalizeReport = (item) => {
 
                 {/* STEP 1: PHOTO EVIDENCE INTAKE */}
                 {reportStep === 1 && (
-                  <div className="glass-panel border border-slate-800 rounded-2xl p-5 sm:p-8 text-center reveal-up">
-                    <div className="border-2 border-dashed border-slate-700 hover:border-sky-500 rounded-xl p-8 sm:p-12 transition-colors flex flex-col items-center justify-center space-y-5">
-                      <Icon name="camera" className="w-10 h-10 text-sky-400" />
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 sm:p-10 text-center reveal-up">
+                    <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-2xl p-8 sm:p-14 transition-all flex flex-col items-center justify-center space-y-5 bg-slate-50/50 dark:bg-slate-900/30">
+                      <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                        <Icon name="camera" className="w-8 h-8" />
+                      </div>
                       <div className="max-w-md">
-                        <h3 className="text-xl font-bold text-white tracking-tight">Add a photo of the problem</h3>
-                        <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                          A clear photo helps the responsible team understand what needs fixing.
+                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{t.photoUploadTitle}</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                          {t.photoUploadSub}
                         </p>
                       </div>
                       
                       <div className="flex flex-col items-center gap-3 w-full sm:w-auto">
-                        <label className="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-lg bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-sm transition-colors flex items-center justify-center gap-2">
-                          <Icon name="upload-cloud" className="w-4 h-4 text-slate-950" />
-                          <span>{isAnalyzing ? 'Checking photo…' : 'Select or Take Photo'}</span>
+                        <label className="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2">
+                          <Icon name="upload-cloud" className="w-4 h-4 text-white" />
+                          <span>{isAnalyzing ? (lang === 'bn' ? 'ছবি যাচাই হচ্ছে…' : 'Checking photo…') : t.browseFilesBtn}</span>
                           <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handlePhotoUpload} disabled={isAnalyzing} className="hidden" />
                         </label>
                         <button 
@@ -1414,51 +2439,50 @@ export const normalizeReport = (item) => {
                             setAnalysisComplete(true);
                             setReportStep(2);
                           }} 
-                          className="text-xs text-slate-400 hover:text-sky-400 underline underline-offset-4 transition-colors"
+                          className="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 underline underline-offset-4 transition-colors pt-1"
                         >
-                          I cannot add a photo
+                          {lang === 'bn' ? 'ছবি ছাড়া অভিযোগ করতে চাই' : 'I cannot add a photo'}
                         </button>
                       </div>
 
-                      <div className="text-xs text-slate-500 pt-2">
-                        JPEG, PNG or WebP · Up to 4 MB
+                      <div className="text-xs text-slate-400 pt-2 font-mono">
+                        {t.photoLimitHint}
                       </div>
                     </div>
-
                   </div>
                 )}
 
                 {/* STEP 2: REPORT DETAILS */}
                 {reportStep === 2 && (
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-7 shadow-2xl reveal-up">
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 sm:p-10 space-y-8 reveal-up">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                       {/* EVIDENCE PREVIEW / SCANNER */}
                       <div>
-                        <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
-                          <span>Photo preview</span>
-                          {uploadedImage && <span className="text-emerald-400">● Usable photo</span>}
+                        <div className="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                          <span>{lang === 'bn' ? 'ছবির প্রিভিউ' : 'Photo preview'}</span>
+                          {uploadedImage && <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{lang === 'bn' ? '● স্পষ্ট ছবি' : '● Usable photo'}</span>}
                         </div>
                         {uploadedImage ? (
-                          <div className="ai-laser-container relative w-full h-64 rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950">
+                          <div className="ai-laser-container relative w-full h-64 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-950">
                             <img src={uploadedImage} alt="Report preview" className="w-full h-full object-cover" />
                             {isAnalyzing && (
                               <>
                                 <div className="ai-laser-beam"></div>
                                 <div className="ai-laser-grid"></div>
-                                <div className="absolute bottom-3 inset-x-3 z-30 bg-slate-950/90 backdrop-blur-md border border-sky-500/40 rounded-xl p-2.5 text-center shadow-lg">
-                                  <div className="text-xs font-bold text-sky-300 flex items-center justify-center gap-2">
-                                    <Icon name="scan" className="w-4 h-4 text-sky-400 animate-spin" />
-                                    Checking photo…
+                                <div className="absolute bottom-3 inset-x-3 z-30 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl p-3 text-center shadow-lg">
+                                  <div className="text-xs font-semibold text-emerald-400 flex items-center justify-center gap-2">
+                                    <Icon name="scan" className="w-4 h-4 text-emerald-400 animate-spin" />
+                                    {lang === 'bn' ? 'এআই ছবি বিশ্লেষণ করছে…' : 'Analyzing civic evidence…'}
                                   </div>
                                 </div>
                               </>
                             )}
                           </div>
                         ) : (
-                          <div className="w-full h-64 rounded-2xl border-2 border-dashed border-slate-800 flex flex-col items-center justify-center text-xs text-slate-500 bg-slate-950/40 p-6 text-center">
-                            <Icon name="image-off" className="w-8 h-8 text-slate-600 mb-2" />
-                            <span>No photo supplied</span>
-                            <span className="text-[10px] text-slate-600 mt-1">Incident will be logged for authority inspection</span>
+                          <div className="w-full h-64 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-xs text-slate-400 bg-slate-50 dark:bg-slate-900/40 p-6 text-center">
+                            <Icon name="image-off" className="w-8 h-8 text-slate-400 mb-2" />
+                            <span>{lang === 'bn' ? 'ছবি সংযুক্ত করা হয়নি' : 'No photo supplied'}</span>
+                            <span className="text-[10px] text-slate-400 mt-1">{lang === 'bn' ? 'পৌর পরিদর্শনের জন্য নথিভুক্ত হবে' : 'Incident will be logged for authority inspection'}</span>
                           </div>
                         )}
                       </div>
@@ -1466,51 +2490,60 @@ export const normalizeReport = (item) => {
                       {/* AI ASSESSMENT SIGNALS */}
                       <div className="flex flex-col justify-between space-y-4">
                         {isAnalyzing ? (
-                          <div className="h-64 flex flex-col items-center justify-center space-y-4 py-8 glass-card rounded-2xl border border-sky-500/20">
-                            <Icon name="scan" className="w-8 h-8 text-sky-400 animate-spin" />
+                          <div className="h-64 flex flex-col items-center justify-center space-y-4 py-8 bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-xl">
+                            <Icon name="scan" className="w-8 h-8 text-emerald-600 dark:text-emerald-400 animate-spin" />
                             <div className="text-center px-4">
-                              <div className="text-sm font-bold text-white">Checking your photo</div>
-                              <div className="text-xs text-slate-400 mt-1">We are identifying the type of problem.</div>
+                              <div className="text-sm font-bold text-slate-900 dark:text-white">
+                                {lang === 'bn' ? 'আপনার ছবি বিশ্লেষণ করা হচ্ছে...' : 'Checking your photo'}
+                              </div>
+                              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                {lang === 'bn' ? 'পৌর সমস্যার ধরন ও বিবরণ যাচাই করা হচ্ছে।' : 'We are identifying the type of civic problem.'}
+                              </div>
                             </div>
                           </div>
                         ) : (
-                          <div className="space-y-3.5">
-                            <div className="border-b border-slate-800 pb-4">
+                          <div className="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+                            <div>
                               <div className="flex flex-wrap items-center justify-between gap-2">
                                 <div>
-                                  <div className="text-xs text-sky-400 font-semibold flex items-center gap-1.5">
-                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-sky-400" />
-                                    <span>Suggested description (AI-generated)</span>
+                                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
+                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-emerald-500" />
+                                    <span>{lang === 'bn' ? 'পরামর্শকৃত বিবরণ · Suggested description (AI-generated)' : 'Suggested description (AI-generated)'}</span>
                                   </div>
-                                  <p className="text-[11px] text-slate-400 mt-0.5">
-                                    Draft suggestion based on your photo. You can edit or write your own below.
+                                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                    {lang === 'bn' ? 'ছবি শনাক্তকরণের ভিত্তিতে স্বয়ংক্রিয় খসড়া। নিচে প্রয়োজনে পরিবর্তন করতে পারেন।' : 'Draft based on visual recognition. You can customize below.'}
                                   </p>
                                 </div>
                                 {aiAnalysis?.summary ? (
                                   <button
                                     type="button"
+                                    aria-label="Use this suggestion"
                                     onClick={() => setReportForm(form => ({ ...form, description: aiAnalysis.summary }))}
-                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/40 transition-colors flex items-center gap-1.5"
+                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5 cursor-pointer"
                                   >
-                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-sky-400" />
-                                    <span>Use this suggestion</span>
+                                    <Icon name="sparkles" className="w-3.5 h-3.5" />
+                                    <span>{lang === 'bn' ? 'এই প্রস্তাবনা ব্যবহার করুন' : 'Use this suggestion'}</span>
                                   </button>
                                 ) : null}
                               </div>
-                              <p className="text-xs sm:text-sm font-medium text-slate-100 mt-2.5 leading-snug bg-slate-900/40 p-3 rounded-xl border border-slate-800/80">
-                                {aiAnalysis?.summary || 'Your photo is ready. Add the location and a short description below.'}
+                              <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 mt-2.5 leading-relaxed bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                                {aiAnalysis?.summary || (lang === 'bn' ? 'আপনার ছবি আপলোড সম্পন্ন হয়েছে। নিচে অবস্থান ও বিবরণ দিন।' : 'Your photo is ready. Add the location and a short description below.')}
                               </p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="grid grid-cols-2 gap-4 text-xs pt-1">
                               <div>
-                                <span className="text-xs text-slate-400 block">Issue type</span>
-                                <span className="text-white font-bold truncate block mt-0.5">{aiAnalysis?.category || reportForm.category}</span>
+                                <span className="text-slate-500 dark:text-slate-400 block font-medium">
+                                  {lang === 'bn' ? 'সমস্যার ধরন' : 'Issue type'}
+                                </span>
+                                <span className="text-slate-900 dark:text-white font-bold truncate block mt-0.5">{aiAnalysis?.category || reportForm.category}</span>
                               </div>
                               <div>
-                                <span className="text-xs text-slate-400 block">Urgency</span>
+                                <span className="text-slate-500 dark:text-slate-400 block font-medium">
+                                  {lang === 'bn' ? 'জরুরি মাত্রা' : 'Urgency'}
+                                </span>
                                 <span className={`font-bold block mt-0.5 ${
-                                  (aiAnalysis?.severity || reportForm.severity) === 'Critical' ? 'text-red-400' : 'text-amber-400'
+                                  (aiAnalysis?.severity || reportForm.severity) === 'Critical' ? 'text-red-500' : 'text-amber-500'
                                 }`}>
                                   {aiAnalysis?.severity || reportForm.severity}
                                 </span>
@@ -1518,12 +2551,12 @@ export const normalizeReport = (item) => {
                             </div>
 
                             {aiAnalysis?.is_civic_issue === false && (
-                              <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-300 flex items-center gap-2">
-                                <Icon name="alert-triangle" className="w-4 h-4 text-amber-400 shrink-0" />
+                              <div className="rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-xs text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                                <Icon name="alert-triangle" className="w-4 h-4 text-amber-500 shrink-0" />
                                 <span>
                                   {aiAnalysis?.visual_verification === 'unverified'
-                                    ? 'AI visual verification is currently unavailable. Your report will be routed to municipal officers for human review.'
-                                    : 'AI could not verify a civic issue in this photo with high confidence. You may describe it below for officer review.'}
+                                    ? (lang === 'bn' ? 'এআই ভিজ্যুয়াল যাচাই এই মুহূর্তে অনুপলব্ধ। প্রতিবেদনটি সংশ্লিষ্ট কর্মকর্তার পর্যালোচনার জন্য পাঠানো হবে।' : 'AI visual verification is currently unavailable. Your report will be routed to municipal officers for human review.')
+                                    : (lang === 'bn' ? 'এআই এই ছবিতে উচ্চ নিশ্চয়তার সাথে পৌর সমস্যা চিহ্নিত করতে পারেনি। পর্যালোচনার জন্য নিচে বিবরণ লিখুন।' : 'AI could not verify a civic issue in this photo with high confidence. You may describe it below for officer review.')}
                                 </span>
                               </div>
                             )}
@@ -1533,52 +2566,52 @@ export const normalizeReport = (item) => {
                     </div>
 
                     {analysisComplete && (
-                      <div className="border-t border-slate-800/80 pt-6 space-y-5">
+                      <div className="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-5">
                         {/* PHOTO LOCATION DETECTED BANNER */}
                         {photoLocation && (aiAnalysis?.is_civic_issue !== false || aiAnalysis?.confidence < 0.75) && (
-                          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                          <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/30 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
                             <div>
-                              <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5 font-mono">
-                                <Icon name="map-pin" className="w-4 h-4 text-emerald-400" />
-                                Location found in photo
+                              <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 font-mono">
+                                <Icon name="map-pin" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                {lang === 'bn' ? 'ছবিতে অবস্থান শনাক্ত হয়েছে' : 'Location found in photo'}
                               </div>
-                              <div className="text-[11px] text-slate-300 mt-1 font-mono">
+                              <div className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 font-mono">
                                 {photoLocation.latitude.toFixed(5)}, {photoLocation.longitude.toFixed(5)}
-                                {photoLocation.captured_at ? ` · Captured ${new Date(photoLocation.captured_at).toLocaleTimeString()}` : ''}
+                                {photoLocation.captured_at ? ` · ${lang === 'bn' ? 'গৃহীত' : 'Captured'} ${new Date(photoLocation.captured_at).toLocaleTimeString()}` : ''}
                               </div>
                             </div>
                             <button 
                               type="button" 
                               onClick={usePhotoLocation} 
-                              className="shrink-0 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all shadow-md"
+                              className="shrink-0 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
                             >
-                              Use this location
+                              {lang === 'bn' ? 'এই অবস্থান ব্যবহার করুন' : 'Use this location'}
                             </button>
                           </div>
                         )}
 
                         {/* LOCATION PICKER & ADDRESS INPUT */}
                         <div>
-                          <label className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
-                            Where is the problem? <span className="text-sky-400">*</span>
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                            {lang === 'bn' ? 'সমস্যার অবস্থান কোথায়?' : 'Where is the problem?'} <span className="text-emerald-600">*</span>
                           </label>
-                          <div className="flex items-center gap-2 glass-input rounded-xl px-3.5 py-2.5 text-sm">
-                            <Icon name="map-pin" className="w-4 h-4 text-sky-400 shrink-0" />
+                          <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-3.5 py-2.5 text-sm focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500">
+                            <Icon name="map-pin" className="w-4 h-4 text-emerald-600 shrink-0" />
                             <input 
                               type="text" 
                               value={reportForm.location}
-                              placeholder="Enter street, area or landmark"
+                              placeholder={lang === 'bn' ? 'রাস্তা, এলাকা বা পরিচিত স্থান লিখুন (Enter street, area or landmark)' : 'Enter street, area or landmark'}
                               onChange={(e) => setReportForm({...reportForm, location: e.target.value, locationSource: reportForm.latitude == null ? 'manual' : reportForm.locationSource, locationConfirmed: true})}
-                              className="bg-transparent text-white focus:outline-none w-full text-xs sm:text-sm"
+                              className="bg-transparent text-slate-900 dark:text-white focus:outline-none w-full text-xs sm:text-sm placeholder-slate-400"
                             />
                             <button 
                               type="button" 
                               onClick={captureLocation} 
-                              className={`shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-mono font-bold transition-all ${
-                                reportForm.locationSource === 'device_gps' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-sky-500/15 text-sky-400 border border-sky-500/30 hover:bg-sky-500/25'
+                              className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                reportForm.locationSource === 'device_gps' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500'
                               }`}
                             >
-                              {reportForm.locationSource === 'device_gps' ? '✓ Location added' : 'Use my location'}
+                              {reportForm.locationSource === 'device_gps' ? (lang === 'bn' ? '✓ অবস্থান যুক্ত' : '✓ Location added') : (lang === 'bn' ? 'আমার অবস্থান নিন' : 'Use my location')}
                             </button>
                           </div>
 
@@ -1586,14 +2619,14 @@ export const normalizeReport = (item) => {
                             <button 
                               type="button" 
                               onClick={() => setShowLocationMap(value => !value)} 
-                              className="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1 transition-colors"
+                              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                             >
                               <Icon name={showLocationMap ? 'chevron-up' : 'map'} className="w-3.5 h-3.5" />
-                              {showLocationMap ? 'Hide map' : 'Choose on map'}
+                              {showLocationMap ? (lang === 'bn' ? 'ম্যাপ লুকান' : 'Hide map') : (lang === 'bn' ? 'ম্যাপে চিহ্নিত করুন' : 'Choose on map')}
                             </button>
                             {reportForm.locationSource && (
-                              <span className="text-[10px] font-mono text-emerald-400">
-                                Location added
+                              <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+                                {lang === 'bn' ? 'অবস্থান নিশ্চিত' : 'Location added'}
                               </span>
                             )}
                           </div>
@@ -1607,54 +2640,57 @@ export const normalizeReport = (item) => {
 
                         {/* PRIVATE REPORTER CONTACT */}
                         <div>
-                          <label className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
-                            Phone or email <span className="font-normal">(optional)</span>
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                            {lang === 'bn' ? 'ফোন নম্বর বা ইমেইল' : 'Phone or email'} <span className="text-slate-400 font-normal">({lang === 'bn' ? 'ঐচ্ছিক' : 'optional'})</span>
                           </label>
                           <input 
                             type="text" 
                             value={reportForm.reporterContact} 
                             onChange={e => setReportForm({...reportForm, reporterContact: e.target.value})} 
-                            placeholder="For updates about this report"
-                            className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm focus:outline-none" 
+                            placeholder={lang === 'bn' ? 'রিপোর্টের অগ্রগতির আপডেটের জন্য (ঐচ্ছিক)' : 'For updates about this report'}
+                            className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" 
                           />
                         </div>
 
                         {/* DESCRIPTION */}
                         <div>
-                          <label className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
-                            What happened? <span className="text-sky-400">*</span>
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                            {lang === 'bn' ? 'কী সমস্যা হয়েছে?' : 'What happened?'} <span className="text-emerald-600">*</span>
                           </label>
                           <textarea 
                             rows={3}
                             value={reportForm.description}
                             onChange={(e) => setReportForm({...reportForm, description: e.target.value})}
-                            placeholder="Briefly describe the problem"
-                            className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm focus:outline-none"
+                            placeholder={lang === 'bn' ? 'সমস্যার সংক্ষিপ্ত বিবরণ লিখুন (Briefly describe the problem)...' : 'Briefly describe the problem'}
+                            className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                           />
                         </div>
 
                         {/* ACTION BUTTONS */}
                         <div className="flex items-center justify-between pt-3">
                           <button 
+                            type="button"
                             onClick={() => setReportStep(1)} 
-                            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+                            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                           >
-                            ← Change photo
+                            {lang === 'bn' ? '← ছবি পরিবর্তন' : '← Change photo'}
                           </button>
                           <button 
+                            type="button"
+                            aria-label="Submit report"
                             onClick={handleFinalSubmit}
                             disabled={isSubmitting || (aiAnalysis?.is_civic_issue === false && aiAnalysis?.confidence >= 0.75)}
-                            className="px-7 py-3.5 rounded-lg text-sm font-bold bg-sky-400 hover:bg-sky-300 disabled:opacity-50 text-slate-950 flex items-center gap-2 transition-colors"
+                            className="px-8 py-3.5 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
                           >
                             {isSubmitting ? (
                               <>
-                                <Icon name="refresh-cw" className="w-4 h-4 animate-spin text-slate-950" />
-                                <span>Submitting…</span>
+                                <Icon name="refresh-cw" className="w-4 h-4 animate-spin text-white" />
+                                <span>{lang === 'bn' ? 'দাখিল হচ্ছে…' : 'Submitting…'}</span>
                               </>
                             ) : (
                               <>
-                                <span>Submit report</span>
-                                <Icon name="arrow-right" className="w-4 h-4 text-slate-950" />
+                                <span>{lang === 'bn' ? 'অভিযোগ দাখিল করুন' : 'Submit report'}</span>
+                                <Icon name="arrow-right" className="w-4 h-4 text-white" />
                               </>
                             )}
                           </button>
@@ -1669,19 +2705,38 @@ export const normalizeReport = (item) => {
             {/* 3. TRACK REPORT & BEFORE/AFTER INTERACTIVE SLIDER */}
             {activeTab === 'track' && submittedReportId && (
               <div className="max-w-xl mx-auto px-4 py-12 sm:py-16">
-                <section aria-labelledby="report-success-title" className="glass-panel border border-emerald-500/30 rounded-2xl p-6 sm:p-8 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
-                    <Icon name="check" className="h-6 w-6" />
+                <section aria-labelledby="report-success-title" className="bg-white dark:bg-slate-800 border border-emerald-500/30 rounded-2xl p-6 sm:p-10 text-center shadow-lg">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50">
+                    <Icon name="check" className="h-7 w-7" />
                   </div>
-                  <h1 id="report-success-title" className="mt-5 text-2xl font-bold text-white">Report submitted</h1>
-                  <p className="mt-2 text-sm text-slate-400">Save this report ID. You can use it to check progress anytime.</p>
-                  <div className="mt-6 rounded-xl border border-slate-700 bg-slate-950 px-4 py-5">
-                    <div className="text-xs text-slate-400">Your report ID</div>
-                    <div className="mt-1 font-mono text-2xl font-bold text-sky-400">{submittedReportId}</div>
+                  <h1 id="report-success-title" className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
+                    {lang === 'bn' ? 'অভিযোগ সফলভাবে দাখিল হয়েছে' : 'Report submitted'}
+                  </h1>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                    {lang === 'bn' ? 'এই রিপোর্ট আইডি নম্বরটি সংরক্ষণ করুন। যেকোনো সময় অগ্রগতি ট্র্যাক করতে পারবেন।' : 'Save this report ID. You can use it to check progress anytime.'}
+                  </p>
+                  <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 px-6 py-5">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {lang === 'bn' ? 'আপনার রিপোর্ট আইডি নম্বর' : 'Your report ID'}
+                    </div>
+                    <div className="mt-1 font-mono text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{submittedReportId}</div>
                   </div>
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <button onClick={() => { navigator.clipboard?.writeText(submittedReportId); showToast('Report ID copied.'); }} className="min-h-12 rounded-lg border border-slate-700 px-5 text-sm font-semibold text-slate-200 hover:border-slate-500">Copy report ID</button>
-                    <button onClick={() => setSubmittedReportId('')} className="min-h-12 rounded-lg bg-sky-400 px-5 text-sm font-bold text-slate-950 hover:bg-sky-300">Track this report</button>
+                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                    <button 
+                      onClick={() => { 
+                        navigator.clipboard?.writeText(submittedReportId); 
+                        showToast(lang === 'bn' ? 'রিপোর্ট আইডি কপি করা হয়েছে।' : 'Report ID copied.'); 
+                      }} 
+                      className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 px-5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all cursor-pointer"
+                    >
+                      {lang === 'bn' ? 'আইডি কপি করুন' : 'Copy report ID'}
+                    </button>
+                    <button 
+                      onClick={() => setSubmittedReportId('')} 
+                      className="min-h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all px-5 cursor-pointer"
+                    >
+                      {lang === 'bn' ? 'এই রিপোর্ট ট্র্যাক করুন' : 'Track this report'}
+                    </button>
                   </div>
                 </section>
               </div>
@@ -1689,32 +2744,37 @@ export const normalizeReport = (item) => {
 
             {activeTab === 'track' && !submittedReportId && !selectedReport && (
               <div className="max-w-xl mx-auto px-4 py-16">
-                <div className="rounded-2xl glass-panel border border-slate-800 p-6 sm:p-8 space-y-4 reveal-up">
-                  <h1 className="text-2xl font-bold text-white tracking-tight">Track a Report</h1>
-                  <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-                    Enter your report ID to see its current status and latest update.
-                  </p>
-                  <label htmlFor="tracking-id" className="block text-sm font-semibold text-slate-200">Report ID</label>
-                  <div className="flex flex-col sm:flex-row gap-2.5 mt-2">
-                    <input 
-                      id="tracking-id"
-                      value={trackingQuery} 
-                      onChange={e => setTrackingQuery(e.target.value)} 
-                      onKeyDown={e => e.key === 'Enter' && trackById()} 
-                      placeholder="CP-ABC123 or ABC123"
-                      className="flex-1 glass-input rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none"
-                    />
-                    <button 
-                      onClick={trackById} 
-                      disabled={trackingBusy}
-                      className="px-6 py-3 rounded-lg bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-sm transition-colors"
-                    >
-                      {trackingBusy ? 'Finding…' : 'Track'}
-                    </button>
+                <div className="rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-6 sm:p-10 space-y-5 reveal-up">
+                  <div>
+                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{lang === 'bn' ? 'উন্মুক্ত নাগরিক তথ্য' : 'Citizen Transparency'}</span>
+                    <h1 aria-label="Track a Report" className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">{t.trackPageTitle}</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                      {t.trackPageSub}
+                    </p>
                   </div>
-                  {trackingError && <div role="alert" className="text-xs text-red-300 rounded-xl border border-red-500/30 bg-red-500/10 p-3">{trackingError}</div>}
-                  <button onClick={openJudgeDemo} className="text-sm font-semibold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1.5">
-                    See public report
+                  <div>
+                    <label htmlFor="tracking-id" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{lang === 'bn' ? 'রিপোর্ট আইডি নম্বর' : 'Report ID'}</label>
+                    <div className="flex flex-col sm:flex-row gap-2.5">
+                      <input 
+                        id="tracking-id"
+                        value={trackingQuery} 
+                        onChange={e => setTrackingQuery(e.target.value)} 
+                        onKeyDown={e => e.key === 'Enter' && trackById()} 
+                        placeholder={lang === 'bn' ? 'উদাঃ CP-88390 বা 88390 (CP-ABC123 or ABC123)' : 'CP-ABC123 or ABC123'}
+                        className="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-4 py-3 text-slate-900 dark:text-white font-mono text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                      />
+                      <button 
+                        onClick={trackById} 
+                        disabled={trackingBusy}
+                        className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all disabled:opacity-50"
+                      >
+                        {trackingBusy ? (lang === 'bn' ? 'অনুসন্ধান চলছে…' : 'Finding…') : t.trackActionBtn}
+                      </button>
+                    </div>
+                  </div>
+                  {trackingError && <div role="alert" className="text-xs text-red-600 dark:text-red-400 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 p-3">{trackingError}</div>}
+                  <button aria-label="See public report" onClick={openJudgeDemo} className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1.5 cursor-pointer">
+                    {t.seePublicReportBtn}
                   </button>
                 </div>
               </div>
@@ -1723,29 +2783,29 @@ export const normalizeReport = (item) => {
             {activeTab === 'track' && !submittedReportId && selectedReport && (
               <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-8 reveal-up">
                 {/* INCIDENT HEADER CARD */}
-                <div className="glass-panel border border-slate-800/80 rounded-3xl p-6 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-2xl">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
                   <div>
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="text-2xl font-bold font-mono text-sky-400">
+                      <span className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
                         {selectedReport.id}
                       </span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold border ${
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         selectedReport.status === 'Resolved' 
-                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40' 
-                          : 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' 
+                          : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                       }`}>
                         {selectedReport.status}
                       </span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono border ${
-                        selectedReport.severity === 'Critical' ? 'bg-red-500/10 text-red-400 border-red-500/30' : 'bg-slate-800 text-slate-300 border-slate-700'
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        selectedReport.severity === 'Critical' ? 'bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                       }`}>
                         {selectedReport.severity}
                       </span>
                     </div>
 
-                    <h1 className="text-xl font-bold text-white mt-2 tracking-tight break-words">{selectedReport.title}</h1>
-                    <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1 font-sans">
-                      <Icon name="map-pin" className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                    <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-2 tracking-tight break-words">{selectedReport.title}</h1>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1.5">
+                      <Icon name="map-pin" className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       <span>{selectedReport.location}</span>
                     </p>
                   </div>
@@ -1756,23 +2816,23 @@ export const normalizeReport = (item) => {
                         value={trackingQuery} 
                         onChange={e => setTrackingQuery(e.target.value)} 
                         onKeyDown={e => e.key === 'Enter' && trackById()} 
-                        placeholder="Search ID" 
-                        className="glass-input rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none w-36" 
+                        placeholder={lang === 'bn' ? 'আইডি লিখুন' : 'Search ID'} 
+                        className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-3.5 py-2 text-xs font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 w-36" 
                       />
                       <button 
                         onClick={trackById} 
-                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-all shadow-md"
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all"
                       >
-                        Track
+                        {t.trackActionBtn}
                       </button>
                     </div>
                     <select 
                       value={selectedReport.id}
                       onChange={(e) => setSelectedReport(reports.find(r => r.id === e.target.value))}
-                      className="glass-input rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none cursor-pointer"
+                      className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 px-3 py-2 text-xs font-mono text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
                     >
                       {reports.map(r => (
-                        <option key={r.id} value={r.id} className="bg-slate-900 text-white">{r.id} · {r.category}</option>
+                        <option key={r.id} value={r.id} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{r.id} · {r.category}</option>
                       ))}
                     </select>
                   </div>
@@ -1781,60 +2841,48 @@ export const normalizeReport = (item) => {
                 {/* 2-COLUMN TIMELINE & EVIDENCE VERIFICATION WORKSPACE */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                   {/* TIMELINE COLUMN */}
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-6 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-                      <h2 className="text-xs font-bold text-sky-400 uppercase tracking-widest font-mono flex items-center gap-2">
-                        <Icon name="clock" className="w-4 h-4 text-sky-400" />
-                        Report progress
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 space-y-6 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                      <h2 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-mono flex items-center gap-2">
+                        <Icon name="clock" className="w-4 h-4 text-emerald-600" />
+                        {t.reportProgressTitle}
                       </h2>
                     </div>
                     
-                    <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2.5 before:bottom-2.5 before:w-0.5 before:bg-slate-800">
+                    <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2.5 before:bottom-2.5 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
                       {selectedReport.timeline.map((item, idx) => (
                         <div key={idx} className="relative">
                           <div className={`absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 transition-all ${
-                            item.done ? 'bg-sky-400 border-slate-950' : 'bg-slate-950 border-slate-700'
+                            item.done ? 'bg-emerald-600 border-emerald-600' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'
                           }`} />
-                          <div className="text-xs font-bold text-slate-100">{item.step}</div>
-                          <div className="text-[11px] font-mono text-slate-400 mt-0.5">{item.time}</div>
-                          {item.note && <div className="text-[10px] text-slate-500 mt-1 leading-snug">{item.note}</div>}
+                          <div className="text-xs font-bold text-slate-900 dark:text-white">{item.step}</div>
+                          <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">{item.time}</div>
+                          {item.note && <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{item.note}</div>}
                         </div>
                       ))}
                     </div>
 
-                    <div className="border-t border-slate-800/80 pt-4 space-y-3">
-                      <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-slate-400">
-                        <span>Responsible Public Authority</span>
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                        <span>{t.responsibleAuthority}</span>
                         <div className="flex flex-wrap items-center gap-1">
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                            {selectedReport.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                            {selectedReport.assigned_authority?.authority_data_status === 'gazette_verified' ? t.gazetteVerified : (lang === 'bn' ? 'প্রস্তাবিত কর্তৃপক্ষ' : 'Candidate Authority')}
                           </span>
                           {selectedReport.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-                              Statutory Verified
-                            </span>
-                          ) : selectedReport.assigned_authority?.jurisdiction_data_status === 'heuristic_bbox' ? (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                              Heuristic Area
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                              {t.statutoryVerified}
                             </span>
                           ) : (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
-                              Location Inferred
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                              {t.locationInferred}
                             </span>
                           )}
-                          {selectedReport.assigned_authority?.assignment_status === 'officer_assigned' && (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                              Officer Assigned
-                            </span>
-                          )}
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
-                            Simulated Workflow
-                          </span>
                         </div>
                       </div>
-                      <div className="glass-card p-3 rounded-xl text-xs text-slate-200 space-y-2 border border-slate-800">
-                        <div className="flex items-center gap-2 font-semibold">
-                          <Icon name="building-2" className="w-4 h-4 text-sky-400 shrink-0" />
+                      <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4 rounded-xl text-xs space-y-2">
+                        <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                          <Icon name="building-2" className="w-4 h-4 text-emerald-600 shrink-0" />
                           <span>
                             {selectedReport.assigned_authority?.authority_name
                               ? `${selectedReport.assigned_authority.authority_name} (${selectedReport.assigned_authority.short_code})`
@@ -1842,48 +2890,48 @@ export const normalizeReport = (item) => {
                           </span>
                         </div>
                         {selectedReport.assigned_authority?.department && selectedReport.assigned_authority?.authority_name && (
-                          <div className="text-[11px] text-slate-400 pl-6">
-                            Department: <span className="text-slate-200 font-medium">{selectedReport.assigned_authority.department}</span>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 pl-6">
+                            Department: <span className="text-slate-800 dark:text-slate-200 font-medium">{selectedReport.assigned_authority.department}</span>
                           </div>
                         )}
                         {selectedReport.assigned_authority?.jurisdiction && (
-                          <div className="text-[11px] text-slate-400 pl-6 flex items-center gap-1.5">
-                            <Icon name="map-pin" className="w-3 h-3 text-sky-400 shrink-0" />
-                            <span>{selectedReport.assigned_authority.jurisdiction}</span>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 pl-6 flex items-center gap-1.5">
+                            <Icon name="map-pin" className="w-3 h-3 text-emerald-600 shrink-0" />
+                            <span>Jurisdiction: {selectedReport.assigned_authority.jurisdiction}</span>
                           </div>
                         )}
                         {selectedReport.assigned_authority?.assignment_reason && (
-                          <div className="text-[10px] text-slate-500 pl-6 border-t border-slate-800/60 pt-1.5 leading-snug">
+                          <div className="text-[10px] text-slate-400 dark:text-slate-400 pl-6 border-t border-slate-200 dark:border-slate-700/60 pt-1.5 leading-snug">
                             {selectedReport.assigned_authority.assignment_reason}
                           </div>
                         )}
                       </div>
                       {selectedReport.priority_score != null && (
-                        <details className="rounded-xl border border-slate-800 p-3">
-                          <summary className="cursor-pointer text-xs font-semibold text-slate-300">Why this priority?</summary>
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="mt-2 font-bold text-slate-200">Priority</span>
-                            <span className="font-mono font-extrabold text-sky-300">{selectedReport.priority_score}/100</span>
+                        <details className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800">
+                          <summary className="cursor-pointer text-xs font-semibold text-slate-600 dark:text-slate-400">Why this priority?</summary>
+                          <div className="flex items-center justify-between text-xs mt-2">
+                            <span className="font-bold text-slate-900 dark:text-white">Priority</span>
+                            <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400">{selectedReport.priority_score}/100</span>
                           </div>
-                          <p className="mt-1.5 text-xs leading-relaxed text-slate-400">Based on urgency, how many people reported it, how long it has waited, and location safety.</p>
+                          <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Based on urgency, how many people reported it, how long it has waited, and location safety.</p>
                         </details>
                       )}
                     </div>
                   </div>
 
                   {/* EVIDENCE & VERIFICATION COLUMN */}
-                  <div className="lg:col-span-2 glass-panel border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-6 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-                      <h2 className="text-xs font-bold text-sky-400 uppercase tracking-widest font-mono flex items-center gap-2">
-                        <Icon name="shield-check" className="w-4 h-4 text-sky-400" />
+                  <div className="lg:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 space-y-6 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                      <h2 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-mono flex items-center gap-2">
+                        <Icon name="shield-check" className="w-4 h-4 text-emerald-600" />
                         RESOLUTION & EVIDENCE
                       </h2>
                       {selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed ? (
-                        <span className="text-xs text-emerald-400 font-mono bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30 font-bold flex items-center gap-1">
+                        <span className="text-xs text-emerald-700 dark:text-emerald-300 font-medium bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5">
                           <span>✓</span> Citizen Confirmed & Resolved
                         </span>
                       ) : selectedReport.afterImage || selectedReport.resolution_evidence ? (
-                        <span className="text-xs text-amber-400 font-mono bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/30 font-bold flex items-center gap-1">
+                        <span className="text-xs text-amber-700 dark:text-amber-300 font-medium bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800 flex items-center gap-1.5">
                           <span>⏳</span> Awaiting Citizen Verification
                         </span>
                       ) : null}
@@ -1891,43 +2939,71 @@ export const normalizeReport = (item) => {
 
                     {/* RESOLUTION VERIFICATION */}
                     <div>
-                      <div className="text-[11px] font-mono text-slate-400 mb-2 font-semibold">RESOLUTION VERIFICATION</div>
-                      <div className="grid grid-cols-2 gap-2.5">
-                        <div className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
-                          selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence
-                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400'
-                        }`}>
-                          <Icon name="landmark" className={`w-4 h-4 ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-emerald-400' : 'text-slate-500'}`} />
-                          <span className="text-[11px] font-bold tracking-tight">Field Officer Evidence</span>
-                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
-                            {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? '✓ SUBMITTED' : 'PENDING'}
-                          </span>
-                        </div>
-                        <div className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
-                          selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter
-                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400'
-                        }`}>
-                          <Icon name="check" className={`w-4 h-4 ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-emerald-400' : 'text-slate-500'}`} />
-                          <span className="text-[11px] font-bold tracking-tight">Citizen Verification</span>
-                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
-                            {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? '✓ VERIFIED' : 'PENDING'}
-                          </span>
+                      <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-2 font-bold uppercase tracking-wider">// {t.resAndEvidence}</div>
+                      <div className="border border-[#1E293B] rounded-2xl overflow-hidden bg-[#0A101D] shadow-2xl">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#1E293B]">
+                          {/* Gate 01: Field Officer Evidence */}
+                          <div className="p-6 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                            <div>
+                              <div className="flex items-center justify-between mb-4">
+                                <span className="font-headline text-2xl font-black uppercase text-[#38BDF8]">01</span>
+                                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${
+                                  selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-[#082820] border-[#059669]/60 text-[#10B981]' : 'bg-[#131D2D] border-[#223247] text-[#38BDF8]'
+                                }`}>
+                                  <Icon name="landmark" className="w-4 h-4" />
+                                </div>
+                              </div>
+                              <h4 className="font-headline text-base font-bold text-white mb-1.5 tracking-tight">{t.gate01Title}</h4>
+                              <p className="text-xs text-slate-400 leading-relaxed">{t.gate01Desc}</p>
+                            </div>
+                            <div className="mt-6 pt-3 border-t border-[#1E293B] flex items-center justify-between font-mono text-[10px]">
+                              <span className="flex items-center gap-1.5 text-slate-400">
+                                <span className={`w-2 h-2 rounded-[2px] ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-[#10B981]' : 'bg-[#F59E0B]'}`}></span>
+                                <span>{t.gateMunicipalLog}</span>
+                              </span>
+                              <span className={`font-bold uppercase tracking-wider ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-[#10B981]' : 'text-[#F59E0B]'}`}>
+                                {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? t.gateSubmitted : t.gatePending}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Gate 02: Citizen Verification */}
+                          <div className="p-6 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                            <div>
+                              <div className="flex items-center justify-between mb-4">
+                                <span className="font-headline text-2xl font-black uppercase text-white">02</span>
+                                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${
+                                  selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-[#082820] border-[#059669]/60 text-[#10B981]' : 'bg-[#131D2D] border-[#223247] text-[#38BDF8]'
+                                }`}>
+                                  <Icon name="check" className="w-4 h-4" />
+                                </div>
+                              </div>
+                              <h4 className="font-headline text-base font-bold text-white mb-1.5 tracking-tight">{t.gate02Title}</h4>
+                              <p className="text-xs text-slate-400 leading-relaxed">{t.gate02Desc}</p>
+                            </div>
+                            <div className="mt-6 pt-3 border-t border-[#1E293B] flex items-center justify-between font-mono text-[10px]">
+                              <span className="flex items-center gap-1.5 text-slate-400">
+                                <span className={`w-2 h-2 rounded-[2px] ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-[#10B981]' : 'bg-[#F59E0B]'}`}></span>
+                                <span>{t.gateTwoPartyAudit}</span>
+                              </span>
+                              <span className={`font-bold uppercase tracking-wider ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-[#10B981]' : 'text-[#F59E0B]'}`}>
+                                {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? t.gateVerified : t.gatePending}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-
                     {/* CONTRACTOR STAR RATING */}
                     {selectedReport.afterImage && selectedReport.assigned_contractor_id && (authUser?.role === 'admin' || sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`)) && (
-                      <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                            <Icon name="star" className="w-3.5 h-3.5 text-amber-400" />
+                          <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <Icon name="star" className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                             Rate Contractor Performance
                           </div>
-                          <p className="text-[11px] text-slate-400 mt-0.5">Rate quality, speed, and clean-up execution</p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Rate quality, speed, and clean-up execution</p>
                         </div>
                         <div className="flex gap-1.5">
                           {[1, 2, 3, 4, 5].map(score => (
@@ -1954,130 +3030,125 @@ export const normalizeReport = (item) => {
 
                     {/* CITIZEN VERIFICATION CARD */}
                     {(selectedReport.afterImage || selectedReport.resolution_evidence || ['Evidence Uploaded', 'Verification', 'Resolution Submitted', 'Resolved', 'Reopened - Needs Review'].includes(selectedReport.status)) && (
-                      <div data-testid="citizen-verification-card" className="rounded-2xl border border-slate-700/80 bg-slate-950/70 p-5 space-y-4 shadow-lg">
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                      <div data-testid="citizen-verification-card" className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40 p-5 sm:p-6 space-y-4 shadow-sm">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
                           <div className="flex items-center gap-2">
-                            <Icon name="shield-check" className="w-4 h-4 text-sky-400" />
-                            <span className="text-xs font-bold font-mono text-white tracking-wider uppercase">Citizen Verification Gate</span>
+                            <Icon name="shield-check" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span className="text-xs font-bold text-slate-900 dark:text-white tracking-wider uppercase">{t.citizenVerificationGate}</span>
                           </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
-                            Simulated Authority Workflow
+                          <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                            {lang === 'bn' ? 'পৌর অডিট ও যাচাইকরণ' : 'Simulated Authority Workflow'}
                           </span>
                         </div>
 
                         {/* If already confirmed & resolved */}
                         {(selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed) ? (
-                          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 space-y-2">
+                          <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/30 p-4 space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold font-mono text-emerald-400 flex items-center gap-1.5">
+                              <span className="text-xs font-bold font-mono text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
                                 <Icon name="circle-check" className="w-4 h-4" />
-                                RESOLUTION CONFIRMED BY CITIZEN
+                                {t.citizenConfirmed}
                               </span>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">
-                                Status: Resolved
+                              <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300">
+                                {lang === 'bn' ? 'স্ট্যাটাস: সমাধানকৃত' : 'Status: Resolved'}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-300 leading-relaxed">
-                              The reporter confirmed this incident was successfully fixed on site.
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                              {lang === 'bn' ? 'অভিযোগকারী নাগরিক সরেজমিনে পরিদর্শন করে সমস্যাটি সফলভাবে সমাধান হয়েছে বলে নিশ্চিত করেছেন।' : 'The reporter confirmed this incident was successfully fixed on site.'}
                             </p>
                             {selectedReport.citizen_verification?.note && (
-                              <div className="text-xs text-slate-300 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 italic">
+                              <div className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 italic">
                                 "{selectedReport.citizen_verification.note}"
                               </div>
                             )}
                           </div>
                         ) : selectedReport.status === 'Reopened - Needs Review' ? (
-                          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 space-y-2">
+                          <div className="rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 p-4 space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold font-mono text-amber-400 flex items-center gap-1.5">
+                              <span className="text-xs font-bold font-mono text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
                                 <Icon name="alert-triangle" className="w-4 h-4" />
-                                RESOLUTION DISPUTED · REOPENED
+                                {lang === 'bn' ? 'নাগরিক আপত্তি · পুনরায় চালু' : 'RESOLUTION DISPUTED · REOPENED'}
                               </span>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">
-                                Reopened - Needs Review
+                              <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">
+                                {selectedReport.status}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-300 leading-relaxed">
-                              The citizen reported that the problem was not satisfactorily fixed. Authority field crew has been notified to re-inspect.
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                              {lang === 'bn' ? 'নাগরিক জানিয়েছেন সমস্যাটি সঠিকভাবে সমাধান হয়নি। পুনরায় পরিদর্শনের জন্য ফিল্ড ক্রুকে নির্দেশ দেওয়া হয়েছে।' : 'The citizen reported that the problem was not satisfactorily fixed. Authority field crew has been notified to re-inspect.'}
                             </p>
                             {selectedReport.citizen_verification?.note && (
-                              <div className="text-xs text-amber-200 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 italic">
-                                Dispute reason: "{selectedReport.citizen_verification.note}"
+                              <div className="text-xs text-amber-700 dark:text-amber-400 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 italic">
+                                {lang === 'bn' ? 'আপত্তির কারণ: ' : 'Dispute reason: '}"{selectedReport.citizen_verification.note}"
                               </div>
                             )}
                           </div>
                         ) : (
                           /* Pending verification form */
-                          <div className="space-y-3.5">
+                          <div className="space-y-4">
                             {(selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note) && (
-                              <div className="rounded-xl bg-slate-900/90 border border-slate-800 p-3 text-xs">
-                                <div className="text-[10px] font-mono text-sky-400 font-bold mb-1">FIELD OFFICER COMPLETION NOTE</div>
-                                <p className="text-slate-200 leading-relaxed">
+                              <div className="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3.5 text-xs">
+                                <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold mb-1">{lang === 'bn' ? 'পৌর ফিল্ড অফিসারের সমাপ্তি নোট' : 'FIELD OFFICER COMPLETION NOTE'}</div>
+                                <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
                                   {selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note}
                                 </p>
                               </div>
                             )}
 
                             <div>
-                              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1">
-                                <span>REPORTER VERIFICATION TOKEN</span>
+                              <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                <span>{lang === 'bn' ? 'নাগরিক যাচাই টোকেন' : 'REPORTER VERIFICATION TOKEN'}</span>
                                 {sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) && (
-                                  <span className="text-[10px] text-emerald-400 font-bold">✓ Active on this device</span>
+                                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">{lang === 'bn' ? '✓ ডিভাইসে সক্রিয়' : '✓ Active on this device'}</span>
                                 )}
                               </div>
                               <input
                                 type="text"
-                                placeholder="Paste or verify reporter token..."
+                                placeholder={lang === 'bn' ? 'রিপোর্টার টোকেন দিন (Paste or verify reporter token...)' : 'Paste or verify reporter token...'}
                                 value={verificationToken || (selectedReport ? sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) || '' : '')}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  setVerificationToken(val);
-                                  if (selectedReport?.id && val.trim()) {
-                                    try {
-                                      sessionStorage.setItem(`urbanfix-reporter-${selectedReport.id}`, val.trim());
-                                    } catch (_) {}
-                                  }
-                                }}
-                                className="w-full glass-input rounded-xl p-2.5 text-xs text-white font-mono"
+                                onChange={(e) => setVerificationToken(e.target.value)}
+                                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                               />
                             </div>
 
                             <div>
-                              <label className="block text-[11px] font-mono text-slate-400 mb-1">
-                                FEEDBACK / NOTES (Required if rejecting or reporting partial fix)
+                              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                {lang === 'bn' ? 'মতামত বা নোট (সমস্যা সমাধান না হলে আবশ্যক)' : 'FEEDBACK / NOTES (Required if rejecting or reporting partial fix)'}
                               </label>
                               <textarea
                                 rows={2}
-                                placeholder="Enter inspection feedback or reason for dispute..."
+                                placeholder={t.citizenNotesPlaceholder}
                                 value={citizenFeedback}
                                 onChange={(e) => setCitizenFeedback(e.target.value)}
-                                className="w-full glass-input rounded-xl p-2 text-xs text-white resize-none"
+                                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                               />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                               <button
+                                aria-label="Confirm Fixed"
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('fixed')}
-                                className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5"
+                                className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                               >
                                 <Icon name="check" className="w-4 h-4" />
-                                <span>Confirm Fixed</span>
+                                <span>{t.citizenConfirmYes}</span>
                               </button>
                               <button
+                                aria-label="Partially Fixed"
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('partially_fixed')}
-                                className="py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                                className="py-2.5 px-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                               >
-                                <span>Partially Fixed</span>
+                                <span>{lang === 'bn' ? 'আংশিক সমাধান' : 'Partially Fixed'}</span>
                               </button>
                               <button
+                                aria-label="Reject & Reopen"
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('not_fixed')}
-                                className="py-2.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                                className="py-2.5 px-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-100 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                               >
                                 <Icon name="x" className="w-4 h-4" />
-                                <span>Reject & Reopen</span>
+                                <span>{t.citizenConfirmNo}</span>
                               </button>
                             </div>
                           </div>
@@ -2086,7 +3157,7 @@ export const normalizeReport = (item) => {
                     )}
 
                     {selectedReport.resolution_evidence?.report_url && (
-                      <a href={selectedReport.resolution_evidence.report_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm font-semibold text-sky-300 hover:border-sky-500/50">
+                      <a href={selectedReport.resolution_evidence.report_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-4 py-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:border-emerald-500 transition-all">
                         <span className="flex items-center gap-2"><Icon name="file-text" className="w-4 h-4" />View contractor work report</span>
                         <Icon name="external-link" className="w-4 h-4" />
                       </a>
@@ -2094,42 +3165,42 @@ export const normalizeReport = (item) => {
 
                     <div className="space-y-3">
                       <div>
-                        <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1">Citizen Description</div>
-                        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans glass-card p-4 rounded-2xl border border-slate-800">
+                        <div className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Citizen Description</div>
+                        <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-sans bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-4 rounded-xl">
                           {selectedReport.description || 'No written description was provided.'}
                         </p>
                       </div>
                       {selectedReport.summary && selectedReport.summary !== selectedReport.description && (
                         <div>
-                          <div className="text-[10px] font-mono font-bold text-sky-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                            <Icon name="sparkles" className="w-3 h-3 text-sky-400" />
+                          <div className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                            <Icon name="sparkles" className="w-3 h-3" />
                             <span>AI Assessment Summary (AI-generated)</span>
                           </div>
-                          <p className="text-xs text-slate-400 leading-relaxed font-sans bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
+                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-sans bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
                             {selectedReport.summary}
                           </p>
                         </div>
                       )}
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-4">
-                      <div className="text-xs text-slate-400">
-                        <span className="text-white font-bold">{selectedReport.affected_count || 1}</span> citizens affected · <span className="text-white font-bold">{selectedReport.duplicates || 1}</span> linked incident reports
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-700 pt-4">
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        <span className="text-slate-900 dark:text-white font-bold">{selectedReport.affected_count || 1}</span> citizens affected · <span className="text-slate-900 dark:text-white font-bold">{selectedReport.duplicates || 1}</span> linked incident reports
                       </div>
                       <button 
                         onClick={markAffected} 
-                        className="px-4 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-bold transition-all flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 text-emerald-700 dark:text-emerald-400 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                       >
-                        <Icon name="thumbs-up" className="w-3.5 h-3.5 text-sky-400" />
+                        <Icon name="thumbs-up" className="w-3.5 h-3.5" />
                         <span>I’m Affected Too (+1)</span>
                       </button>
                     </div>
 
                     <button 
                       onClick={() => loadAccountabilityReceipt(selectedReport)} 
-                      className="w-full py-3 rounded-xl glass-card border border-slate-700 hover:border-sky-500/50 text-xs font-semibold text-sky-400 transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="w-full py-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
                     >
-                      <Icon name="file-text" className="w-4 h-4 text-sky-400" />
+                      <Icon name="file-text" className="w-4 h-4 text-emerald-600" />
                       <span>View accountability receipt</span>
                     </button>
                   </div>
@@ -2137,37 +3208,37 @@ export const normalizeReport = (item) => {
 
                 {/* ACCOUNTABILITY RECEIPT DISPLAY */}
                 {accountabilityReceipt && accountabilityReceipt.complaint_id === selectedReport.id && (
-                  <section aria-label="Public accountability receipt" className="rounded-3xl glass-panel border border-sky-500/40 p-6 sm:p-8 space-y-5 shadow-2xl reveal-up">
-                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800/80 pb-4">
+                  <section aria-label="Public accountability receipt" className="rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-6 sm:p-8 space-y-6 reveal-up">
+                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-4">
                       <div>
-                        <div className="text-[10px] font-mono text-sky-400 font-bold tracking-widest uppercase">ACCOUNTABILITY RECEIPT</div>
-                        <h2 className="text-xl font-extrabold text-white mt-1">{accountabilityReceipt.incident_id || accountabilityReceipt.complaint_id}</h2>
+                        <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold tracking-widest uppercase">ACCOUNTABILITY RECEIPT</div>
+                        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">{accountabilityReceipt.incident_id || accountabilityReceipt.complaint_id}</h2>
                       </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">AI CLASSIFICATION</div>
-                        <div className="text-white font-bold mt-1">{accountabilityReceipt.ai_assessment.category}</div>
-                        <div className="text-[11px] text-sky-400 mt-0.5">{Math.round((accountabilityReceipt.ai_assessment.confidence || 0)*100)}% Confidence</div>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4">
+                        <div className="text-slate-400 font-mono text-[10px] uppercase font-bold">AI CLASSIFICATION</div>
+                        <div className="text-slate-900 dark:text-white font-bold mt-1 text-sm">{accountabilityReceipt.ai_assessment.category}</div>
+                        <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5 font-semibold">{Math.round((accountabilityReceipt.ai_assessment.confidence || 0)*100)}% Confidence</div>
                       </div>
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">PRIORITY SCORE</div>
-                        <div className="text-white font-bold mt-1 text-lg font-mono">{accountabilityReceipt.priority.score}/100</div>
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4">
+                        <div className="text-slate-400 font-mono text-[10px] uppercase font-bold">PRIORITY SCORE</div>
+                        <div className="text-slate-900 dark:text-white font-bold mt-1 text-lg font-mono">{accountabilityReceipt.priority.score}/100</div>
                       </div>
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">LINKED REPORTS</div>
-                        <div className="text-white font-bold mt-1 text-lg font-mono">{accountabilityReceipt.incident_report_count}</div>
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4">
+                        <div className="text-slate-400 font-mono text-[10px] uppercase font-bold">LINKED REPORTS</div>
+                        <div className="text-slate-900 dark:text-white font-bold mt-1 text-lg font-mono">{accountabilityReceipt.incident_report_count}</div>
                       </div>
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">STATUS</div>
-                        <div className={`font-bold mt-1 ${accountabilityReceipt.resolution.fully_verified ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      <div className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4">
+                        <div className="text-slate-400 font-mono text-[10px] uppercase font-bold">STATUS</div>
+                        <div className={`font-bold mt-1 text-sm ${accountabilityReceipt.resolution.fully_verified ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-500'}`}>
                           {accountabilityReceipt.resolution.fully_verified ? 'Verified (2/2)' : 'Awaiting Approval'}
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-400 leading-relaxed font-sans">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
                       {accountabilityReceipt.priority.methodology}
                     </p>
                   </section>
@@ -2178,28 +3249,34 @@ export const normalizeReport = (item) => {
             {/* 4. PUBLIC CIVIC MAP */}
             {activeTab === 'map' && (
               <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-6 reveal-up">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel border border-slate-800 p-5 sm:p-6 rounded-3xl shadow-xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 rounded-2xl shadow-sm">
                   <div>
-                    <div className="text-xs text-sky-400 font-semibold uppercase">Public reports</div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">Issues near you</h1>
-                    <p className="text-sm text-slate-400 mt-1">Select a marker to see the problem and its current status.</p>
+                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">{lang === 'bn' ? 'উন্মুক্ত নাগরিক রিপোর্ট' : 'Public reports'}</div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1 tracking-tight">{lang === 'bn' ? 'আপনার আশেপাশের নাগরিক সমস্যা' : 'Issues near you'}</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{lang === 'bn' ? 'ম্যাপে মার্কার সিলেক্ট করে সমস্যার বিস্তারিত ও বর্তমান অগ্রগতি দেখুন।' : 'Select a marker to see the problem and its current status.'}</p>
                   </div>
                   
                   <div className="flex items-center gap-2 flex-wrap">
-                    {['All', 'Roads', 'Sanitation', 'Water'].map((f) => {
+                    {[
+                      { id: 'All', label: lang === 'bn' ? 'সকল রিপোর্ট' : 'All' },
+                      { id: 'Roads', label: lang === 'bn' ? 'রাস্তা ও ম্যানহোল' : 'Roads' },
+                      { id: 'Sanitation', label: lang === 'bn' ? 'বর্জ্য ও পরিচ্ছন্নতা' : 'Sanitation' },
+                      { id: 'Water', label: lang === 'bn' ? 'ড্রেন ও পানি' : 'Water' }
+                    ].map((fItem) => {
+                      const f = fItem.id;
                       const count = reports.filter(rep => f === 'All' || (f === 'Roads' && /road/i.test(rep.category)) || (f === 'Sanitation' && /waste|sanitation/i.test(rep.category)) || (f === 'Water' && /water|drain|sewer/i.test(rep.category))).length;
                       return (
                         <button 
                           onClick={() => setMapFilter(f)} 
                           key={f} 
-                          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                          className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                             mapFilter === f 
-                              ? 'bg-sky-500 text-slate-950 shadow-glow-sky' 
-                              : 'glass-card text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
+                              ? 'bg-emerald-600 text-white shadow-sm' 
+                              : 'bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                           }`}
                         >
-                          <span>{f}</span>
-                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${mapFilter === f ? 'bg-slate-950 text-sky-300' : 'bg-slate-900 text-slate-400'}`}>
+                          <span>{fItem.label}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${mapFilter === f ? 'bg-emerald-700 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}>
                             {count}
                           </span>
                         </button>
@@ -2208,28 +3285,28 @@ export const normalizeReport = (item) => {
                   </div>
                 </div>
 
-                <div className="glass-panel border border-slate-800/80 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-4">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
                   <AuthorityMap
                     reports={reports.filter(rep => mapFilter === 'All' || (mapFilter === 'Roads' && /road/i.test(rep.category)) || (mapFilter === 'Sanitation' && /waste|sanitation/i.test(rep.category)) || (mapFilter === 'Water' && /water|drain|sewer/i.test(rep.category)))}
                     onSelect={report => { setSelectedReport(report); setActiveTab('track'); }}
                     useClusters={reportsTruncated}
                   />
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2 text-[11px] font-mono">
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-glow-emerald" /> 
-                      <span>Contractor + authority verified</span>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2 text-xs">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10B981]" /> 
+                      <span className="font-medium">{lang === 'bn' ? 'নাগরিক কর্তৃক যাচাইকৃত' : 'Verified by Citizen'}</span>
                     </div>
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-glow-sky" /> 
-                      <span>Partly Approved / Progress</span>
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                      <span className="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_6px_#0EA5E9]" /> 
+                      <span className="font-medium">{lang === 'bn' ? 'চলমান কাজ' : 'In Progress'}</span>
                     </div>
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> 
-                      <span>Moderate Priority</span>
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> 
+                      <span className="font-medium">{lang === 'bn' ? 'ফিল্ড টিমে ন্যস্ত' : 'Assigned to Crew'}</span>
                     </div>
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-glow-rose" /> 
-                      <span>Critical / Urgent</span>
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl flex items-center gap-2.5 text-slate-600 dark:text-slate-300">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_6px_#F43F5E]" /> 
+                      <span className="font-medium">{lang === 'bn' ? 'জরুরি / বিপজ্জনক' : 'Critical / Urgent'}</span>
                     </div>
                   </div>
                 </div>
@@ -2239,18 +3316,19 @@ export const normalizeReport = (item) => {
             {/* 5. COMMUNITY ACTION (YOUTH MICRO-MAINTENANCE) */}
             {activeTab === 'community' && (
               <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
-                <div className="glass-panel border border-slate-800 p-6 sm:p-7 rounded-3xl shadow-xl">
-                  <div className="text-[10px] font-mono tracking-widest text-sky-400 font-bold uppercase">SUPERVISED COMMUNITY ACTION</div>
-                  <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-1 tracking-tight">Propose Low-Risk Micro-Maintenance</h1>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">
-                    Only low-risk cleanup and neighborhood beautification tasks appear here. High-voltage, deep trenches, and hazardous tasks are restricted to certified municipal crews.
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 rounded-2xl shadow-sm">
+                  <div className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 font-bold uppercase">{lang === 'bn' ? 'তত্ত্বাবধানে নাগরিক উদ্যোগ' : 'SUPERVISED COMMUNITY ACTION'}</div>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight">{t.youthTitle}</h1>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                    {t.youthSub}
                   </p>
                 </div>
 
                 {!authUser ? (
                   <AuthCard 
-                    title="Community Youth Worker Access" 
-                    subtitle="Register or log in to submit neighborhood repair proposals and request authority escrow funding." 
+                    lang={lang}
+                    title={lang === 'bn' ? 'যুব নাগরিক কর্মী প্রবেশদ্বার' : 'Community Youth Worker Access'} 
+                    subtitle={lang === 'bn' ? 'এলাকাভিত্তিক ক্ষুদ্র মেরামতের প্রস্তাব দাখিল ও এসক্রো তহবিলের জন্য লগইন করুন।' : 'Register or log in to submit neighborhood repair proposals and request authority escrow funding.'} 
                     mode={authMode} 
                     setMode={mode => { setAuthMode(mode); setAuthError(''); }} 
                     form={authForm} 
@@ -2260,53 +3338,126 @@ export const normalizeReport = (item) => {
                     error={authError} 
                   />
                 ) : authUser.role !== 'youth' ? (
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-8 text-center space-y-4">
-                    <p className="text-sm text-slate-300">The current active account is not registered as a youth worker.</p>
-                    <button onClick={logout} className="px-5 py-2.5 rounded-xl glass-card border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white">
-                      Log out
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center space-y-4 shadow-sm">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{lang === 'bn' ? 'বর্তমান সক্রিয় অ্যাকাউন্টটি যুব কর্মী হিসেবে নিবন্ধিত নয়।' : 'The current active account is not registered as a youth worker.'}</p>
+                    <button 
+                      onClick={logout} 
+                      className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
+                    >
+                      <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                      <span>{t.logout}</span>
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div className="flex flex-wrap items-center justify-between gap-4 glass-panel border border-sky-500/30 bg-sky-950/20 rounded-2xl p-4 sm:p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm mb-6">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-white">{authUser.name}</span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-mono text-emerald-300 font-bold">
-                            VERIFIED CITIZEN
+                          <span className="text-lg font-bold text-slate-900 dark:text-white">{authUser.name}</span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                            {lang === 'bn' ? 'যাচাইকৃত নাগরিক' : 'VERIFIED CITIZEN'}
                           </span>
                         </div>
-                        <div className="text-xs text-slate-400 mt-0.5 font-mono">{authUser.email} · Proposals & proof linked to escrow balance</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{authUser.email} · {lang === 'bn' ? 'প্রস্তাব ও প্রমাণ এসক্রো ব্যালেন্সের সাথে সংযুক্ত' : 'Proposals & proof linked to escrow balance'}</div>
                       </div>
-                      <button onClick={logout} className="px-4 py-2 rounded-xl glass-card border border-slate-700 hover:border-slate-600 text-xs font-semibold text-slate-300">
-                        Log out
+                      <button 
+                        onClick={logout} 
+                        className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
+                      >
+                        <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                        <span>{t.logout}</span>
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2.5 text-center text-xs font-mono">
-                      <div className="rounded-2xl glass-card p-3 border border-slate-800">
-                        <span className="text-sky-400 font-bold block text-sm">01</span> Submit Plan & Estimate
-                      </div>
-                      <div className="rounded-2xl glass-card p-3 border border-slate-800">
-                        <span className="text-amber-400 font-bold block text-sm">02</span> Authority Escrow Lock
-                      </div>
-                      <div className="rounded-2xl glass-card p-3 border border-slate-800">
-                        <span className="text-emerald-400 font-bold block text-sm">03</span> After Photo & Payout
+                    {/* Youth 3-Step Escrow Workflow Box (Contiguous Cadastre Box Grid matching reference design) */}
+                    <div className="bg-[#0A101D] border border-[#1E293B] rounded-2xl overflow-hidden shadow-2xl mb-8">
+                      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1E293B]">
+                        {/* Step 01 */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl text-[#38BDF8] font-black select-none leading-none">
+                                01
+                              </span>
+                              <div className="w-9 h-9 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="file-text" className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.youthStep1Title}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.youthStep1Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#38BDF8]"></span>
+                            <span>{t.youthStep1Meta}</span>
+                          </div>
+                        </div>
+
+                        {/* Step 02 */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl text-[#F59E0B] font-black select-none leading-none">
+                                02
+                              </span>
+                              <div className="w-9 h-9 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-center text-[#F59E0B]">
+                                <Icon name="shield" className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.youthStep2Title}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.youthStep2Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#F59E0B]"></span>
+                            <span>{t.youthStep2Meta}</span>
+                          </div>
+                        </div>
+
+                        {/* Step 03 */}
+                        <div className="p-6 sm:p-8 flex flex-col justify-between hover:bg-white/[0.02] transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="font-headline text-3xl sm:text-4xl text-[#10B981] font-black select-none leading-none">
+                                03
+                              </span>
+                              <div className="w-9 h-9 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-center text-[#10B981]">
+                                <Icon name="check-circle" className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-lg font-bold text-white mb-2 tracking-tight">
+                              {t.youthStep3Title}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                              {t.youthStep3Desc}
+                            </p>
+                          </div>
+                          <div className="mt-6 pt-4 border-t border-[#1E293B] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
+                            <span className="w-2 h-2 rounded-[2px] bg-[#10B981]"></span>
+                            <span>{t.youthStep3Meta}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* PROPOSAL FORM */}
-                      <div className="glass-panel border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Submit New Proposal</h2>
+                      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 space-y-4 shadow-sm">
+                        <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Submit New Proposal</h2>
                         <select 
                           value={repairForm.complaint_id} 
                           onChange={e => setRepairForm({...repairForm, complaint_id: e.target.value})} 
-                          className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                         >
-                          <option value="" className="bg-slate-900">Select an eligible low-risk task</option>
+                          <option value="" className="bg-white dark:bg-slate-800">Select an eligible low-risk task</option>
                           {reports.filter(r => r.status !== 'Resolved' && r.volunteer_eligible === true).map(r => (
-                            <option key={r.id} value={r.id} className="bg-slate-900">{r.id} · {r.category} · {r.location}</option>
+                            <option key={r.id} value={r.id} className="bg-white dark:bg-slate-800">{r.id} · {r.category} · {r.location}</option>
                           ))}
                         </select>
                         <div className="grid sm:grid-cols-2 gap-3">
@@ -2316,7 +3467,7 @@ export const normalizeReport = (item) => {
                             value={repairForm.estimated_price} 
                             onChange={e => setRepairForm({...repairForm, estimated_price: e.target.value})} 
                             placeholder="Estimate (BDT)" 
-                            className="min-w-0 glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                            className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                           />
                           <input 
                             type="number" 
@@ -2324,7 +3475,7 @@ export const normalizeReport = (item) => {
                             value={repairForm.estimated_hours} 
                             onChange={e => setRepairForm({...repairForm, estimated_hours: e.target.value})} 
                             placeholder="Hours required" 
-                            className="min-w-0 glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                            className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                           />
                         </div>
                         <textarea 
@@ -2332,54 +3483,54 @@ export const normalizeReport = (item) => {
                           value={repairForm.plan} 
                           onChange={e => setRepairForm({...repairForm, plan: e.target.value})} 
                           placeholder="Detail materials needed, safe tools, clean-up steps, and expected completion result..." 
-                          className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                         />
                         <button 
                           onClick={submitRepairRequest} 
                           disabled={!repairForm.complaint_id || repairForm.plan.length < 10 || !repairForm.estimated_price} 
-                          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 text-slate-950 font-bold text-sm shadow-lg shadow-sky-500/20 transition-all"
+                          className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all disabled:opacity-40 cursor-pointer"
                         >
                           Send Proposal to Authority
                         </button>
                       </div>
 
                       {/* PROPOSAL HISTORY */}
-                      <div className="space-y-3.5">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Your Proposal Ledger</h2>
+                      <div className="space-y-4">
+                        <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Your Proposal Ledger</h2>
                         {repairRequests.length ? repairRequests.slice().reverse().map(req => (
-                          <div key={req.request_id} className="glass-card border border-slate-800/80 rounded-2xl p-4 sm:p-5 space-y-3">
+                          <div key={req.request_id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 space-y-3 shadow-sm">
                             <div className="flex justify-between gap-3">
                               <div>
-                                <div className="font-mono text-sky-400 text-xs font-bold">{req.request_id} · {req.complaint_id}</div>
-                                <div className="text-sm font-bold text-white mt-0.5">{req.issue_title || req.applicant_name}</div>
+                                <div className="font-mono text-emerald-600 dark:text-emerald-400 text-xs font-bold">{req.request_id} · {req.complaint_id}</div>
+                                <div className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{req.issue_title || req.applicant_name}</div>
                               </div>
-                              <span className="text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full h-fit">
+                              <span className="text-[10px] text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-full h-fit">
                                 {req.status}
                               </span>
                             </div>
-                            <div className="text-xs text-slate-400 font-mono">
+                            <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                               Budget: BDT {Number(req.estimated_price).toLocaleString()} · {req.estimated_hours}h
                             </div>
                             {req.admin_note && (
-                              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-xs text-slate-300">
-                                <span className="text-slate-500 font-mono text-[10px] block">AUTHORITY NOTE</span> {req.admin_note}
+                              <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-600 dark:text-slate-300">
+                                <span className="text-slate-400 font-mono text-[10px] block uppercase font-bold">AUTHORITY NOTE</span> {req.admin_note}
                               </div>
                             )}
                             {req.status === 'Approved - Awaiting Work' && (
-                              <label className="block cursor-pointer text-center text-xs px-4 py-2.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/25 transition-colors font-bold">
+                              <label className="block cursor-pointer text-center text-xs px-4 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 transition-colors font-semibold">
                                 📷 Upload Required After-Repair Photo
                                 <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="hidden" onChange={e => submitProofFile(req, e.target.files?.[0])} />
                               </label>
                             )}
                             {req.proof && (
-                              <div className="flex gap-3 items-center glass-panel p-2.5 rounded-xl border border-slate-800">
-                                <img src={absoluteMediaUrl(req.proof.after_image_url)} alt="Your after-repair proof" className="w-16 h-14 object-cover rounded-lg border border-slate-700" />
-                                <span className="text-xs text-emerald-400 font-semibold">After photo uploaded for authority release.</span>
+                              <div className="flex gap-3 items-center bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-3 rounded-xl">
+                                <img src={absoluteMediaUrl(req.proof.after_image_url)} alt="Your after-repair proof" className="w-16 h-14 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
+                                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">After photo uploaded for authority release.</span>
                               </div>
                             )}
                           </div>
                         )) : (
-                          <div className="glass-card border border-slate-800 rounded-2xl p-8 text-center text-xs text-slate-400">
+                          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-xs text-slate-500 dark:text-slate-400 shadow-sm">
                             No repair proposals yet. Choose an open problem on the map to get started.
                           </div>
                         )}
@@ -2394,97 +3545,114 @@ export const normalizeReport = (item) => {
             {activeTab === 'contractor' && (
               authUser?.role !== 'contractor' ? (
                 <div className="max-w-md mx-auto px-4 py-12 space-y-5 reveal-up">
-                  <div className="flex glass-panel border border-slate-800 rounded-2xl p-1">
-                    <button onClick={() => setAuthMode('login')} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${authMode === 'login' ? 'bg-sky-500 text-slate-950 shadow-md' : 'text-slate-400'}`}>Login</button>
-                    <button onClick={() => setAuthMode('register')} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${authMode === 'register' ? 'bg-sky-500 text-slate-950 shadow-md' : 'text-slate-400'}`}>Register</button>
+                  <div className="flex bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1">
+                    <button onClick={() => setAuthMode('login')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${authMode === 'login' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>{lang === 'bn' ? 'লগইন' : 'Login'}</button>
+                    <button onClick={() => setAuthMode('register')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${authMode === 'register' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>{lang === 'bn' ? 'নিবন্ধন' : 'Register'}</button>
                   </div>
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl">
-                    <h1 className="text-xl font-extrabold text-white">Contractor Service Hub</h1>
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm">
+                    <div>
+                      <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{lang === 'bn' ? 'পৌর সেবা পার্টনার নেটওয়ার্ক' : 'Service Partner Network'}</span>
+                      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{t.contractorHubTitle}</h1>
+                    </div>
                     {authMode === 'register' && (
-                      <input value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} placeholder="Business or contractor name" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                      <input value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} placeholder={lang === 'bn' ? 'প্রতিষ্ঠান বা ঠিকাদারের নাম' : 'Business or contractor name'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     )}
-                    <input type="email" value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} placeholder="Contractor email" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                    <input type="email" value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} placeholder={lang === 'bn' ? 'ঠিকাদার ইমেইল' : 'Contractor email'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     {authMode === 'register' && (
                       <>
-                        <input value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} placeholder="Phone number" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
-                        <input value={contractorForm.service_area} onChange={e => setContractorForm({...contractorForm, service_area: e.target.value})} placeholder="Service area (e.g. Zone 4)" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
-                        <input value={contractorForm.skills} onChange={e => setContractorForm({...contractorForm, skills: e.target.value})} placeholder="Skills (Roads, Asphalt, Plumbing, Electrical)" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
-                        <input value={contractorForm.payout_account_id} onChange={e => setContractorForm({...contractorForm, payout_account_id: e.target.value})} placeholder="Stripe Connect account (acct_…)" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                        <input value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} placeholder={lang === 'bn' ? 'ফোন নম্বর' : 'Phone number'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                        <input value={contractorForm.service_area} onChange={e => setContractorForm({...contractorForm, service_area: e.target.value})} placeholder={lang === 'bn' ? 'কাজের এলাকা (উদাঃ জোন ৪)' : 'Service area (e.g. Zone 4)'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                        <input value={contractorForm.skills} onChange={e => setContractorForm({...contractorForm, skills: e.target.value})} placeholder={lang === 'bn' ? 'দক্ষতা (রাস্তা, পিচ, প্লাম্বিং, বৈদ্যুতিক)' : 'Skills (Roads, Asphalt, Plumbing, Electrical)'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                        <input value={contractorForm.payout_account_id} onChange={e => setContractorForm({...contractorForm, payout_account_id: e.target.value})} placeholder="Stripe Connect account (acct_…)" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                       </>
                     )}
-                    <input type="password" value={authForm.password} onChange={e => setAuthForm({...authForm, password: e.target.value})} placeholder="Password" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                    <input type="password" value={authForm.password} onChange={e => setAuthForm({...authForm, password: e.target.value})} placeholder={lang === 'bn' ? 'পাসওয়ার্ড' : 'Password'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     {authMode === 'register' && (
-                      <input type="password" value={authForm.confirmPassword} onChange={e => setAuthForm({...authForm, confirmPassword: e.target.value})} placeholder="Confirm password" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                      <input type="password" value={authForm.confirmPassword} onChange={e => setAuthForm({...authForm, confirmPassword: e.target.value})} placeholder={lang === 'bn' ? 'পাসওয়ার্ড নিশ্চিত করুন' : 'Confirm password'} className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
                     )}
-                    {authError && <div className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 p-2.5 rounded-xl">{authError}</div>}
-                    <button onClick={authenticateContractor} disabled={authBusy} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 text-slate-950 font-bold text-sm shadow-lg shadow-sky-500/20 transition-all">
-                      {authBusy ? 'Authenticating…' : authMode === 'register' ? 'Submit Registration' : 'Contractor Sign In'}
+                    {authError && <div className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 p-3 rounded-xl">{authError}</div>}
+                    <button onClick={authenticateContractor} disabled={authBusy} className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-all disabled:opacity-40 cursor-pointer">
+                      {authBusy ? (lang === 'bn' ? 'যাচাই হচ্ছে…' : 'Authenticating…') : authMode === 'register' ? (lang === 'bn' ? 'নিবন্ধন সম্পন্ন করুন' : 'Submit Registration') : (lang === 'bn' ? 'ঠিকাদার সাইন ইন' : 'Contractor Sign In')}
                     </button>
                   </div>
-                  {authUser && <button onClick={logout} className="block mx-auto text-xs text-slate-400 hover:text-white underline">Log out of current session</button>}
+                  {authUser && (
+                    <div className="text-center pt-2">
+                      <button 
+                        onClick={logout} 
+                        className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
+                      >
+                        <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                        <span>{t.logout}</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 rounded-2xl shadow-sm">
                     <div>
-                      <div className="text-[10px] font-mono tracking-widest text-sky-400 font-bold uppercase">CONTRACTOR OPERATIONS PORTAL</div>
-                      <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-1">{contractorProfile?.name || 'Contractor Hub'}</h1>
-                      <p className="text-xs text-slate-400 mt-0.5 font-mono">Status: {contractorProfile?.approval_status || 'Approved'} · Rating: ★ {contractorProfile?.rating || '5.0'}</p>
+                      <div className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 font-bold uppercase">{t.contractorHubTitle}</div>
+                      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">{contractorProfile?.name || (lang === 'bn' ? 'ঠিকাদার হাব' : 'Contractor Hub')}</h1>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">{lang === 'bn' ? 'অনুমোদন: ' : 'Status: '}{contractorProfile?.approval_status || (lang === 'bn' ? 'অনুমোদিত' : 'Approved')} · {lang === 'bn' ? 'রেটিং: ' : 'Rating: '}★ {contractorProfile?.rating || '5.0'}</p>
                     </div>
-                    <button onClick={logout} className="px-4 py-2 rounded-xl glass-card border border-slate-700 text-xs font-semibold text-slate-300">
-                      Log out
+                    <button 
+                      onClick={logout} 
+                      className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
+                    >
+                      <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                      <span>{t.logout}</span>
                     </button>
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Assigned Work Orders</h2>
+                    <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t.assignedOrdersTitle}</h2>
                     {contractorJobs.map(job => (
-                      <div key={job.offer_id} className="glass-panel border border-slate-800/80 rounded-3xl p-6 space-y-3 shadow-xl">
+                      <div key={job.offer_id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4 shadow-sm">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
-                            <div className="text-xs font-mono text-sky-400 font-bold">{job.offer_id} · {job.complaint_id}</div>
-                            <h3 className="text-base font-bold text-white mt-0.5">{job.issue_title}</h3>
-                            <p className="text-xs text-slate-400 mt-1 font-mono">{job.work_location_area} · Budget: BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
+                            <div className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">{job.offer_id} · {job.complaint_id}</div>
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">{job.issue_title}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">{job.work_location_area} · {lang === 'bn' ? 'বাজেট:' : 'Budget:'} BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
                           </div>
-                          <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full h-fit">
+                          <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-1 rounded-full h-fit">
                             {job.status}
                           </span>
                         </div>
                         <div className="flex gap-2.5 pt-2">
                           {job.status === 'Sent' && (
                             <>
-                              <button onClick={() => updateContractorJob(job, 'Rejected')} className="px-4 py-2 rounded-xl border border-red-500/40 text-red-400 hover:bg-red-500/10 text-xs font-bold transition-colors">
-                                Reject
+                              <button onClick={() => updateContractorJob(job, 'Rejected')} className="px-4 py-2 rounded-xl border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 text-xs font-semibold transition-colors cursor-pointer">
+                                {t.rejectOrderBtn}
                               </button>
-                              <button onClick={() => updateContractorJob(job, 'Accepted')} className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-colors shadow-md">
-                                Accept Order
+                              <button onClick={() => updateContractorJob(job, 'Accepted')} className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer">
+                                {t.acceptOrderBtn}
                               </button>
                             </>
                           )}
                           {job.status === 'Accepted' && (
-                            <button onClick={() => updateContractorJob(job, 'In Progress')} className="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-colors shadow-md">
-                              Start Work On-Site
+                            <button onClick={() => updateContractorJob(job, 'In Progress')} className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors shadow-sm cursor-pointer">
+                              {t.startWorkBtn}
                             </button>
                           )}
                           {job.status === 'In Progress' && (
-                            <div className="w-full grid gap-2 sm:grid-cols-2">
-                              <label className="glass-input rounded-xl p-3 text-xs text-slate-300 cursor-pointer"><span>{contractorProofs[job.offer_id]?.image?.name || 'Choose completion photo'}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),image:e.target.files?.[0] || null}})} /></label>
-                              <input type="url" value={contractorProofs[job.offer_id]?.report_url || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),report_url:e.target.value}})} placeholder="Public Google Drive report link" className="glass-input rounded-xl p-3 text-xs text-white" />
-                              <textarea value={contractorProofs[job.offer_id]?.note || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),note:e.target.value}})} placeholder="Short completion summary" rows="2" className="sm:col-span-2 glass-input rounded-xl p-3 text-xs text-white resize-none" />
-                              <label className="sm:col-span-2 flex items-start gap-2.5 rounded-xl border border-slate-700 bg-slate-900/60 p-3 text-xs text-slate-300 cursor-pointer">
-                                <input type="checkbox" checked={Boolean(contractorProofs[job.offer_id]?.public_access_confirmed)} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),public_access_confirmed:e.target.checked}})} className="mt-0.5 accent-sky-500" />
-                                <span>I confirm the Google Drive report is set to <strong className="text-white">Anyone with the link can view</strong>.</span>
+                            <div className="w-full grid gap-3 sm:grid-cols-2">
+                              <label className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-500 dark:text-slate-400 cursor-pointer"><span>{contractorProofs[job.offer_id]?.image?.name || t.uploadProofPrompt}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),image:e.target.files?.[0] || null}})} /></label>
+                              <input type="url" value={contractorProofs[job.offer_id]?.report_url || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),report_url:e.target.value}})} placeholder="Public Google Drive report link" className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-900 dark:text-white" />
+                              <textarea value={contractorProofs[job.offer_id]?.note || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),note:e.target.value}})} placeholder={lang === 'bn' ? 'কাজের সংক্ষিপ্ত বিবরণ...' : 'Short completion summary'} rows="2" className="sm:col-span-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-900 dark:text-white resize-none" />
+                              <label className="sm:col-span-2 flex items-start gap-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+                                <input type="checkbox" checked={Boolean(contractorProofs[job.offer_id]?.public_access_confirmed)} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),public_access_confirmed:e.target.checked}})} className="mt-0.5 accent-emerald-600" />
+                                <span>{lang === 'bn' ? 'আমি নিশ্চিত করছি যে গুগল ড্রাইভ রিপোর্টটি উন্মুক্ত রাখা হয়েছে' : 'I confirm the Google Drive report is set to'} <strong className="text-slate-900 dark:text-white">{lang === 'bn' ? 'যেকোনো ব্যক্তি দেখতে পাবেন' : 'Anyone with the link can view'}</strong>.</span>
                               </label>
-                              <button onClick={() => updateContractorJob(job, 'Proof Submitted')} className="sm:col-span-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold">Submit completed work for review</button>
+                              <button onClick={() => updateContractorJob(job, 'Proof Submitted')} className="sm:col-span-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer">{t.submitWorkForReviewBtn}</button>
                             </div>
                           )}
-                          {job.status === 'Proof Submitted' && <p className="text-xs text-emerald-300">Completion proof submitted. Waiting for authority verification.</p>}
+                          {job.status === 'Proof Submitted' && <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">{t.waitingVerificationNotice}</p>}
                         </div>
                       </div>
                     ))}
                     {!contractorJobs.length && (
-                      <div className="glass-panel border border-slate-800 rounded-3xl p-12 text-center text-xs text-slate-400">
-                        No active work orders currently assigned to your team.
+                      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-12 text-center text-xs text-slate-500 dark:text-slate-400 shadow-sm">
+                        {lang === 'bn' ? 'বর্তমানে আপনার প্রতিষ্ঠানে কোনো সক্রিয় কাজের আদেশ নেই।' : 'No active work orders currently assigned to your team.'}
                       </div>
                     )}
                   </div>
@@ -2497,8 +3665,9 @@ export const normalizeReport = (item) => {
               !['admin', 'officer'].includes(authUser?.role) ? (
                 <div className="max-w-4xl mx-auto px-4 py-10 space-y-5 reveal-up">
                   <AuthCard
-                    title="Municipal Authority Command Center"
-                    subtitle="Executive governance console for dispatch, SLA auditing, and public escrow releases."
+                    lang={lang}
+                    title={lang === 'bn' ? 'পৌর কর্তৃপক্ষ ও নাগরিক সেবা কমান্ড সেন্টার' : 'Municipal Authority Command Center'}
+                    subtitle={lang === 'bn' ? 'তাত্ক্ষণিক ট্রায়াজ, এসএলএ পর্যবেক্ষণ এবং ডিজিটাল ক্যাডাস্ট্রে নিয়ন্ত্রণ কনসোল।' : 'Executive governance console for dispatch, SLA auditing, and public escrow releases.'}
                     mode="login"
                     setMode={() => { }}
                     form={authForm}
@@ -2511,178 +3680,254 @@ export const normalizeReport = (item) => {
                     onDemoOfficerLogin={handleDemoOfficerLogin}
                   />
                   {authUser && (
-                    <button onClick={logout} className="block mx-auto text-xs text-slate-400 hover:text-white underline">
-                      Log out of {authUser.email} first
-                    </button>
+                    <div className="text-center pt-2">
+                      <button 
+                        onClick={logout} 
+                        className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
+                      >
+                        <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                        <span>{lang === 'bn' ? `${authUser.email} থেকে লগআউট` : `Log out of ${authUser.email}`}</span>
+                      </button>
+                    </div>
                   )}
                 </div>
               ) : (
-                <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-8 reveal-up">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 reveal-up">
                   {/* COMMAND HEADER */}
-                  <div className="flex flex-col gap-5 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div>
+                  <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 sm:p-8 space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 dark:border-slate-700/60 pb-6">
+                      <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          <div className="text-xs text-sky-400 font-semibold">Municipal operations</div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                            DEMO / SIMULATED ENVIRONMENT
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400 shadow-sm">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>{t.adminMunicipalCommand}</span>
                           </span>
                           {authUser?.role === 'officer' && (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                              Authority Scoped ({authUser.authority_id})
+                            <span className="text-xs font-semibold px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300">
+                              {lang === 'bn' ? 'কর্তৃপক্ষ: ' : 'Authority: '}{authUser.authority_id}
                             </span>
                           )}
+                          <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300">
+                            {t.adminDigitalCadastre}
+                          </span>
                         </div>
-                        <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
-                          {authUser?.role === 'officer' ? `${authUser.name} Workspace` : 'Authority dashboard'}
+                        <h1 className="text-2xl sm:text-3xl font-extrabold font-headline text-slate-900 dark:text-white tracking-tight">
+                          {authUser?.role === 'officer' ? `${authUser.name} ${t.adminOperationsHub}` : (lang === 'bn' ? 'পৌর কর্তৃপক্ষ কমান্ড ড্যাশবোর্ড' : 'Authority Command Dashboard')}
                         </h1>
-                        <p className="text-sm text-slate-400 mt-1">
+                        <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
                           {authUser?.role === 'officer'
-                            ? `Simulated Officer Scoped to ${authUser.authority_id} · ${authUser.department || 'Department Operations'}`
-                            : 'Review priority cases, approve evidence, and manage assignments.'}
+                            ? `${t.adminOfficerSubtitle}${authUser.department || (lang === 'bn' ? 'পৌর অবকাঠামো ও পয়ঃনিষ্কাশন বিভাগ' : 'Sewerage & Civil Infrastructure Division')}`
+                            : (lang === 'bn' ? 'সিটি করপোরেশন ও পৌর নির্বাহী ড্যাশবোর্ড: জরুরি অভিযোগ পর্যালোচনা, ফিল্ড টিমের কাজের প্রমাণ যাচাই ও নাগরিক সেবা নিশ্চিতকরণ।' : 'Municipal Executive Command: Triage ambiguous citizen reports, verify contractor completion evidence, and monitor ward SLAs.')}
                         </p>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2.5">
-                        {authUser?.role === 'officer' && (
-                          <button
-                            onClick={handleSwitchAuthority}
-                            data-testid="switch-authority-btn"
-                            className="px-3.5 py-2 rounded-lg text-xs font-semibold glass-card border border-amber-500/40 text-amber-300 hover:bg-amber-500/15 transition-colors flex items-center gap-1.5 shadow-sm"
-                            title="Log out and switch to another municipal authority"
-                          >
-                            <Icon name="refresh-cw" className="w-3.5 h-3.5" />
-                            <span>Switch Authority</span>
-                          </button>
-                        )}
-                        <button
-                          onClick={() => logout('landing')}
-                          data-testid="officer-logout-btn"
-                          className="px-3.5 py-2 rounded-lg text-xs font-semibold glass-card border border-rose-500/40 text-rose-300 hover:bg-rose-500/15 transition-colors flex items-center gap-1.5 shadow-sm"
-                          title="Log out of authority session"
+                      {/* Active Officer Status & Prominent Red Log Out */}
+                      <div className="flex items-center gap-4 shrink-0">
+                        <div className="hidden sm:flex flex-col text-right">
+                          <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">{t.adminOfficerUser}</span>
+                          <span className="text-sm font-bold text-slate-900 dark:text-white">{authUser?.name || authUser?.email}</span>
+                        </div>
+                        <button 
+                          onClick={logout} 
+                          title="Sign out of authority session"
+                          className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer border border-red-700"
                         >
-                          <Icon name="log-out" className="w-3.5 h-3.5" />
-                          <span>Log Out</span>
+                          <Icon name="log-out" className="w-4 h-4 text-white" />
+                          <span>{t.logout}</span>
                         </button>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80">
+                    {/* SUB-NAVIGATION TAB RIBBON */}
+                    <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none pt-1">
                       {[
-                        ['queue', 'list-filter', 'Work Queue'],
-                        ['review', 'user-check', `Human Review (${authorityScopedReports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
-                        ['proofs', 'clipboard-check', `Proof Reviews (${authorityScopedReports.filter(r => r.status === 'Evidence Uploaded').length})`],
-                        ['map', 'map', 'Spatial Map'],
-                        ['contractors', 'hard-hat', 'Contractors'],
-                        ['whatsapp', 'message-circle', 'WhatsApp'],
-                        ['funding', 'hand-coins', 'Youth Escrow']
+                        ['queue', 'list-filter', t.adminNavQueue],
+                        ['review', 'user-check', `${t.adminNavReview} (${reports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
+                        ['proofs', 'clipboard-check', `${t.adminNavProofs} (${reports.filter(r => r.status === 'Evidence Uploaded').length})`],
+                        ['map', 'map', t.adminNavMap],
+                        ['contractors', 'hard-hat', t.adminNavContractors],
+                        ['whatsapp', 'message-circle', t.adminNavWhatsApp],
+                        ['funding', 'hand-coins', t.adminNavYouth]
                       ].map(([id, icon, label]) => (
                         <button
                           key={id}
                           onClick={() => setAdminView(id)}
-                          className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${adminView === id
-                              ? 'bg-sky-500 text-slate-950 shadow-glow-sky'
-                              : 'glass-card border border-slate-800 text-slate-300 hover:text-white'
-                            }`}
+                          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                            adminView === id
+                              ? 'bg-emerald-600 text-white shadow-sm'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
                         >
-                          <Icon name={icon} className="w-3.5 h-3.5" />
+                          <Icon name={icon} className="w-4 h-4" />
                           <span>{label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* KPI STATS ROW */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {[
-                      { label: 'Human Review', val: authorityScopedReports.filter(r => r.needs_review || r.status === 'Needs Review').length, alert: true, icon: 'user-check' },
-                      { label: 'Proof Reviews', val: authorityScopedReports.filter(r => r.status === 'Evidence Uploaded').length, alert: false, icon: 'clipboard-check' },
-                      { label: 'SLA Overdue', val: dashboard?.stats?.overdue_cases ?? authorityScopedReports.filter(r => (r.sla_status || '').startsWith('Overdue')).length, alert: true, icon: 'clock' },
-                      { label: 'Active Work', val: dashboard?.stats?.active_issues ?? authorityScopedReports.filter(r => r.status !== 'Resolved').length, alert: false, icon: 'inbox' }
-                    ].map((kpi, idx) => (
-                      <div key={idx} className={`glass-panel rounded-2xl p-5 border transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500/40 bg-red-950/15' : 'border-slate-800'}`}>
-                        <div className="flex items-center justify-between text-slate-400">
-                          <span className="text-xs font-semibold">{kpi.label}</span>
-                          <Icon name={kpi.icon} className={`w-4 h-4 ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-sky-400'}`} />
+                  {/* KPI STATS ROW (Matching User's Reference Box Design) */}
+                  <div className="border border-[#1E293B] rounded-2xl overflow-hidden bg-[#0A101D] shadow-2xl">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#1E293B]">
+                      {[
+                        {
+                          num: '01',
+                          label: t.adminKpi1Label,
+                          val: reports.filter(r => r.needs_review || r.status === 'Needs Review').length,
+                          alert: true,
+                          icon: 'user-check',
+                          desc: t.adminKpi1Desc,
+                          meta: t.adminKpi1Meta,
+                          numColor: 'text-red-400',
+                          badgeBg: 'bg-red-500/10 border-red-500/40 text-red-400',
+                          bullet: 'bg-red-500',
+                        },
+                        {
+                          num: '02',
+                          label: t.adminKpi2Label,
+                          val: reports.filter(r => r.status === 'Evidence Uploaded').length,
+                          alert: false,
+                          icon: 'clipboard-check',
+                          desc: t.adminKpi2Desc,
+                          meta: t.adminKpi2Meta,
+                          numColor: 'text-[#38BDF8]',
+                          badgeBg: 'bg-[#0C243C] border-[#0284C7]/50 text-[#38BDF8]',
+                          bullet: 'bg-[#38BDF8]',
+                        },
+                        {
+                          num: '03',
+                          label: t.adminKpi3Label,
+                          val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length,
+                          alert: true,
+                          icon: 'clock',
+                          desc: t.adminKpi3Desc,
+                          meta: t.adminKpi3Meta,
+                          numColor: 'text-amber-400',
+                          badgeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400',
+                          bullet: 'bg-amber-400',
+                        },
+                        {
+                          num: '04',
+                          label: t.adminKpi4Label,
+                          val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length,
+                          alert: false,
+                          icon: 'inbox',
+                          desc: t.adminKpi4Desc,
+                          meta: t.adminKpi4Meta,
+                          numColor: 'text-[#10B981]',
+                          badgeBg: 'bg-[#082820] border-[#059669]/50 text-[#10B981]',
+                          bullet: 'bg-[#10B981]',
+                        }
+                      ].map((kpi, idx) => (
+                        <div
+                          key={idx}
+                          className="p-6 sm:p-8 flex flex-col justify-between hover:bg-slate-900/50 transition-colors"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-5">
+                              <span className={`font-headline text-3xl sm:text-4xl font-extrabold tracking-tight leading-none ${kpi.numColor}`}>
+                                {kpi.val}
+                              </span>
+                              <div className={`w-10 h-10 rounded-lg border flex items-center justify-center ${kpi.badgeBg}`}>
+                                <Icon name={kpi.icon} className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-base font-bold text-white mb-2 tracking-tight flex items-center gap-2">
+                              <span>{kpi.label}</span>
+                              {kpi.alert && kpi.val > 0 && (
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                              )}
+                            </h3>
+                            <p className="text-xs text-slate-400 leading-relaxed">
+                              {kpi.desc}
+                            </p>
+                          </div>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className={`w-2 h-2 ${kpi.bullet} inline-block flex-shrink-0`}></span>
+                            <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{kpi.meta}</span>
+                          </div>
                         </div>
-                        <div className={`text-3xl font-bold mt-2 tracking-tight ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-white'}`}>
-                          {kpi.val}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
 
                   {/* AI GOVERNANCE INSIGHT */}
                   {dashboard?.insight && (
-                    <div className="glass-panel border border-sky-500/30 bg-sky-950/20 rounded-2xl p-5 flex items-start gap-3.5 shadow-lg">
-                      <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+                    <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl p-6 flex items-start gap-4 shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-700 flex items-center justify-center text-emerald-700 dark:text-emerald-300 shrink-0">
                         <Icon name="sparkles" className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-sky-400">Suggested priority summary</div>
-                        <p className="text-xs sm:text-sm text-slate-200 mt-1 leading-relaxed">{dashboard.insight}</p>
+                        <div className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">এআই অগ্রাধিকার সারসংক্ষেপ · Suggested Priority Summary</div>
+                        <p className="text-sm text-slate-700 dark:text-slate-200 mt-1 leading-relaxed">{dashboard.insight}</p>
                       </div>
                     </div>
                   )}
 
                   {/* QUEUE FILTERS */}
                   {['queue', 'map', 'review', 'proofs'].includes(adminView) && (
-                    <div className="glass-panel border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
+                    <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-7 shadow-sm space-y-5">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <h2 className="text-sm font-semibold text-white">Find and filter cases</h2>
-                          <p className="text-xs text-slate-400 mt-0.5">Showing {filteredAdminReports.length} of {authorityScopedReports.length} municipal incidents</p>
+                          <h2 className="text-base font-bold text-slate-900 dark:text-white">{t.adminFindFilterTitle}</h2>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            {lang === 'bn' 
+                              ? `${t.adminOfText} ${reports.length}${t.adminIncidentsText} ${filteredAdminReports.length}টি ${t.adminShowingText}`
+                              : `${t.adminShowingText} ${filteredAdminReports.length} ${t.adminOfText} ${reports.length} ${t.adminIncidentsText}`}
+                          </p>
                         </div>
-                        <button onClick={resetQueueFilters} className="text-xs text-sky-400 hover:text-sky-300 font-mono font-semibold underline underline-offset-4">
-                          Reset All Filters
+                        <button onClick={resetQueueFilters} className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer">
+                          {t.adminResetFilters}
                         </button>
                       </div>
 
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
                         <input
                           type="search"
                           aria-label="Search incidents"
-                          placeholder="Search ID, area, type…"
+                          placeholder={t.adminSearchPlaceholder}
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
-                          className="lg:col-span-2 glass-input rounded-xl px-3.5 py-2.5 text-xs text-white"
+                          className="lg:col-span-2 rounded-xl px-4 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
                         />
-                        <select aria-label="Reported within" value={queueFilters.days} onChange={e => setQueueFilters({ ...queueFilters, days: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">Any age</option>
-                          <option value="1" className="bg-slate-900">Last 24 hours</option>
-                          <option value="7" className="bg-slate-900">Last 7 days</option>
-                          <option value="15" className="bg-slate-900">Last 15 days</option>
-                          <option value="30" className="bg-slate-900">Last 30 days</option>
+                        <select aria-label="Reported within" value={queueFilters.days} onChange={e => setQueueFilters({ ...queueFilters, days: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
+                          <option value="all">{t.adminAgeAny}</option>
+                          <option value="1">{t.adminAge24h}</option>
+                          <option value="7">{t.adminAge7d}</option>
+                          <option value="15">{t.adminAge15d}</option>
+                          <option value="30">{t.adminAge30d}</option>
                         </select>
-                        <select aria-label="Work state" value={queueFilters.state} onChange={e => setQueueFilters({ ...queueFilters, state: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">All statuses</option>
-                          <option value="needs_action" className="bg-slate-900">Needs action</option>
-                          <option value="assigned" className="bg-slate-900">Assigned</option>
-                          <option value="unresolved" className="bg-slate-900">Unresolved</option>
-                          <option value="resolved" className="bg-slate-900">Resolved</option>
+                        <select aria-label="Work state" value={queueFilters.state} onChange={e => setQueueFilters({ ...queueFilters, state: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
+                          <option value="all">{t.adminStatusAll}</option>
+                          <option value="needs_action">{t.adminStatusNeedsAction}</option>
+                          <option value="assigned">{t.adminStatusAssigned}</option>
+                          <option value="unresolved">{t.adminStatusUnresolved}</option>
+                          <option value="resolved">{t.adminStatusResolved}</option>
                         </select>
-                        <select aria-label="Category" value={queueFilters.category} onChange={e => setQueueFilters({ ...queueFilters, category: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">All categories</option>
-                          {reportCategories.map(category => <option key={category} value={category} className="bg-slate-900">{category}</option>)}
+                        <select aria-label="Category" value={queueFilters.category} onChange={e => setQueueFilters({ ...queueFilters, category: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
+                          <option value="all">{t.adminCategoryAll}</option>
+                          {reportCategories.map(category => <option key={category} value={category}>{category}</option>)}
                         </select>
-                        <select aria-label="Severity" value={queueFilters.severity} onChange={e => setQueueFilters({ ...queueFilters, severity: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">All severities</option>
-                          {['Critical', 'High', 'Medium', 'Low'].map(level => <option key={level} value={level} className="bg-slate-900">{level}</option>)}
+                        <select aria-label="Severity" value={queueFilters.severity} onChange={e => setQueueFilters({ ...queueFilters, severity: e.target.value })} className="rounded-xl px-3 py-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm">
+                          <option value="all">{t.adminSeverityAll}</option>
+                          {['Critical', 'High', 'Medium', 'Low'].map(level => <option key={level} value={level}>{level}</option>)}
                         </select>
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs font-mono">
-                        <span className="text-slate-400">Sort by:</span>
+                      <div className="flex items-center gap-2 pt-1 text-xs">
+                        <span className="text-slate-500 dark:text-slate-400 font-semibold">{t.adminSortLabel}</span>
                         {[
-                          ['priority', 'Highest Priority'],
-                          ['oldest', 'Oldest First'],
-                          ['newest', 'Newest First']
+                          ['priority', t.adminSortHighest],
+                          ['oldest', t.adminSortOldest],
+                          ['newest', t.adminSortNewest]
                         ].map(([value, label]) => (
                           <button
                             key={value}
                             onClick={() => setQueueFilters({ ...queueFilters, sort: value })}
-                            className={`px-3 py-1 rounded-xl border text-[11px] font-bold transition-all ${queueFilters.sort === value ? 'border-sky-500/50 bg-sky-500/20 text-sky-300' : 'border-slate-800 text-slate-400 hover:text-white'
-                              }`}
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                              queueFilters.sort === value
+                                ? 'bg-emerald-600 text-white shadow-sm'
+                                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                            }`}
                           >
                             {label}
                           </button>
@@ -2693,52 +3938,74 @@ export const normalizeReport = (item) => {
 
                   {/* SPATIAL MAP VIEW */}
                   {adminView === 'map' && (
-                    <div className="glass-panel border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-4">
+                    <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm p-6 sm:p-8 space-y-4">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Filtered Incident Telemetry Map</h2>
-                        <span className="text-xs font-mono text-slate-400">{filteredAdminReports.filter(r => Number.isFinite(r.coordinates?.lat)).length} mapped coordinates</span>
+                        <h2 className="text-base font-bold text-slate-900 dark:text-white">{lang === 'bn' ? 'ফিল্টারকৃত অভিযোগ মানচিত্র' : 'Filtered Incident Telemetry Map'}</h2>
+                        <span className="text-xs text-slate-500 font-mono">{filteredAdminReports.filter(r => Number.isFinite(r.coordinates?.lat)).length} {lang === 'bn' ? 'ম্যাপযুক্ত পয়েন্ট' : 'mapped coordinates'}</span>
                       </div>
-                      <AuthorityMap reports={filteredAdminReports} useClusters={reportsTruncated} onSelect={report => { setSelectedReport(report); showToast(`${report.id}: ${report.status}`); }} />
+                      <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+                        <AuthorityMap reports={filteredAdminReports} useClusters={reportsTruncated} onSelect={report => { setSelectedReport(report); showToast(`${report.id}: ${report.status}`); }} />
+                      </div>
                     </div>
                   )}
 
-                  {/* WHATSAPP VIEW */}
+                  {/* WHATSAPP VIEW (Matching User's Reference Box Design) */}
                   {adminView === 'whatsapp' && (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-3 gap-3">
-                        {[
-                          ['Total WhatsApp Intake', reports.filter(r => r.channel === 'WhatsApp').length],
-                          ['Pending Triage', reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length],
-                          ['Resolved via Bot', reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length]
-                        ].map(([label, value]) => (
-                          <div key={label} className="glass-panel border border-slate-800 rounded-2xl p-5">
-                            <div className="text-xs text-slate-400 font-mono">{label}</div>
-                            <div className="text-3xl font-extrabold text-white font-mono mt-1">{value}</div>
-                          </div>
-                        ))}
+                    <div className="space-y-6">
+                      <div className="border border-[#1E293B] rounded-2xl overflow-hidden bg-[#0A101D] shadow-2xl">
+                        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1E293B]">
+                          {[
+                            { num: '01', label: t.adminWaIntakeTitle, value: reports.filter(r => r.channel === 'WhatsApp').length, icon: 'message-square', desc: t.adminWaIntakeDesc, meta: t.adminWaIntakeMeta, numColor: 'text-[#38BDF8]', badgeBg: 'bg-[#0C243C] border-[#0284C7]/50 text-[#38BDF8]', bullet: 'bg-[#38BDF8]' },
+                            { num: '02', label: t.adminWaTriageTitle, value: reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length, icon: 'clock', desc: t.adminWaTriageDesc, meta: t.adminWaTriageMeta, numColor: 'text-amber-400', badgeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400', bullet: 'bg-amber-400' },
+                            { num: '03', label: t.adminWaResolvedTitle, value: reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length, icon: 'check-circle', desc: t.adminWaResolvedDesc, meta: t.adminWaResolvedMeta, numColor: 'text-[#10B981]', badgeBg: 'bg-[#082820] border-[#059669]/50 text-[#10B981]', bullet: 'bg-[#10B981]' }
+                          ].map((stat, idx) => (
+                            <div key={idx} className="p-6 sm:p-8 flex flex-col justify-between hover:bg-slate-900/50 transition-colors">
+                              <div>
+                                <div className="flex items-center justify-between mb-5">
+                                  <span className={`font-headline text-3xl sm:text-4xl font-extrabold tracking-tight select-none leading-none ${stat.numColor}`}>
+                                    {stat.value}
+                                  </span>
+                                  <div className={`w-10 h-10 rounded-lg border flex items-center justify-center ${stat.badgeBg}`}>
+                                    <Icon name={stat.icon} className="w-5 h-5" />
+                                  </div>
+                                </div>
+                                <h3 className="font-headline text-base font-bold text-white mb-2 tracking-tight">
+                                  {stat.label}
+                                </h3>
+                                <p className="text-xs text-slate-400 leading-relaxed">
+                                  {stat.desc}
+                                </p>
+                              </div>
+                              <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                                <span className={`w-2 h-2 ${stat.bullet} inline-block flex-shrink-0`}></span>
+                                <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{stat.meta}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* CONTRACTORS VIEW */}
                   {adminView === 'contractors' && (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {contractors.map(contractor => (
-                        <div key={contractor.contractor_id} className="glass-panel border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div>
-                            <div className="text-xs font-mono text-sky-400 font-bold">{contractor.contractor_id}</div>
-                            <div className="text-base font-bold text-white mt-0.5">{contractor.name}</div>
-                            <div className="text-xs text-slate-400 mt-1 font-mono">
+                        <div key={contractor.contractor_id} className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                          <div className="space-y-1">
+                            <div className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">{contractor.contractor_id}</div>
+                            <div className="text-lg font-bold text-slate-900 dark:text-white">{contractor.name}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                               {contractor.service_area} · {(contractor.skills || []).join(', ') || 'General Works'} · {contractor.approval_status || (contractor.verified ? 'Approved' : 'Pending Verification')}
                             </div>
                           </div>
                           {!contractor.verified && (
-                            <div className="flex gap-2">
-                              <button onClick={() => approveContractor(contractor, false)} className="px-4 py-2 rounded-xl border border-red-500/30 text-red-400 text-xs font-bold">
-                                Reject
+                            <div className="flex gap-2 shrink-0">
+                              <button onClick={() => approveContractor(contractor, false)} className="px-4 py-2.5 rounded-xl border border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold transition-colors">
+                                {t.adminRejectContractor}
                               </button>
-                              <button onClick={() => approveContractor(contractor, true)} className="px-5 py-2 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold">
-                                Approve Contractor
+                              <button onClick={() => approveContractor(contractor, true)} className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all">
+                                {t.adminApproveContractor}
                               </button>
                             </div>
                           )}
@@ -2749,66 +4016,66 @@ export const normalizeReport = (item) => {
 
                   {/* ESCROW FUNDING VIEW */}
                   {adminView === 'funding' && (
-                    <div className="space-y-4">
-                      <div className="glass-panel border border-slate-800 rounded-3xl p-6">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Community Repair Escrow Dispatch</h2>
-                        <p className="text-xs text-slate-400 mt-1">Review applicant work plans, lock budget in escrow, inspect completion proof photos, and release funds.</p>
+                    <div className="space-y-6">
+                      <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <h2 className="text-base font-bold text-slate-900 dark:text-white">Community Repair Escrow Dispatch</h2>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">Review applicant work plans, lock budget in escrow, inspect completion proof photos, and release funds.</p>
                       </div>
                       {repairRequests.length ? repairRequests.map(req => (
-                        <div key={req.request_id} className="glass-panel border border-slate-800 rounded-3xl p-6 grid lg:grid-cols-[1fr_300px] gap-6 shadow-xl">
-                          <div>
+                        <div key={req.request_id} className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 grid lg:grid-cols-[1fr_320px] gap-8 shadow-sm">
+                          <div className="space-y-4">
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-xs font-mono text-sky-400 font-bold">{req.request_id}</span>
+                              <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">{req.request_id}</span>
                               <span className="text-xs font-mono text-slate-400">Incident: {req.complaint_id}</span>
-                              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-mono text-amber-400 font-bold">{req.status}</span>
+                              <span className="px-3 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs font-semibold text-amber-700 dark:text-amber-400">{req.status}</span>
                             </div>
-                            <div className="text-lg font-bold text-white mt-2">{req.applicant_name} · BDT {Number(req.estimated_price).toLocaleString()}</div>
-                            <div className="text-xs text-slate-400 mt-0.5 font-mono">Contact: {req.applicant_contact} · Est. Hours: {req.estimated_hours}h</div>
-                            <div className="mt-4 p-4 rounded-2xl bg-slate-950/80 border border-slate-800">
-                              <div className="text-[10px] font-mono text-slate-400 mb-1 font-bold">SUBMITTED WORK PLAN</div>
-                              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{req.plan}</p>
+                            <div className="text-xl font-extrabold text-slate-900 dark:text-white">{req.applicant_name} · BDT {Number(req.estimated_price).toLocaleString()}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">Contact: {req.applicant_contact} · Est. Hours: {req.estimated_hours}h</div>
+                            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                              <div className="text-[11px] font-bold uppercase text-slate-400 mb-1">SUBMITTED WORK PLAN</div>
+                              <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{req.plan}</p>
                             </div>
                             {req.proof && (
-                              <div className="mt-4 flex items-center gap-3 glass-card p-3 rounded-2xl border border-slate-800">
-                                <img src={absoluteMediaUrl(req.proof.after_image_url)} className="w-24 h-20 object-cover rounded-xl border border-slate-700" alt="Completion proof" />
+                              <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4 rounded-xl">
+                                <img src={absoluteMediaUrl(req.proof.after_image_url)} className="w-24 h-20 object-cover rounded-xl border border-slate-200 dark:border-slate-700" alt="Completion proof" />
                                 <div>
-                                  <div className="text-xs text-emerald-400 font-bold">Youth completion photo uploaded</div>
-                                  <div className="text-xs text-slate-400 mt-1">{req.proof.completion_note}</div>
+                                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">Youth completion photo uploaded</div>
+                                  <div className="text-xs text-slate-600 dark:text-slate-300 mt-1">{req.proof.completion_note}</div>
                                 </div>
                               </div>
                             )}
                           </div>
-                          <div className="space-y-3">
-                            <div className="rounded-2xl glass-card border border-slate-800 p-4">
-                              <div className="text-[10px] font-mono text-slate-400 font-bold">ESCROW STATUS</div>
-                              <div className="text-xs text-white mt-1">{req.funds_status}</div>
-                              {req.approved_budget && <div className="text-xl font-extrabold text-emerald-400 font-mono mt-1">BDT {Number(req.approved_budget).toLocaleString()}</div>}
+                          <div className="space-y-4">
+                            <div className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-5 space-y-1">
+                              <div className="text-[11px] font-bold uppercase text-slate-400">ESCROW STATUS</div>
+                              <div className="text-sm text-slate-900 dark:text-white font-medium">{req.funds_status}</div>
+                              {req.approved_budget && <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-2">BDT {Number(req.approved_budget).toLocaleString()}</div>}
                             </div>
                             {req.status === 'Pending Admin Review' && (
                               <>
-                                <label className="block text-xs text-slate-400 font-mono">Approved Escrow Amount
-                                  <input type="number" value={fundingBudgets[req.request_id] ?? req.estimated_price} onChange={e => setFundingBudgets({ ...fundingBudgets, [req.request_id]: e.target.value })} className="mt-1 w-full glass-input rounded-xl p-2.5 text-xs text-white font-mono" />
+                                <label className="block text-xs text-slate-600 dark:text-slate-300 font-medium">Approved Escrow Amount
+                                  <input type="number" value={fundingBudgets[req.request_id] ?? req.estimated_price} onChange={e => setFundingBudgets({ ...fundingBudgets, [req.request_id]: e.target.value })} className="mt-1.5 w-full rounded-xl p-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono" />
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
-                                  <button onClick={() => decideRepair(req, false)} className="px-3 py-2 rounded-xl border border-red-500/30 text-red-400 text-xs font-bold">Reject</button>
-                                  <button onClick={() => decideRepair(req, true)} className="px-3 py-2 rounded-xl bg-sky-500 text-slate-950 text-xs font-bold shadow-md">Reserve Escrow</button>
+                                  <button onClick={() => decideRepair(req, false)} className="px-4 py-2.5 rounded-xl border border-red-500/30 text-red-600 dark:text-red-400 text-xs font-bold hover:bg-red-50 dark:hover:bg-red-950/20">Reject</button>
+                                  <button onClick={() => decideRepair(req, true)} className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm">Reserve Escrow</button>
                                 </div>
                               </>
                             )}
                             {req.status === 'Approved - Awaiting Work' && (
-                              <div className="rounded-2xl bg-amber-500/10 border border-amber-500/25 p-3.5 text-xs text-amber-300 leading-snug">
+                              <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 p-4 text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
                                 Waiting for youth worker on-site execution and after photo upload.
                               </div>
                             )}
                             {req.status === 'Proof Submitted - Awaiting Verification' && (
-                              <button onClick={() => releaseFunds(req)} className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 transition-all">
+                              <button onClick={() => releaseFunds(req)} className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition-all">
                                 ✓ Verify Proof & Release Funds
                               </button>
                             )}
                           </div>
                         </div>
                       )) : (
-                        <div className="glass-panel border border-slate-800 rounded-3xl p-10 text-center text-xs text-slate-400">
+                        <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl p-12 text-center text-sm text-slate-500 dark:text-slate-400">
                           No community funding requests currently awaiting review.
                         </div>
                       )}
@@ -2817,79 +4084,82 @@ export const normalizeReport = (item) => {
 
                   {/* WORK QUEUE VIEW */}
                   {['queue', 'review', 'proofs'].includes(adminView) && (
-                    <div className="glass-panel border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-                      <div className="px-6 py-4 border-b border-slate-800/80 flex items-center justify-between">
-                        <h2 className="text-xs font-bold text-white font-mono uppercase tracking-wider">{adminView === 'proofs' ? 'Contractor proof review' : adminView === 'review' ? 'Human review queue' : 'Municipal work queue'}</h2>
-                        <span className="text-xs font-mono text-slate-400">{displayedAdminReports.length} shown</span>
+                    <div className="bg-white dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden space-y-0">
+                      <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-700/60 flex items-center justify-between bg-slate-50/60 dark:bg-slate-900/40">
+                        <div className="flex items-center gap-2.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{adminView === 'proofs' ? 'Contractor Proof Review' : adminView === 'review' ? 'Human Review Queue' : 'Municipal Incident Cadastre'}</h2>
+                        </div>
+                        <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400">{displayedAdminReports.length} Active Records</span>
                       </div>
 
                       {/* INCIDENT WORKSPACE DRAWER */}
                       {(operationLoading || operationDetail) && (
-                        <div className="border-b border-slate-800 p-6 bg-slate-950/80 reveal-up">
+                        <div className="border-b border-slate-200 dark:border-slate-700 p-6 sm:p-8 bg-slate-50/70 dark:bg-slate-900/60 reveal-up">
                           {operationLoading ? (
-                            <div className="text-xs text-slate-400 font-mono">Loading incident workspace…</div>
+                            <div className="text-sm text-slate-500 font-mono">Loading incident workspace…</div>
                           ) : (
-                            <div className="space-y-5">
+                            <div className="space-y-6">
                               <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <div className="text-xs font-mono text-sky-400 font-bold">INCIDENT WORKSPACE · {operationDetail.complaint.id}</div>
-                                  <h3 className="text-lg font-bold text-white mt-0.5">{operationDetail.complaint.title}</h3>
-                                  <p className="text-xs text-slate-400 mt-0.5 font-mono">{operationDetail.complaint.location}</p>
+                                <div className="space-y-1">
+                                  <div className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">INCIDENT WORKSPACE · {operationDetail.complaint.id}</div>
+                                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{operationDetail.complaint.title}</h3>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">{operationDetail.complaint.location}</p>
                                 </div>
-                                <button onClick={() => setOperationDetail(null)} className="text-slate-400 hover:text-white text-lg font-bold">×</button>
+                                <button onClick={() => setOperationDetail(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl font-bold px-2 py-1">×</button>
                               </div>
 
-                              <div className="grid lg:grid-cols-[240px_1fr] gap-5">
+                              <div className="grid lg:grid-cols-[280px_1fr] gap-6">
                                 {operationDetail.complaint.beforeImage ? (
-                                  <img src={operationDetail.complaint.beforeImage} alt="Citizen evidence" className="w-full h-48 object-cover rounded-2xl border border-slate-800 shadow-md" />
+                                  <img src={operationDetail.complaint.beforeImage} alt="Citizen evidence" className="w-full h-56 object-cover rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm" />
                                 ) : (
-                                  <div className="h-48 rounded-2xl glass-card border border-slate-800 flex items-center justify-center text-xs text-slate-500">
+                                  <div className="h-56 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xs text-slate-400">
                                     No photo evidence supplied
                                   </div>
                                 )}
-                                <div className="grid sm:grid-cols-2 gap-3 text-xs">
-                                  <div className="p-3.5 rounded-2xl glass-card border border-slate-800">
-                                    <div className="text-slate-400 font-mono text-[10px] font-bold">CITIZEN INPUT</div>
-                                    <p className="text-slate-200 mt-1.5 leading-relaxed">{operationDetail.complaint.description}</p>
+                                <div className="grid sm:grid-cols-2 gap-4 text-xs">
+                                  <div className="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                                    <div className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">CITIZEN INPUT</div>
+                                    <p className="text-slate-800 dark:text-slate-200 mt-2 leading-relaxed text-sm">{operationDetail.complaint.description}</p>
                                   </div>
-                                  <div className="p-3.5 rounded-2xl glass-card border border-slate-800">
-                                    <div className="text-slate-400 font-mono text-[10px] font-bold">AI VISION ASSESSMENT</div>
-                                    <div className="text-white font-bold mt-1.5">{operationDetail.complaint.category} · {operationDetail.complaint.severity}</div>
-                                    <p className="text-slate-400 mt-1 text-[11px] leading-snug">{operationDetail.complaint.ai_reasoning || operationDetail.complaint.title}</p>
-                                    <div className="text-sky-400 font-mono text-[11px] mt-1.5">Confidence: {operationDetail.complaint.confidence}</div>
+                                  <div className="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                                    <div className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">AI VISION ASSESSMENT</div>
+                                    <div className="text-slate-900 dark:text-white font-bold mt-2 text-sm">{operationDetail.complaint.category} · {operationDetail.complaint.severity}</div>
+                                    <p className="text-slate-600 dark:text-slate-300 mt-1 text-xs leading-relaxed">{operationDetail.complaint.ai_reasoning || operationDetail.complaint.title}</p>
+                                    <div className="text-emerald-600 dark:text-emerald-400 font-mono text-xs mt-2 font-semibold">Confidence: {operationDetail.complaint.confidence}</div>
                                   </div>
-                                  <div className="sm:col-span-2 p-3.5 rounded-2xl glass-card border border-slate-800">
-                                    <div className="flex flex-wrap items-center justify-between gap-1.5">
-                                      <div className="text-slate-400 font-mono text-[10px] font-bold">ASSIGNED RESPONSIBLE AUTHORITY</div>
-                                      <div className="flex flex-wrap items-center gap-1">
-                                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                  <div className="sm:col-span-2 p-5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                      <div className="text-slate-400 font-mono text-[10px] font-bold uppercase tracking-wider">ASSIGNED RESPONSIBLE AUTHORITY</div>
+                                      <div className="flex flex-wrap items-center gap-1.5">
+                                        <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                                           {operationDetail.complaint.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
                                         </span>
                                         {operationDetail.complaint.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                                          <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                                             Statutory Verified
                                           </span>
                                         ) : operationDetail.complaint.assigned_authority?.jurisdiction_data_status === 'heuristic_bbox' ? (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                          <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                                             Heuristic Area
                                           </span>
                                         ) : (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                                          <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                                             Location Inferred
                                           </span>
                                         )}
                                         {operationDetail.complaint.assigned_authority?.assignment_status === 'officer_assigned' && (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                                          <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                                             Officer Assigned
                                           </span>
                                         )}
-                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
                                           Simulated Workflow
                                         </span>
                                       </div>
                                     </div>
-                                    <div className="mt-2 text-white font-semibold flex items-center gap-2">
-                                      <Icon name="building-2" className="w-4 h-4 text-sky-400" />
+                                    <div className="mt-1 text-slate-900 dark:text-white font-semibold flex items-center gap-2">
+                                      <Icon name="building-2" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                       <span>
                                         {operationDetail.complaint.assigned_authority?.authority_name
                                           ? `${operationDetail.complaint.assigned_authority.authority_name} (${operationDetail.complaint.assigned_authority.short_code})`
@@ -2897,40 +4167,40 @@ export const normalizeReport = (item) => {
                                       </span>
                                     </div>
                                     {operationDetail.complaint.assigned_authority?.department && operationDetail.complaint.assigned_authority?.authority_name && (
-                                      <div className="text-[11px] text-slate-300 mt-1 pl-6">
-                                        Department: <span className="text-slate-100 font-medium">{operationDetail.complaint.assigned_authority.department}</span>
+                                      <div className="text-[11px] text-slate-500 dark:text-slate-400 pl-6">
+                                        Department: <span className="text-slate-800 dark:text-slate-200 font-medium">{operationDetail.complaint.assigned_authority.department}</span>
                                       </div>
                                     )}
                                     {operationDetail.complaint.assigned_authority?.jurisdiction && (
-                                      <div className="text-[11px] text-slate-400 mt-0.5 pl-6 flex items-center gap-1.5">
-                                        <Icon name="map-pin" className="w-3 h-3 text-sky-400" />
+                                      <div className="text-[11px] text-slate-500 dark:text-slate-400 pl-6 flex items-center gap-1.5">
+                                        <Icon name="map-pin" className="w-3.5 h-3.5 text-emerald-600" />
                                         <span>Jurisdiction: {operationDetail.complaint.assigned_authority.jurisdiction}</span>
                                         {operationDetail.complaint.assigned_authority.routing_method && (
-                                          <span className="font-mono text-[10px] text-slate-500">({operationDetail.complaint.assigned_authority.routing_method})</span>
+                                          <span className="font-mono text-[10px] text-slate-400">({operationDetail.complaint.assigned_authority.routing_method})</span>
                                         )}
                                       </div>
                                     )}
                                   </div>
-                                  <div className="sm:col-span-2 p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/25">
-                                    <div className="text-sky-400 font-mono text-[10px] font-bold">RECOMMENDED NEXT ACTION</div>
-                                    <p className="text-slate-200 mt-1 text-xs">{operationDetail.recommended_action}</p>
+                                  <div className="sm:col-span-2 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                                    <div className="text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider">RECOMMENDED NEXT ACTION</div>
+                                    <p className="text-slate-800 dark:text-slate-200 mt-1 text-xs leading-relaxed">{operationDetail.recommended_action}</p>
                                   </div>
                                 </div>
                               </div>
 
                               {/* SIMULATED FIELD OFFICER WORKFLOW CONTROLS */}
                               {(authUser?.role === 'officer' || authUser?.role === 'admin') && (
-                                <div data-testid="officer-workflow-controls" className="rounded-2xl border border-sky-500/30 bg-slate-900/80 p-4 space-y-4">
-                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                                    <div className="text-xs font-bold font-mono text-sky-400 flex items-center gap-2">
-                                      <Icon name="briefcase" className="w-4 h-4 text-sky-400" />
+                                <div data-testid="officer-workflow-controls" className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-5 shadow-sm">
+                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
+                                    <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                      <Icon name="briefcase" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                       <span>SIMULATED FIELD OFFICER WORKFLOW</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                                      <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                                         Current Status: {operationDetail.complaint.status}
                                       </span>
-                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                      <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                                         Simulated Demo
                                       </span>
                                     </div>
@@ -2938,14 +4208,14 @@ export const normalizeReport = (item) => {
 
                                   {/* Acknowledge Button */}
                                   {['Submitted', 'Assigned'].includes(operationDetail.complaint.status) && operationDetail.complaint.assigned_authority?.routing_status === 'assigned' && (
-                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
                                       <div>
-                                        <div className="text-xs font-bold text-white">Step 1: Acknowledge Assignment</div>
-                                        <div className="text-[11px] text-slate-400">Confirm authority ownership and dispatch inspection crew.</div>
+                                        <div className="text-xs font-bold text-slate-900 dark:text-white">Step 1: Acknowledge Assignment</div>
+                                        <div className="text-[11px] text-slate-500 dark:text-slate-400">Confirm authority ownership and dispatch inspection crew.</div>
                                       </div>
                                       <button
                                         onClick={() => handleOfficerStatusUpdate('Acknowledged', 'Officer acknowledged incident and dispatched inspection team.')}
-                                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                        className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                                       >
                                         <Icon name="check" className="w-4 h-4" />
                                         <span>Acknowledge Incident</span>
@@ -2955,30 +4225,30 @@ export const normalizeReport = (item) => {
 
                                   {/* Reopened Incident Reinspection Card */}
                                   {operationDetail.complaint.status === 'Reopened - Needs Review' && (
-                                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+                                    <div className="p-5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 space-y-3">
                                       <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                          <span className="text-amber-400 font-bold text-xs uppercase font-mono tracking-wider">Citizen Dispute · Reinspection Required</span>
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-500/15 text-red-300 border border-red-500/30 font-bold">
+                                          <span className="text-amber-700 dark:text-amber-300 font-bold text-xs uppercase tracking-wider">Citizen Dispute · Reinspection Required</span>
+                                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 font-bold">
                                             {operationDetail.complaint.citizen_verification?.outcome || 'not_fixed'}
                                           </span>
                                         </div>
                                       </div>
-                                      <div className="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                                        <span className="text-slate-400 font-semibold">Citizen feedback: </span>
+                                      <div className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                                        <span className="font-semibold text-slate-900 dark:text-white">Citizen feedback: </span>
                                         {operationDetail.complaint.citizen_verification?.note || operationDetail.complaint.review_reason || 'Citizen disputed resolution completion.'}
                                       </div>
-                                      <div className="flex flex-wrap gap-2 pt-1">
+                                      <div className="flex flex-wrap gap-2.5 pt-1">
                                         <button
                                           onClick={() => handleOfficerStatusUpdate('Acknowledged', 'Officer acknowledged citizen dispute and scheduled reinspection.')}
-                                          className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                                         >
                                           <Icon name="check" className="w-4 h-4" />
                                           <span>Acknowledge Reinspection</span>
                                         </button>
                                         <button
                                           onClick={() => handleOfficerStatusUpdate('In Progress', 'Field team deployed to address citizen dispute.')}
-                                          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                          className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                                         >
                                           <Icon name="play" className="w-4 h-4" />
                                           <span>Resume Field Work</span>
@@ -2989,14 +4259,14 @@ export const normalizeReport = (item) => {
 
                                   {/* Start Work Button */}
                                   {operationDetail.complaint.status === 'Acknowledged' && (
-                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
                                       <div>
-                                        <div className="text-xs font-bold text-white">Step 2: Mobilize Crew & Start Work</div>
-                                        <div className="text-[11px] text-slate-400">Deploy maintenance equipment to site.</div>
+                                        <div className="text-xs font-bold text-slate-900 dark:text-white">Step 2: Mobilize Crew & Start Work</div>
+                                        <div className="text-[11px] text-slate-500 dark:text-slate-400">Deploy maintenance equipment to site.</div>
                                       </div>
                                       <button
                                         onClick={() => handleOfficerStatusUpdate('In Progress', 'Field maintenance team deployed to site.')}
-                                        className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                        className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                                       >
                                         <Icon name="play" className="w-4 h-4" />
                                         <span>Start Field Work</span>
@@ -3009,18 +4279,18 @@ export const normalizeReport = (item) => {
                                     <div className="space-y-4 pt-1">
                                       {/* Progress Note Form */}
                                       <div className="space-y-1.5">
-                                        <label className="block text-[10px] font-mono text-slate-400 uppercase">Field Progress Note</label>
+                                        <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase">Field Progress Note</label>
                                         <div className="flex gap-2">
                                           <input
                                             type="text"
                                             placeholder="Add progress note (e.g. materials arriving at 2 PM)..."
                                             value={officerProgressNote}
                                             onChange={(e) => setOfficerProgressNote(e.target.value)}
-                                            className="min-w-0 flex-1 glass-input rounded-xl p-2.5 text-xs text-white font-mono"
+                                            className="min-w-0 flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-2.5 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                                           />
                                           <button
                                             onClick={handleOfficerProgressUpdate}
-                                            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-sky-400 transition-all shrink-0"
+                                            className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-all shrink-0 cursor-pointer"
                                           >
                                             Add Note
                                           </button>
@@ -3028,36 +4298,36 @@ export const normalizeReport = (item) => {
                                       </div>
 
                                       {/* Upload Resolution Evidence Form */}
-                                      <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 space-y-3">
-                                        <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/40 p-4 space-y-3">
+                                        <div className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
                                           <Icon name="camera" className="w-3.5 h-3.5" />
                                           <span>Upload Completed Resolution Proof</span>
                                         </div>
                                         <div className="grid sm:grid-cols-2 gap-3">
                                           <div>
-                                            <label className="block text-[10px] font-mono text-slate-400 mb-1 uppercase">Completion Photograph</label>
+                                            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Completion Photograph</label>
                                             <input
                                               type="file"
                                               accept="image/*"
                                               onChange={(e) => setEvidenceFile(e.target.files?.[0] || null)}
-                                              className="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-500/20 file:text-sky-300 hover:file:bg-sky-500/30"
+                                              className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 dark:file:bg-emerald-950/50 file:text-emerald-700 dark:file:text-emerald-300 hover:file:bg-emerald-100 cursor-pointer"
                                             />
                                           </div>
                                           <div>
-                                            <label className="block text-[10px] font-mono text-slate-400 mb-1 uppercase">Completion Notes</label>
+                                            <label className="block text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1 uppercase">Completion Notes</label>
                                             <textarea
                                               rows={2}
                                               placeholder="Describe work performed on site..."
                                               value={evidenceNote}
                                               onChange={(e) => setEvidenceNote(e.target.value)}
-                                              className="w-full glass-input rounded-xl p-2 text-xs text-white resize-none"
+                                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 text-xs text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                                             />
                                           </div>
                                         </div>
                                         <button
                                           disabled={!evidenceFile || !evidenceNote.trim() || isUploadingEvidence}
                                           onClick={handleEvidenceUpload}
-                                          className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                                          className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                                         >
                                           {isUploadingEvidence ? (
                                             <span>Uploading & Verifying Image…</span>
@@ -3074,13 +4344,13 @@ export const normalizeReport = (item) => {
 
                                   {/* If already in Evidence Uploaded or Verification */}
                                   {['Evidence Uploaded', 'Verification'].includes(operationDetail.complaint.status) && (
-                                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                      <span className="text-emerald-300 flex items-center gap-2">
-                                        <Icon name="clock" className="w-4 h-4 text-emerald-400" />
+                                    <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/30 p-3.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                                      <span className="text-emerald-700 dark:text-emerald-300 font-medium flex items-center gap-2">
+                                        <Icon name="clock" className="w-4 h-4 text-emerald-600" />
                                         <span>Evidence submitted. Awaiting citizen confirmation gate.</span>
                                       </span>
                                       {operationDetail.complaint.afterImage && (
-                                        <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-sky-400 font-mono text-[11px] underline">
+                                        <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-emerald-600 dark:text-emerald-400 font-medium text-xs hover:underline">
                                           View proof photo ↗
                                         </a>
                                       )}
@@ -3089,53 +4359,53 @@ export const normalizeReport = (item) => {
                                 </div>
                               )}
 
-                              <div className="grid lg:grid-cols-2 gap-5 pt-2">
+                              <div className="grid lg:grid-cols-2 gap-6 pt-2">
                                 <div>
-                                  <div className="text-xs font-mono text-slate-400 mb-2 font-bold">MATCHED CONTRACTORS</div>
+                                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">MATCHED CONTRACTORS</div>
                                   <div className="flex gap-2">
-                                    <select value={offerForm.contractor_id} onChange={e => setOfferForm({ ...offerForm, contractor_id: e.target.value })} className="min-w-0 flex-1 glass-input rounded-xl p-2.5 text-xs text-white">
-                                      {operationDetail.contractor_matches.map(c => <option key={c.contractor_id} value={c.contractor_id} className="bg-slate-900">{c.name} · {c.match_score}% Match · ★{c.rating}</option>)}
+                                    <select value={offerForm.contractor_id} onChange={e => setOfferForm({ ...offerForm, contractor_id: e.target.value })} className="min-w-0 flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+                                      {operationDetail.contractor_matches.map(c => <option key={c.contractor_id} value={c.contractor_id} className="bg-white dark:bg-slate-800">{c.name} · {c.match_score}% Match · ★{c.rating}</option>)}
                                     </select>
-                                    <input type="number" placeholder="Budget BDT" value={offerForm.budget_cap} onChange={e => setOfferForm({ ...offerForm, budget_cap: e.target.value })} className="w-28 glass-input rounded-xl p-2.5 text-xs text-white font-mono" />
-                                    <button disabled={operationDetail.complaint.needs_review || operationDetail.offers.some(o => ['Sent','Accepted','In Progress','Proof Submitted','Approved'].includes(o.status))} onClick={assignContractor} className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-35 disabled:cursor-not-allowed text-slate-950 text-xs font-bold shadow-md">Dispatch Order</button>
+                                    <input type="number" placeholder="Budget BDT" value={offerForm.budget_cap} onChange={e => setOfferForm({ ...offerForm, budget_cap: e.target.value })} className="w-28 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                                    <button disabled={operationDetail.complaint.needs_review || operationDetail.offers.some(o => ['Sent','Accepted','In Progress','Proof Submitted','Approved'].includes(o.status))} onClick={assignContractor} className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer">Dispatch Order</button>
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="text-xs font-mono text-slate-400 mb-2 font-bold">ACTIVE WORK ORDERS</div>
+                                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">ACTIVE WORK ORDERS</div>
                                   {operationDetail.offers.length ? (
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                       {operationDetail.offers.map(offer => (
-                                        <div key={offer.offer_id} className="glass-card p-3 rounded-xl border border-slate-800 text-xs">
+                                        <div key={offer.offer_id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl text-xs shadow-sm">
                                           <div className="flex flex-wrap items-center justify-between gap-2">
                                             <div>
-                                              <span className="text-white font-bold">{offer.contractor_name}</span>
-                                              <span className="text-slate-400"> · BDT {Number(offer.budget_cap).toLocaleString()}</span>
+                                              <span className="text-slate-900 dark:text-white font-bold">{offer.contractor_name}</span>
+                                              <span className="text-slate-500 dark:text-slate-400"> · BDT {Number(offer.budget_cap).toLocaleString()}</span>
                                             </div>
-                                            <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${offer.status === 'Proof Submitted' ? 'bg-amber-500/15 text-amber-300' : offer.status === 'Approved' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-sky-500/10 text-sky-300'}`}>{offer.status}</span>
+                                            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${offer.status === 'Proof Submitted' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200' : offer.status === 'Approved' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>{offer.status}</span>
                                           </div>
                                           {offer.status === 'Proof Submitted' && (
-                                            <div className="mt-3 grid sm:grid-cols-[88px_1fr] gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
-                                              {offer.after_image_url && <img src={absoluteMediaUrl(offer.after_image_url)} alt="Contractor completion evidence" className="h-20 w-full rounded-lg object-cover" />}
+                                            <div className="mt-3 grid sm:grid-cols-[88px_1fr] gap-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 p-3">
+                                              {offer.after_image_url && <img src={absoluteMediaUrl(offer.after_image_url)} alt="Contractor completion evidence" className="h-20 w-full rounded-lg object-cover border border-slate-200 dark:border-slate-700" />}
                                               <div className="space-y-2 min-w-0">
-                                                <p className="text-slate-300 leading-relaxed">{offer.note || 'Completion proof submitted for final review.'}</p>
-                                                <a href={offer.report_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sky-400 font-semibold hover:underline"><Icon name="external-link" className="w-3.5 h-3.5" />Open public Drive report</a>
+                                                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{offer.note || 'Completion proof submitted for final review.'}</p>
+                                                <a href={offer.report_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold hover:underline"><Icon name="external-link" className="w-3.5 h-3.5" />Open public Drive report</a>
                                                 <div className="flex flex-wrap gap-2 pt-1">
-                                                  <button onClick={() => changeOfferStatus(offer, 'In Progress', 'Final review requested changes; contractor must resubmit proof.')} className="px-3 py-2 rounded-lg border border-slate-600 text-slate-300 font-semibold">Request changes</button>
-                                                  <button onClick={() => changeOfferStatus(offer, 'Approved', 'Final proof approved; contractor payment released.')} className="px-3 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold">Approve & release payment</button>
+                                                  <button onClick={() => changeOfferStatus(offer, 'In Progress', 'Final review requested changes; contractor must resubmit proof.')} className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-100 transition-all cursor-pointer">Request changes</button>
+                                                  <button onClick={() => changeOfferStatus(offer, 'Approved', 'Final proof approved; contractor payment released.')} className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all shadow-sm cursor-pointer">Approve & release payment</button>
                                                 </div>
                                               </div>
                                             </div>
                                           )}
-                                          {offer.status === 'Approved' && <div className="mt-2 flex items-center gap-2 text-emerald-400"><Icon name="circle-check" className="w-4 h-4" /><span>Final review approved · Payment released</span></div>}
-                                          <div className="flex gap-1.5 mt-2">
-                                            {offer.status === 'Sent' && <button onClick={() => changeOfferStatus(offer, 'Accepted')} className="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">Accept</button>}
-                                            {offer.status === 'Accepted' && <button onClick={() => changeOfferStatus(offer, 'In Progress')} className="px-2.5 py-1 rounded-lg bg-sky-500/15 text-sky-300 border border-sky-500/30 text-[10px] font-bold">Start</button>}
+                                          {offer.status === 'Approved' && <div className="mt-2 flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold"><Icon name="circle-check" className="w-4 h-4" /><span>Final review approved · Payment released</span></div>}
+                                          <div className="flex gap-2 mt-2">
+                                            {offer.status === 'Sent' && <button onClick={() => changeOfferStatus(offer, 'Accepted')} className="px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold cursor-pointer">Accept</button>}
+                                            {offer.status === 'Accepted' && <button onClick={() => changeOfferStatus(offer, 'In Progress')} className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold cursor-pointer">Start</button>}
                                           </div>
                                         </div>
                                       ))}
                                     </div>
                                   ) : (
-                                    <div className="text-xs text-slate-500 font-mono glass-card p-3 rounded-xl border border-slate-800">No contractor assigned yet.</div>
+                                    <div className="text-xs text-slate-400 font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm">No contractor assigned yet.</div>
                                   )}
                                 </div>
                               </div>
@@ -3145,69 +4415,69 @@ export const normalizeReport = (item) => {
                       )}
 
                       {/* DATA TABLE */}
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-mono text-slate-400 uppercase">
-                              <th className="p-4">ID</th>
-                              <th className="p-4">Category & Location</th>
-                              <th className="p-4">Severity</th>
-                              <th className="p-4">AI Confidence</th>
-                              <th className="p-4">Status</th>
-                              <th className="p-4 text-right">Action</th>
+                            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                              <th className="py-4 px-6">{t.adminTableId}</th>
+                              <th className="py-4 px-6">{t.adminTableTitle}</th>
+                              <th className="py-4 px-6">{t.adminTableSeverity}</th>
+                              <th className="py-4 px-6">{t.adminTableAiConfidence}</th>
+                              <th className="py-4 px-6">{t.adminTableStatus}</th>
+                              <th className="py-4 px-6 text-right">{t.adminTableAction}</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-800/60 text-xs">
+                          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
                             {displayedAdminReports.map((item) => (
-                              <tr key={item.id} className="hover:bg-slate-800/30 transition-colors">
-                                <td className="p-4 font-mono font-bold text-sky-400">{item.id}</td>
-                                <td className="p-4">
-                                  <div className="font-semibold text-white">{item.category}</div>
-                                  <div className="text-[11px] text-slate-400 font-mono">{item.location}</div>
+                              <tr key={item.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                                <td className="py-4 px-6 font-mono font-bold text-emerald-600 dark:text-emerald-400">{item.id}</td>
+                                <td className="py-4 px-6">
+                                  <div className="font-semibold text-slate-900 dark:text-white">{item.category}</div>
+                                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">{item.location}</div>
                                   {item.assigned_authority?.short_code && (
-                                    <div className="text-[10px] text-sky-400 font-mono mt-0.5">
+                                    <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">
                                       {item.assigned_authority.short_code} • {item.assigned_authority.department || item.department}
                                     </div>
                                   )}
                                 </td>
-                                <td className="p-4">
-                                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${item.severity === 'Critical'
-                                      ? 'bg-red-500/10 text-red-400 border-red-500/30'
-                                      : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                                <td className="py-4 px-6">
+                                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${item.severity === 'Critical'
+                                      ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800'
+                                      : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                                     }`}>
                                     {item.severity}
                                   </span>
                                 </td>
-                                <td className="p-4 font-mono text-[11px] text-slate-300">
+                                <td className="py-4 px-6 font-mono text-[11px] text-slate-500 dark:text-slate-400">
                                   {item.confidence}
                                 </td>
-                                <td className="p-4">
-                                  <span className="text-slate-300 font-medium font-mono">{item.status}</span>
+                                <td className="py-4 px-6">
+                                  <span className="text-slate-700 dark:text-slate-300 font-medium font-mono">{item.status}</span>
                                 </td>
-                                <td className="p-4 text-right">
+                                <td className="py-4 px-6 text-right">
                                   <div className="flex justify-end gap-2">
                                     {((item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review') && (
                                       authUser?.role === 'admin' ? (
-                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/35 text-amber-300 font-semibold text-xs">Review AI</button>
+                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs transition-all shadow-sm cursor-pointer">Review AI</button>
                                       ) : (
-                                        <span className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-[10px] font-mono">Admin Review</span>
+                                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-semibold uppercase">Admin Review</span>
                                       )
                                     )}
                                     {item.status === 'Reopened - Needs Review' && (
-                                      <span className="px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono">Disputed</span>
+                                      <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-[10px] font-bold uppercase">Disputed</span>
                                     )}
                                     <button
                                       disabled={!nextOperationalStatus(item) || (item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review'}
                                       onClick={() => nextOperationalStatus(item) && updateStatus(item, nextOperationalStatus(item))}
-                                      className="px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 disabled:opacity-30 text-sky-400 font-semibold text-xs transition-all"
+                                      className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-30 font-semibold text-xs transition-all shadow-sm cursor-pointer"
                                     >
                                       {nextOperationalStatus(item) ? `→ ${nextOperationalStatus(item)}` : 'Await proof'}
                                     </button>
                                     <button
                                       onClick={() => inspectIncident(item)}
-                                      className="px-3.5 py-1.5 rounded-xl glass-card border border-slate-700 hover:border-slate-600 text-slate-200 font-semibold text-xs transition-all shadow-sm"
+                                      className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition-all cursor-pointer"
                                     >
-                                      Workspace
+                                      {lang === 'bn' ? 'কার্যক্ষেত্র' : 'Workspace'}
                                     </button>
                                   </div>
                                 </td>
@@ -3215,7 +4485,7 @@ export const normalizeReport = (item) => {
                             ))}
                             {!displayedAdminReports.length && (
                               <tr>
-                                <td colSpan="6" className="p-12 text-center text-xs text-slate-400">
+                                <td colSpan="6" className="py-12 px-6 text-center text-xs text-slate-500 dark:text-slate-400">
                                   No incidents match the active filter criteria.
                                 </td>
                               </tr>
@@ -3232,16 +4502,31 @@ export const normalizeReport = (item) => {
           </main>
 
           {/* FOOTER */}
-          <footer className="border-t border-slate-800/80 bg-slate-950 py-6 mb-16 lg:mb-0">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-sky-400 flex items-center justify-center"><Icon name="activity" className="w-3.5 h-3.5 text-slate-950" /></div>
-                <span className="text-slate-200 font-bold">UrbanFix</span>
-                <span>· Report, track, verify</span>
+          <footer className="w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 mb-16 lg:mb-0 transition-colors">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3 font-mono text-[11px]">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-emerald-600 flex items-center justify-center text-white">
+                    <Icon name="check" className="w-3 h-3 stroke-[3]" />
+                  </div>
+                  <span className="font-bold text-slate-900 dark:text-white uppercase">UrbanFix Civic Ledger</span>
+                  <span className="text-slate-400">v4.8.2-CIV</span>
+                </div>
+                <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10B981]"></span>
+                  <span className="uppercase text-slate-600 dark:text-slate-300">Telemetry: Nominal</span>
+                </div>
+                <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span className="uppercase text-slate-600 dark:text-slate-300">Dispatch Queue: Normal</span>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <button onClick={() => setActiveTab('community')} className="hover:text-sky-400">Community cleanup</button>
-                <button onClick={() => setActiveTab('contractor')} className="hover:text-sky-400">Contractor portal</button>
+              <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
+                <button onClick={() => setActiveTab('community')} className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Community cleanup</button>
+                <button onClick={() => setActiveTab('contractor')} className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Contractor portal</button>
+                <span className="text-slate-400">© 2026 Civil Works Authority</span>
               </div>
             </div>
           </footer>
