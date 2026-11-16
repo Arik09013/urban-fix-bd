@@ -476,17 +476,16 @@ CLOUDINARY_CLOUD_NAME="" CLOUDINARY_API_KEY="" CLOUDINARY_API_SECRET="" CLOUDINA
 - [x] Regex scrubbing for Bangladeshi mobile numbers (`+880 1X...`) and National Identity (NID: 10, 13, 17 digits).
 - [x] Pre-seeded demo officers for CCC, DNCC, DSCC, DWASA.
 - [x] 114 automated backend unit and integration tests covering routing, security, resolution workflows, and data protection.
-- [x] Neo-brutalist civic cadastre UI redesign on `feature/ui-update` (hard 2px borders, brutalist offsets, high-contrast dark theme by default, live ticker ribbon, featured cadastre card).
+- [x] Neo-brutalist civic cadastre UI redesign across ALL application views on `feature/ui-update` (Landing, Citizen Report Flow, Track Report & Verification Gate, Public Map, Supervised Community Action, Contractor Portal, and Authority Command Center).
 - [x] Clean, breathable, decluttered navigation bar with strictly citizen-focused routes (`Home`, `Report Issue`, `Track Report`, `Public Map`).
 - [x] Cross-platform Node 25+ storage polyfill implemented in `src/test/setup.js`.
+- [x] Shared dialog and media components (`ReviewDialog`, `InteractiveBeforeAfter`, `AuthCard`) restyled to 2px solid brutalist borders and high-contrast CSS variable tokens.
 
 ### 10.2 Immediate Priorities for Incoming AI Agents
-1. **Polish Remaining Sub-Views in Neo-Brutalist Aesthetic:**
-   - Audit `Report Issue` form, `Track Report` verification gate, and `Public Map` overlays to ensure all form inputs, select dropdowns, and status pills strictly follow the `var(--surface-clean)` and `var(--border-black)` token palette in both dark and light modes.
-2. **Bengali (`বাংলা`) Language Support:**
+1. **Bengali (`বাংলা`) Language Support:**
    - Expand `_language_hint` in `backend/app/services/ai/gemini.py` to support mixed Banglish municipal colloquialisms (e.g., *bhanga rasta*, *moylar stup*, *pani bondi*, *batti jole na*).
    - Add bilingual UI toggle (English / বাংলা) in `src/App.jsx`.
-3. **Official GIS Boundary Ingestion:**
+2. **Official GIS Boundary Ingestion:**
    - Transition candidate polygons in `backend/app/services/routing/jurisdiction.py` from bounding boxes to official ward GeoJSON boundaries when official open data is available.
-4. **Local Mobile Financial Services (MFS) Integration:**
+3. **Local Mobile Financial Services (MFS) Integration:**
    - Model bKash and Nagad disbursement payout schema alongside existing demo Stripe rails for community micro-grants.
