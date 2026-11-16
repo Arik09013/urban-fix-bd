@@ -480,6 +480,8 @@ CLOUDINARY_CLOUD_NAME="" CLOUDINARY_API_KEY="" CLOUDINARY_API_SECRET="" CLOUDINA
 - [x] Clean, breathable, decluttered navigation bar with strictly citizen-focused routes (`Home`, `Report Issue`, `Track Report`, `Public Map`).
 - [x] Cross-platform Node 25+ storage polyfill implemented in `src/test/setup.js`.
 - [x] Shared dialog and media components (`ReviewDialog`, `InteractiveBeforeAfter`, `AuthCard`) restyled to 2px solid brutalist borders and high-contrast CSS variable tokens.
+- [x] Elevated Authority Portal login card with prominent front-and-center Username and Password inputs, clear uppercase labels, demo officer shortcut access, and full compatibility with Playwright test locators.
+- [x] Neo-brutalist styling for Admin Operations Center: active officer identity badge, persistent header `[Log Out]` button, horizontal view tab ribbon, high-contrast red KPI stat alerts, and brutalist work queue actions.
 
 ### 10.2 Immediate Priorities for Incoming AI Agents
 1. **Bengali (`বাংলা`) Language Support:**

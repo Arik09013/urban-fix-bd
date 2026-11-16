@@ -302,42 +302,150 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
       const passwordsMatch = !registering || form.password === form.confirmPassword;
       const canSubmit = !busy && emailValid && passwordValid && (!registering || (form.name.trim().length >= 2 && passwordsMatch));
       return (
-        <div className="max-w-md mx-auto bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-8 space-y-5">
-          <div className="text-center sm:text-left">
-            <div className="text-xs font-mono font-bold uppercase text-accent-electric-cyan mb-2">
-              // SECURE PORTAL
+        <div className="max-w-xl mx-auto bg-surface-clean border-2 border-border-black shadow-[6px_6px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-8 space-y-6">
+          <div className="text-left border-b-2 border-border-black/30 pb-4">
+            <div className="inline-flex items-center gap-2 bg-surface-container border border-border-black px-2.5 py-1 text-[10px] font-mono font-bold uppercase text-accent-electric-cyan mb-2 shadow-[2px_2px_0px_var(--shadow-color)]">
+              <span className="w-2 h-2 rounded-full bg-status-live-green"></span>
+              <span>// MUNICIPAL ACCESS GATE</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black font-headline text-ink-primary tracking-tight">{title}</h2>
-            <p className="text-xs text-ink-secondary mt-1 leading-relaxed">{subtitle}</p>
+            <h2 className="text-2xl sm:text-3xl font-black font-headline uppercase text-ink-primary tracking-tight">{title}</h2>
+            <p className="text-xs sm:text-sm text-ink-secondary mt-1 leading-relaxed">{subtitle}</p>
           </div>
+
           {allowRegister && (
             <div className="grid grid-cols-2 bg-surface-container border-2 border-border-black rounded-lg p-1">
               <button onClick={()=>setMode('login')} className={`py-2 rounded text-xs font-mono font-bold uppercase transition-all cursor-pointer ${mode==='login'?'bg-primary-container text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)]':'text-ink-secondary hover:text-ink-primary'}`}>Login</button>
               <button onClick={()=>setMode('register')} className={`py-2 rounded text-xs font-mono font-bold uppercase transition-all cursor-pointer ${mode==='register'?'bg-primary-container text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)]':'text-ink-secondary hover:text-ink-primary'}`}>Register</button>
             </div>
           )}
-          {allowRegister && mode==='register' && (
-            <>
-              <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name" autoComplete="name" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
-              <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone number (optional)" autoComplete="tel" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
-              <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder="Stripe Connect account for payments (acct_…)" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
-            </>
-          )}
+
+          {/* CREDENTIAL INPUTS - FRONT & CENTER */}
+          <div className="space-y-4">
+            {allowRegister && mode==='register' && (
+              <>
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase text-ink-secondary mb-1">Full Name</label>
+                  <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name" autoComplete="name" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
+                </div>
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase text-ink-secondary mb-1">Phone Number (optional)</label>
+                  <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone number (optional)" autoComplete="tel" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
+                </div>
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase text-ink-secondary mb-1">Stripe Payout Account (optional)</label>
+                  <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder="Stripe Connect account for payments (acct_…)" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
+                </div>
+              </>
+            )}
+
+            <div>
+              <label className="block text-xs font-mono font-bold uppercase text-ink-secondary mb-1.5 flex items-center justify-between">
+                <span>{allowRegister ? 'Email Address' : 'Admin / Officer Username'}</span>
+                {!allowRegister && <span className="text-[10px] text-accent-electric-cyan font-normal font-mono">e.g. admin or officer.ccc</span>}
+              </label>
+              <input 
+                type={allowRegister ? 'email' : 'text'} 
+                value={form.email} 
+                onChange={e => setForm({...form, email: e.target.value})} 
+                placeholder={allowRegister ? 'Email address' : 'Admin username'} 
+                autoComplete="username" 
+                className="w-full glass-input rounded-lg p-3 text-sm text-ink-primary bg-surface-clean border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono font-bold uppercase text-ink-secondary mb-1.5 flex items-center justify-between">
+                <span>Security Credential / Password</span>
+                {!allowRegister && <span className="text-[10px] text-accent-electric-cyan font-normal font-mono">admin or demo password</span>}
+              </label>
+              <div className="relative">
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  value={form.password} 
+                  onChange={e => setForm({...form, password: e.target.value})} 
+                  placeholder="Password" 
+                  autoComplete={mode === 'register' ? 'new-password' : 'current-password'} 
+                  onKeyDown={e => e.key === 'Enter' && canSubmit && submit()} 
+                  className="w-full glass-input rounded-lg p-3 pr-16 text-sm text-ink-primary bg-surface-clean border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] focus:outline-none"
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(value => !value)} 
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-ink-secondary hover:text-accent-electric-cyan cursor-pointer px-1 py-0.5"
+                >
+                  {showPassword ? 'HIDE' : 'SHOW'}
+                </button>
+              </div>
+            </div>
+
+            {registering && (
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-ink-secondary mb-1.5">Confirm Password</label>
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  value={form.confirmPassword} 
+                  onChange={e => setForm({...form, confirmPassword: e.target.value})} 
+                  placeholder="Confirm password" 
+                  autoComplete="new-password" 
+                  onKeyDown={e => e.key === 'Enter' && canSubmit && submit()} 
+                  className={`w-full glass-input rounded-lg p-3 text-sm text-ink-primary bg-surface-clean border-2 shadow-[2px_2px_0px_var(--shadow-color)] focus:outline-none ${form.confirmPassword && !passwordsMatch ? 'border-red-500' : 'border-border-black'}`}
+                />
+                <div className="flex justify-between text-[10px] font-mono px-1 mt-1">
+                  <span className={passwordValid ? 'text-status-live-green' : 'text-ink-subtle'}>{passwordValid ? '✓ 8+ chars' : 'Min 8 characters'}</span>
+                  {form.confirmPassword && <span className={passwordsMatch ? 'text-status-live-green' : 'text-red-400'}>{passwordsMatch ? '✓ Passwords match' : 'Passwords do not match'}</span>}
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div role="alert" className="rounded-lg border-2 border-red-500 bg-red-500/10 p-3 text-xs text-red-400 font-mono flex items-center gap-2">
+                <Icon name="alert-circle" className="w-4 h-4 text-red-400 shrink-0"/>
+                <span>{error}</span>
+              </div>
+            )}
+
+            <button 
+              onClick={() => submit()} 
+              disabled={!canSubmit} 
+              className="w-full py-3.5 rounded-lg bg-primary-container text-on-primary-container font-mono font-black uppercase text-sm border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] hover:shadow-[2px_2px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Icon name="shield-check" className="w-4 h-4 text-on-primary-container" />
+              <span>{busy ? 'AUTHENTICATING…' : mode === 'register' ? 'CREATE ACCOUNT →' : 'AUTHENTICATE & ENTER PORTAL →'}</span>
+            </button>
+          </div>
+
+          {/* QUICK DEMO LOGIN SHORTCUTS - PLACED CONVENIENTLY BELOW */}
           {demoCredentials && (
-            <div className="space-y-2.5">
-              <button type="button" onClick={() => setForm({...form, email:'admin', password:'admin'})} className="w-full rounded-lg border-2 border-border-black bg-surface-container p-3 text-left text-xs text-ink-primary hover:bg-surface-clean shadow-[2px_2px_0px_var(--shadow-color)] transition-all cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold">Judge demo access (Administrator)</span>
-                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 border border-border-black bg-primary-container text-on-primary-container font-bold">Admin</span>
+            <div className="border-t-2 border-border-black/30 pt-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[11px] font-bold uppercase text-ink-secondary">// FAST DEMO LOGINS (ONE-CLICK FILL)</span>
+                <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 border border-status-warning-amber text-status-warning-amber bg-status-warning-amber/10 font-bold">HACKATHON EVALUATORS</span>
+              </div>
+
+              <button 
+                type="button" 
+                onClick={() => setForm({...form, email: 'admin', password: 'admin'})} 
+                className="w-full rounded-lg border-2 border-border-black bg-surface-container p-3 text-left hover:bg-surface-clean shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer flex items-center justify-between gap-3 group"
+              >
+                <div>
+                  <div className="font-bold text-xs text-ink-primary font-mono group-hover:text-accent-electric-cyan transition-colors">
+                    ⚡ Judge demo access (Administrator)
+                  </div>
+                  <div className="font-mono text-[11px] text-ink-secondary mt-0.5">
+                    Fills: <span className="font-bold text-ink-primary">username: admin</span> · <span className="font-bold text-ink-primary">password: admin</span>
+                  </div>
                 </div>
-                <span className="font-mono text-[11px] text-ink-secondary">Username: admin · Global access</span>
+                <span className="shrink-0 text-[10px] uppercase font-mono px-2 py-1 border border-border-black bg-primary-container text-on-primary-container font-black">
+                  FILL ADMIN
+                </span>
               </button>
+
               <div className="p-3 rounded-lg border-2 border-border-black bg-surface-container space-y-2">
-                <div className="text-[10px] font-mono uppercase text-status-warning-amber font-bold flex items-center justify-between">
-                  <span>Simulated Authority Officers</span>
-                  <span className="px-1.5 py-0.5 border border-status-warning-amber bg-status-warning-amber/10 text-status-warning-amber font-bold">DEMO ONLY</span>
+                <div className="text-[10px] font-mono uppercase text-ink-secondary font-bold flex items-center justify-between">
+                  <span>Simulated City Corporation Officers (One-Click Log In)</span>
+                  <span className="text-[9px] text-accent-electric-cyan font-mono">Instant Session</span>
                 </div>
-                <div className="grid grid-cols-2 gap-1.5">
+                <div className="grid grid-cols-2 gap-2">
                   {[
                     { code: 'officer.ccc', label: 'CCC (Chattogram)', auth: 'AUTH-CCC' },
                     { code: 'officer.dncc', label: 'DNCC (Dhaka N)', auth: 'AUTH-DNCC' },
@@ -348,9 +456,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       key={item.code}
                       type="button"
                       onClick={() => onDemoOfficerLogin ? onDemoOfficerLogin(item.code) : setForm({...form, email: item.code})}
-                      className="rounded border-2 border-border-black bg-surface-clean p-2 text-left text-[11px] text-ink-primary hover:bg-primary-container hover:text-on-primary-container shadow-[1px_1px_0px_var(--shadow-color)] transition-all cursor-pointer"
+                      className="rounded border-2 border-border-black bg-surface-clean p-2 text-left text-[11px] text-ink-primary hover:bg-primary-container hover:text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer"
                     >
-                      <div className="font-bold truncate">{item.label}</div>
+                      <div className="font-bold truncate text-xs">{item.label}</div>
                       <div className="font-mono text-[10px] text-ink-secondary">{item.code}</div>
                     </button>
                   ))}
@@ -358,24 +466,6 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               </div>
             </div>
           )}
-          <input type={allowRegister?'email':'text'} value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder={allowRegister ? 'Email address' : 'Admin username'} autoComplete="username" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
-          <div className="relative">
-            <input type={showPassword?'text':'password'} value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Password" autoComplete={mode==='register'?'new-password':'current-password'} onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className="w-full glass-input rounded-lg p-3 pr-16 text-sm focus:outline-none"/>
-            <button type="button" onClick={()=>setShowPassword(value=>!value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono text-ink-secondary hover:text-accent-electric-cyan cursor-pointer">{showPassword?'Hide':'Show'}</button>
-          </div>
-          {registering && (
-            <>
-              <input type={showPassword?'text':'password'} value={form.confirmPassword} onChange={e=>setForm({...form,confirmPassword:e.target.value})} placeholder="Confirm password" autoComplete="new-password" onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className={`w-full glass-input rounded-lg p-3 text-sm focus:outline-none ${form.confirmPassword && !passwordsMatch?'border-red-500':'border-border-black'}`}/>
-              <div className="flex justify-between text-[10px] font-mono px-1">
-                <span className={passwordValid?'text-status-live-green':'text-ink-subtle'}>{passwordValid?'✓ 8+ chars':'Min 8 characters'}</span>
-                {form.confirmPassword && <span className={passwordsMatch?'text-status-live-green':'text-red-400'}>{passwordsMatch?'✓ Passwords match':'Passwords do not match'}</span>}
-              </div>
-            </>
-          )}
-          {error && <div role="alert" className="rounded-lg border-2 border-red-500 bg-transparent p-3 text-xs text-red-400 flex items-center gap-2"><Icon name="alert-circle" className="w-4 h-4 text-red-400 shrink-0"/><span>{error}</span></div>}
-          <button onClick={()=>submit()} disabled={!canSubmit} className="w-full py-3.5 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-40 text-sm transition-all cursor-pointer">
-            {busy?'Authenticating…':mode==='register'?'Create account':'Sign in'}
-          </button>
         </div>
       );
     }
@@ -1106,9 +1196,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 <button 
                   onClick={() => setActiveTab('admin')}
                   aria-label="Authority Portal"
-                  className="px-3.5 py-2 font-mono text-xs font-bold border-2 border-border-black bg-surface-clean hover:bg-primary-container hover:text-on-primary-container text-ink-primary shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center gap-2 cursor-pointer"
+                  className={`px-3.5 py-2 font-mono text-xs font-bold border-2 border-border-black transition-all flex items-center gap-2 cursor-pointer shadow-[2px_2px_0px_var(--shadow-color)] ${
+                    activeTab === 'admin'
+                      ? 'bg-primary-container text-on-primary-container font-black'
+                      : 'bg-surface-clean hover:bg-primary-container hover:text-on-primary-container text-ink-primary'
+                  }`}
                 >
-                  <Icon name="shield-alert" className="w-4 h-4 text-accent-electric-cyan" />
+                  <Icon name="shield-alert" className={`w-4 h-4 ${activeTab === 'admin' ? 'text-on-primary-container' : 'text-accent-electric-cyan'}`} />
                   <span className="hidden sm:inline">Authority Portal</span>
                 </button>
               </div>
@@ -2643,32 +2737,54 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   )}
                 </div>
               ) : (
-                <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-8 reveal-up">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 reveal-up">
                   {/* COMMAND HEADER */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 rounded-lg shadow-xl">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div className="text-xs text-accent-electric-cyan font-semibold">Municipal operations</div>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
-                          DEMO / SIMULATED ENVIRONMENT
-                        </span>
-                        {authUser?.role === 'officer' && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container border-2 border-border-black text-ink-secondary">
-                            Authority Scoped ({authUser.authority_id})
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] p-6 sm:p-8 rounded-lg space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-border-black/30 pb-6">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-container border border-border-black font-mono text-[10px] uppercase font-bold text-ink-primary shadow-[1px_1px_0px_var(--shadow-color)]">
+                            <span className="w-2 h-2 rounded-full bg-status-live-green shadow-[0_0_8px_#10B981]"></span>
+                            <span>MUNICIPAL OPERATIONS GATE</span>
+                          </div>
+                          {authUser?.role === 'officer' && (
+                            <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded border border-border-black bg-primary-container text-on-primary-container uppercase shadow-[1px_1px_0px_var(--shadow-color)]">
+                              Authority Scoped: {authUser.authority_id}
+                            </span>
+                          )}
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-status-warning-amber bg-status-warning-amber/10 text-status-warning-amber font-bold uppercase">
+                            CIVIC CADASTRE
                           </span>
-                        )}
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl font-black font-headline text-ink-primary uppercase tracking-tight">
+                          {authUser?.role === 'officer' ? `${authUser.name} Operations Hub` : 'Authority Command Dashboard'}
+                        </h1>
+                        <p className="text-xs sm:text-sm text-ink-secondary mt-1">
+                          {authUser?.role === 'officer'
+                            ? `Active Jurisdictional Officer · ${authUser.department || 'Road & Civil Infrastructure Maintenance'}`
+                            : 'Executive dispatch console: review priority incidents, verify completion proofs, and audit municipal SLAs.'}
+                        </p>
                       </div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-ink-primary mt-1 tracking-tight">
-                        {authUser?.role === 'officer' ? `${authUser.name} Workspace` : 'Authority dashboard'}
-                      </h1>
-                      <p className="text-sm text-ink-secondary mt-1">
-                        {authUser?.role === 'officer'
-                          ? `Simulated Officer Scoped to ${authUser.authority_id} · ${authUser.department || 'Department Operations'}`
-                          : 'Review priority cases, approve evidence, and manage assignments.'}
-                      </p>
+
+                      {/* Active Officer Status & Prominent Log Out */}
+                      <div className="flex items-center gap-3 shrink-0 self-start md:self-center">
+                        <div className="hidden sm:flex flex-col text-right">
+                          <span className="font-mono text-[9px] uppercase tracking-wider text-ink-subtle">Authenticated As</span>
+                          <span className="font-mono text-xs font-bold text-ink-primary">{authUser?.name || authUser?.email}</span>
+                        </div>
+                        <button 
+                          onClick={logout} 
+                          title="Sign out of authority session"
+                          className="px-3.5 py-2 border-2 border-border-black bg-surface-container hover:bg-red-500 hover:text-white text-ink-primary font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Icon name="log-out" className="w-3.5 h-3.5" />
+                          <span>Log Out</span>
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    {/* SUB-NAVIGATION TAB RIBBON */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                       {[
                         ['queue', 'list-filter', 'Work Queue'],
                         ['review', 'user-check', `Human Review (${reports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
@@ -2681,10 +2797,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <button
                           key={id}
                           onClick={() => setAdminView(id)}
-                          className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${adminView === id
-                              ? 'bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]'
-                              : 'bg-surface-container border-2 border-border-black text-ink-secondary hover:text-ink-primary'
-                            }`}
+                          className={`px-4 py-2 rounded font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                            adminView === id
+                              ? 'bg-primary-container text-on-primary-container font-black border-border-black shadow-[2px_2px_0px_var(--shadow-color)]'
+                              : 'bg-surface-clean border-border-black text-ink-secondary hover:text-ink-primary hover:bg-surface-container shadow-[2px_2px_0px_var(--shadow-color)]'
+                          }`}
                         >
                           <Icon name={icon} className="w-3.5 h-3.5" />
                           <span>{label}</span>
@@ -2701,12 +2818,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       { label: 'SLA Overdue', val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length, alert: true, icon: 'clock' },
                       { label: 'Active Work', val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length, alert: false, icon: 'inbox' }
                     ].map((kpi, idx) => (
-                      <div key={idx} className={`bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 border transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500 bg-transparent' : 'border-border-black'}`}>
+                      <div key={idx} className={`bg-surface-clean border-2 shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500 bg-red-500/10' : 'border-border-black'}`}>
                         <div className="flex items-center justify-between text-ink-secondary">
-                          <span className="text-xs font-semibold">{kpi.label}</span>
+                          <span className="text-xs font-mono font-bold uppercase">{kpi.label}</span>
                           <Icon name={kpi.icon} className={`w-4 h-4 ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-accent-electric-cyan'}`} />
                         </div>
-                        <div className={`text-3xl font-bold mt-2 tracking-tight ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-ink-primary'}`}>
+                        <div className={`text-3xl font-black font-mono mt-2 tracking-tight ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-ink-primary'}`}>
                           {kpi.val}
                         </div>
                       </div>
@@ -2715,12 +2832,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                   {/* AI GOVERNANCE INSIGHT */}
                   {dashboard?.insight && (
-                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] bg-surface-container rounded-lg p-5 flex items-start gap-3.5 shadow-lg">
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 flex items-start gap-3.5">
                       <div className="w-9 h-9 rounded-lg bg-surface-container border border-border-black flex items-center justify-center text-accent-electric-cyan shrink-0">
                         <Icon name="sparkles" className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-accent-electric-cyan">Suggested priority summary</div>
+                        <div className="text-xs font-mono font-bold uppercase text-accent-electric-cyan">Suggested Priority Summary</div>
                         <p className="text-xs sm:text-sm text-ink-primary mt-1 leading-relaxed">{dashboard.insight}</p>
                       </div>
                     </div>
@@ -2728,13 +2845,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                   {/* QUEUE FILTERS */}
                   {['queue', 'map', 'review', 'proofs'].includes(adminView) && (
-                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 sm:p-6 space-y-4 shadow-xl">
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] rounded-lg p-5 sm:p-6 space-y-4">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <h2 className="text-sm font-semibold text-ink-primary">Find and filter cases</h2>
+                          <h2 className="text-sm font-black font-headline uppercase text-ink-primary">Find and filter cases</h2>
                           <p className="text-xs text-ink-secondary mt-0.5">Showing {filteredAdminReports.length} of {reports.length} municipal incidents</p>
                         </div>
-                        <button onClick={resetQueueFilters} className="text-xs text-accent-electric-cyan hover:text-accent-electric-cyan font-mono font-semibold underline underline-offset-4">
+                        <button onClick={resetQueueFilters} className="text-xs text-accent-electric-cyan hover:underline font-mono font-bold uppercase cursor-pointer">
                           Reset All Filters
                         </button>
                       </div>
@@ -2773,7 +2890,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       </div>
 
                       <div className="flex items-center gap-2 text-xs font-mono">
-                        <span className="text-ink-secondary">Sort by:</span>
+                        <span className="text-ink-secondary font-bold uppercase">Sort:</span>
                         {[
                           ['priority', 'Highest Priority'],
                           ['oldest', 'Oldest First'],
@@ -2782,8 +2899,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           <button
                             key={value}
                             onClick={() => setQueueFilters({ ...queueFilters, sort: value })}
-                            className={`px-3 py-1 rounded-lg border text-[11px] font-bold transition-all ${queueFilters.sort === value ? 'border-border-black bg-primary-container/20 text-accent-electric-cyan' : 'border-border-black text-ink-secondary hover:text-ink-primary'
-                              }`}
+                            className={`px-3 py-1.5 rounded border-2 text-[11px] font-mono font-bold uppercase transition-all cursor-pointer ${
+                              queueFilters.sort === value
+                                ? 'border-border-black bg-primary-container text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)]'
+                                : 'border-border-black bg-surface-clean text-ink-secondary hover:text-ink-primary shadow-[1px_1px_0px_var(--shadow-color)]'
+                            }`}
                           >
                             {label}
                           </button>
@@ -3289,24 +3409,24 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                   <div className="flex justify-end gap-2">
                                     {((item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review') && (
                                       authUser?.role === 'admin' ? (
-                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-lg bg-status-warning-amber border border-status-warning-amber text-status-warning-amber font-semibold text-xs">Review AI</button>
+                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded bg-status-warning-amber border-2 border-border-black text-black font-mono font-bold uppercase text-xs shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-none transition-all cursor-pointer">Review AI</button>
                                       ) : (
-                                        <span className="px-2.5 py-1 rounded-lg bg-surface-container border-2 border-border-black text-ink-subtle text-[10px] font-mono">Admin Review</span>
+                                        <span className="px-2.5 py-1 rounded bg-surface-container border-2 border-border-black text-ink-subtle text-[10px] font-mono font-bold uppercase">Admin Review</span>
                                       )
                                     )}
                                     {item.status === 'Reopened - Needs Review' && (
-                                      <span className="px-2.5 py-1 rounded-lg bg-status-warning-amber/10 border-2 border-status-warning-amber text-status-warning-amber text-[10px] font-mono">Disputed</span>
+                                      <span className="px-2.5 py-1 rounded bg-status-warning-amber/20 border-2 border-status-warning-amber text-status-warning-amber text-[10px] font-mono font-bold uppercase">Disputed</span>
                                     )}
                                     <button
                                       disabled={!nextOperationalStatus(item) || (item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review'}
                                       onClick={() => nextOperationalStatus(item) && updateStatus(item, nextOperationalStatus(item))}
-                                      className="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-primary-container/20 border border-border-black disabled:opacity-30 text-accent-electric-cyan font-semibold text-xs transition-all"
+                                      className="px-3 py-1.5 rounded bg-primary-container/20 hover:bg-primary-container hover:text-on-primary-container border-2 border-border-black disabled:opacity-30 text-accent-electric-cyan font-mono font-bold uppercase text-xs transition-all shadow-[2px_2px_0px_var(--shadow-color)] cursor-pointer"
                                     >
                                       {nextOperationalStatus(item) ? `→ ${nextOperationalStatus(item)}` : 'Await proof'}
                                     </button>
                                     <button
                                       onClick={() => inspectIncident(item)}
-                                      className="px-3.5 py-1.5 rounded-lg bg-surface-container border-2 border-border-black hover:border-border-black text-ink-primary font-semibold text-xs transition-all shadow-sm"
+                                      className="px-3.5 py-1.5 rounded bg-surface-container border-2 border-border-black hover:bg-surface-clean text-ink-primary font-mono font-bold uppercase text-xs transition-all shadow-[2px_2px_0px_var(--shadow-color)] cursor-pointer"
                                     >
                                       Workspace
                                     </button>
