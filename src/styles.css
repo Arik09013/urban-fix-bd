@@ -242,7 +242,7 @@ select:focus-visible {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #38bdf8;
+  background: var(--accent-electric-cyan);
   box-shadow: none;
   pointer-events: none;
   z-index: 25;
@@ -255,14 +255,14 @@ select:focus-visible {
   transform: translate(-50%, -50%);
   width: 36px;
   height: 36px;
-  border-radius: 9999px;
-  background: #0ea5e9;
-  border: 3px solid #ffffff;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+  border-radius: 4px;
+  background: var(--primary-container);
+  border: 2px solid var(--border-black);
+  box-shadow: 2px 2px 0px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--on-primary-container);
   pointer-events: none;
   z-index: 30;
 }

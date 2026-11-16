@@ -30,20 +30,53 @@ export default function ReviewDialog({ report, onClose, onConfirm, busy }) {
   if (!report) return null;
   const valid = form.category && form.severity && form.department.trim() && form.reason.trim().length >= 3;
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-950/70 p-4" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
-      <section ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="review-title" aria-describedby="review-description" className="glass-panel w-full max-w-xl rounded-2xl border border-slate-700 p-6">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/75 p-4" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
+      <section ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="review-title" aria-describedby="review-description" className="w-full max-w-xl bg-surface-clean border-2 border-border-black shadow-[6px_6px_0px_var(--shadow-color)] rounded-lg p-6">
         <div className="flex items-start justify-between gap-4">
-          <div><div className="text-xs font-semibold text-sky-400">Human review · {report.id}</div><h2 id="review-title" className="mt-1 text-xl font-bold text-white">Confirm routing decision</h2></div>
-          <button onClick={onClose} aria-label="Close review" className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"><Icon name="x" className="h-4 w-4" /></button>
+          <div>
+            <div className="text-xs font-mono font-bold uppercase text-accent-electric-cyan">Human review · {report.id}</div>
+            <h2 id="review-title" className="mt-1 text-xl font-headline font-black text-ink-primary">Confirm routing decision</h2>
+          </div>
+          <button onClick={onClose} aria-label="Close review" className="border-2 border-border-black bg-surface-clean text-ink-primary hover:bg-surface-container shadow-[2px_2px_0px_var(--shadow-color)] p-1.5 transition-colors cursor-pointer">
+            <Icon name="x" className="h-4 w-4" />
+          </button>
         </div>
-        <p id="review-description" className="mt-3 text-sm leading-6 text-slate-400">Review the evidence and correct the AI recommendation before this case can be assigned.</p>
+        <p id="review-description" className="mt-3 text-sm leading-6 text-ink-secondary">Review the evidence and correct the AI recommendation before this case can be assigned.</p>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <label className="text-xs font-semibold text-slate-300">Category<select value={form.category} onChange={e => setForm({...form, category:e.target.value})} className="glass-input mt-2 w-full rounded-xl p-3 text-sm"><option>Road Infrastructure</option><option>Waste Management</option><option>Water Supply</option><option>Drainage / Sewerage</option><option>Street Lighting</option><option>Public Infrastructure</option><option>Other</option></select></label>
-          <label className="text-xs font-semibold text-slate-300">Severity<select value={form.severity} onChange={e => setForm({...form, severity:e.target.value})} className="glass-input mt-2 w-full rounded-xl p-3 text-sm"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></label>
-          <label className="sm:col-span-2 text-xs font-semibold text-slate-300">Department<input value={form.department} onChange={e => setForm({...form, department:e.target.value})} className="glass-input mt-2 w-full rounded-xl p-3 text-sm" placeholder="Responsible department" /></label>
-          <label className="sm:col-span-2 text-xs font-semibold text-slate-300">Decision note<textarea value={form.reason} onChange={e => setForm({...form, reason:e.target.value})} rows="3" className="glass-input mt-2 w-full resize-none rounded-xl p-3 text-sm" placeholder="Explain what was checked or corrected" /></label>
+          <label className="text-xs font-mono font-bold uppercase text-ink-secondary">Category
+            <select value={form.category} onChange={e => setForm({...form, category:e.target.value})} className="glass-input mt-2 w-full rounded-lg p-3 text-sm text-ink-primary bg-surface-clean border-2 border-border-black">
+              <option>Road Infrastructure</option>
+              <option>Waste Management</option>
+              <option>Water Supply</option>
+              <option>Drainage / Sewerage</option>
+              <option>Street Lighting</option>
+              <option>Public Infrastructure</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label className="text-xs font-mono font-bold uppercase text-ink-secondary">Severity
+            <select value={form.severity} onChange={e => setForm({...form, severity:e.target.value})} className="glass-input mt-2 w-full rounded-lg p-3 text-sm text-ink-primary bg-surface-clean border-2 border-border-black">
+              <option>Critical</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+          </label>
+          <label className="sm:col-span-2 text-xs font-mono font-bold uppercase text-ink-secondary">Department
+            <input value={form.department} onChange={e => setForm({...form, department:e.target.value})} className="glass-input mt-2 w-full rounded-lg p-3 text-sm text-ink-primary bg-surface-clean border-2 border-border-black" placeholder="Responsible department" />
+          </label>
+          <label className="sm:col-span-2 text-xs font-mono font-bold uppercase text-ink-secondary">Decision note
+            <textarea value={form.reason} onChange={e => setForm({...form, reason:e.target.value})} rows="3" className="glass-input mt-2 w-full resize-none rounded-lg p-3 text-sm text-ink-primary bg-surface-clean border-2 border-border-black" placeholder="Explain what was checked or corrected" />
+          </label>
         </div>
-        <div className="mt-6 flex justify-end gap-2"><button onClick={onClose} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-300">Cancel</button><button disabled={!valid || busy} onClick={() => onConfirm(form)} className="rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-slate-950 disabled:opacity-40">{busy ? 'Saving…' : 'Confirm review'}</button></div>
+        <div className="mt-6 flex justify-end gap-3">
+          <button onClick={onClose} className="rounded-lg border-2 border-border-black bg-surface-clean px-4 py-2.5 text-sm font-mono font-bold text-ink-primary hover:bg-surface-container shadow-[2px_2px_0px_var(--shadow-color)] transition-all cursor-pointer">
+            Cancel
+          </button>
+          <button disabled={!valid || busy} onClick={() => onConfirm(form)} className="rounded-lg bg-primary-container text-on-primary-container border-2 border-border-black px-5 py-2.5 text-sm font-mono font-bold uppercase shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-40 cursor-pointer">
+            {busy ? 'Saving…' : 'Confirm review'}
+          </button>
+        </div>
       </section>
     </div>
   );

@@ -302,40 +302,40 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
       const passwordsMatch = !registering || form.password === form.confirmPassword;
       const canSubmit = !busy && emailValid && passwordValid && (!registering || (form.name.trim().length >= 2 && passwordsMatch));
       return (
-        <div className="max-w-md mx-auto glass-panel border border-slate-700/70 rounded-2xl p-6 sm:p-8 space-y-5">
+        <div className="max-w-md mx-auto bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-8 space-y-5">
           <div className="text-center sm:text-left">
-            <div className="text-xs font-semibold text-sky-400 mb-2">
-              SECURE PORTAL
+            <div className="text-xs font-mono font-bold uppercase text-accent-electric-cyan mb-2">
+              // SECURE PORTAL
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{title}</h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">{subtitle}</p>
+            <h2 className="text-xl sm:text-2xl font-black font-headline text-ink-primary tracking-tight">{title}</h2>
+            <p className="text-xs text-ink-secondary mt-1 leading-relaxed">{subtitle}</p>
           </div>
           {allowRegister && (
-            <div className="grid grid-cols-2 bg-slate-950/80 border border-slate-800/80 rounded-xl p-1 shadow-inner">
-              <button onClick={()=>setMode('login')} className={`py-2 rounded-lg text-xs font-semibold transition-all ${mode==='login'?'bg-sky-500 text-slate-950 shadow-md':'text-slate-400 hover:text-slate-200'}`}>Login</button>
-              <button onClick={()=>setMode('register')} className={`py-2 rounded-lg text-xs font-semibold transition-all ${mode==='register'?'bg-sky-500 text-slate-950 shadow-md':'text-slate-400 hover:text-slate-200'}`}>Register</button>
+            <div className="grid grid-cols-2 bg-surface-container border-2 border-border-black rounded-lg p-1">
+              <button onClick={()=>setMode('login')} className={`py-2 rounded text-xs font-mono font-bold uppercase transition-all cursor-pointer ${mode==='login'?'bg-primary-container text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)]':'text-ink-secondary hover:text-ink-primary'}`}>Login</button>
+              <button onClick={()=>setMode('register')} className={`py-2 rounded text-xs font-mono font-bold uppercase transition-all cursor-pointer ${mode==='register'?'bg-primary-container text-on-primary-container shadow-[2px_2px_0px_var(--shadow-color)]':'text-ink-secondary hover:text-ink-primary'}`}>Register</button>
             </div>
           )}
           {allowRegister && mode==='register' && (
             <>
-              <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name" autoComplete="name" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
-              <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone number (optional)" autoComplete="tel" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
-              <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder="Stripe Connect account for payments (acct_…)" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
+              <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Full name" autoComplete="name" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
+              <input value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="Phone number (optional)" autoComplete="tel" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
+              <input value={form.payoutAccount || ''} onChange={e=>setForm({...form,payoutAccount:e.target.value})} placeholder="Stripe Connect account for payments (acct_…)" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
             </>
           )}
           {demoCredentials && (
             <div className="space-y-2.5">
-              <button type="button" onClick={() => setForm({...form, email:'admin', password:'admin'})} className="w-full rounded-xl border border-sky-500/30 bg-sky-500/10 p-3 text-left text-xs text-sky-300 hover:bg-sky-500/20 transition-colors">
+              <button type="button" onClick={() => setForm({...form, email:'admin', password:'admin'})} className="w-full rounded-lg border-2 border-border-black bg-surface-container p-3 text-left text-xs text-ink-primary hover:bg-surface-clean shadow-[2px_2px_0px_var(--shadow-color)] transition-all cursor-pointer">
                 <div className="flex items-center justify-between">
                   <span className="font-bold">Judge demo access (Administrator)</span>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold">Admin</span>
+                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 border border-border-black bg-primary-container text-on-primary-container font-bold">Admin</span>
                 </div>
-                <span className="font-mono text-[11px] text-slate-400">Username: admin · Global access</span>
+                <span className="font-mono text-[11px] text-ink-secondary">Username: admin · Global access</span>
               </button>
-              <div className="p-3 rounded-xl border border-amber-500/20 bg-amber-500/5 space-y-2">
-                <div className="text-[10px] font-mono uppercase text-amber-300 font-bold flex items-center justify-between">
+              <div className="p-3 rounded-lg border-2 border-border-black bg-surface-container space-y-2">
+                <div className="text-[10px] font-mono uppercase text-status-warning-amber font-bold flex items-center justify-between">
                   <span>Simulated Authority Officers</span>
-                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200">DEMO ONLY</span>
+                  <span className="px-1.5 py-0.5 border border-status-warning-amber bg-status-warning-amber/10 text-status-warning-amber font-bold">DEMO ONLY</span>
                 </div>
                 <div className="grid grid-cols-2 gap-1.5">
                   {[
@@ -348,32 +348,32 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       key={item.code}
                       type="button"
                       onClick={() => onDemoOfficerLogin ? onDemoOfficerLogin(item.code) : setForm({...form, email: item.code})}
-                      className="rounded-lg border border-slate-700/80 bg-slate-900/90 p-2 text-left text-[11px] text-slate-300 hover:border-sky-500/50 hover:bg-slate-800 transition-colors"
+                      className="rounded border-2 border-border-black bg-surface-clean p-2 text-left text-[11px] text-ink-primary hover:bg-primary-container hover:text-on-primary-container shadow-[1px_1px_0px_var(--shadow-color)] transition-all cursor-pointer"
                     >
-                      <div className="font-bold text-sky-300 truncate">{item.label}</div>
-                      <div className="font-mono text-[10px] text-slate-400">{item.code}</div>
+                      <div className="font-bold truncate">{item.label}</div>
+                      <div className="font-mono text-[10px] text-ink-secondary">{item.code}</div>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
           )}
-          <input type={allowRegister?'email':'text'} value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder={allowRegister ? 'Email address' : 'Admin username'} autoComplete="username" className="w-full glass-input rounded-xl p-3 text-sm focus:outline-none"/>
+          <input type={allowRegister?'email':'text'} value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder={allowRegister ? 'Email address' : 'Admin username'} autoComplete="username" className="w-full glass-input rounded-lg p-3 text-sm focus:outline-none"/>
           <div className="relative">
-            <input type={showPassword?'text':'password'} value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Password" autoComplete={mode==='register'?'new-password':'current-password'} onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className="w-full glass-input rounded-xl p-3 pr-16 text-sm focus:outline-none"/>
-            <button type="button" onClick={()=>setShowPassword(value=>!value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono text-slate-400 hover:text-sky-400">{showPassword?'Hide':'Show'}</button>
+            <input type={showPassword?'text':'password'} value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Password" autoComplete={mode==='register'?'new-password':'current-password'} onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className="w-full glass-input rounded-lg p-3 pr-16 text-sm focus:outline-none"/>
+            <button type="button" onClick={()=>setShowPassword(value=>!value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono text-ink-secondary hover:text-accent-electric-cyan cursor-pointer">{showPassword?'Hide':'Show'}</button>
           </div>
           {registering && (
             <>
-              <input type={showPassword?'text':'password'} value={form.confirmPassword} onChange={e=>setForm({...form,confirmPassword:e.target.value})} placeholder="Confirm password" autoComplete="new-password" onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className={`w-full glass-input rounded-xl p-3 text-sm focus:outline-none ${form.confirmPassword && !passwordsMatch?'border-red-500/60':'border-slate-800'}`}/>
+              <input type={showPassword?'text':'password'} value={form.confirmPassword} onChange={e=>setForm({...form,confirmPassword:e.target.value})} placeholder="Confirm password" autoComplete="new-password" onKeyDown={e=>e.key==='Enter'&&canSubmit&&submit()} className={`w-full glass-input rounded-lg p-3 text-sm focus:outline-none ${form.confirmPassword && !passwordsMatch?'border-red-500':'border-border-black'}`}/>
               <div className="flex justify-between text-[10px] font-mono px-1">
-                <span className={passwordValid?'text-emerald-400':'text-slate-500'}>{passwordValid?'✓ 8+ chars':'Min 8 characters'}</span>
-                {form.confirmPassword && <span className={passwordsMatch?'text-emerald-400':'text-red-400'}>{passwordsMatch?'✓ Passwords match':'Passwords do not match'}</span>}
+                <span className={passwordValid?'text-status-live-green':'text-ink-subtle'}>{passwordValid?'✓ 8+ chars':'Min 8 characters'}</span>
+                {form.confirmPassword && <span className={passwordsMatch?'text-status-live-green':'text-red-400'}>{passwordsMatch?'✓ Passwords match':'Passwords do not match'}</span>}
               </div>
             </>
           )}
-          {error && <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300 flex items-center gap-2"><Icon name="alert-circle" className="w-4 h-4 text-red-400 shrink-0"/><span>{error}</span></div>}
-          <button onClick={()=>submit()} disabled={!canSubmit} className="w-full py-3.5 rounded-xl bg-sky-400 hover:bg-sky-300 disabled:opacity-40 text-slate-950 font-bold text-sm transition-colors">
+          {error && <div role="alert" className="rounded-lg border-2 border-red-500 bg-transparent p-3 text-xs text-red-400 flex items-center gap-2"><Icon name="alert-circle" className="w-4 h-4 text-red-400 shrink-0"/><span>{error}</span></div>}
+          <button onClick={()=>submit()} disabled={!canSubmit} className="w-full py-3.5 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-40 text-sm transition-all cursor-pointer">
             {busy?'Authenticating…':mode==='register'?'Create account':'Sign in'}
           </button>
         </div>
@@ -1490,10 +1490,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {activeTab === 'report' && (
               <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14">
                 {/* STEPPER HEADER */}
-                <div className="mb-8 border-b border-slate-800 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="mb-8 border-b-2 border-border-black/30 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Report a Civic Problem</h1>
-                    <p className="text-sm text-slate-400 mt-1">Add a photo, location, and a short description.</p>
+                    <h1 className="text-xl sm:text-2xl font-extrabold text-ink-primary tracking-tight">Report a Civic Problem</h1>
+                    <p className="text-sm text-ink-secondary mt-1">Add a photo, location, and a short description.</p>
                   </div>
                   <div className="flex items-center gap-2 text-xs font-mono">
                     {[
@@ -1502,14 +1502,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       { step: 3, label: 'Done' }
                     ].map((s, idx) => (
                       <React.Fragment key={s.step}>
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${
                           reportStep === s.step 
-                            ? 'bg-sky-500/20 border-sky-500/50 text-sky-300 font-bold'
+                            ? 'bg-primary-container/20 border-border-black text-accent-electric-cyan font-bold'
                             : reportStep > s.step 
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 font-semibold' 
-                            : 'bg-slate-900/60 border-slate-800 text-slate-500'
+                            ? 'bg-status-live-green/10 border-status-live-green text-status-live-green font-semibold' 
+                            : 'bg-surface-container border-border-black text-ink-subtle'
                         }`}>
-                          <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] bg-slate-950 font-mono">
+                          <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] bg-surface font-mono">
                             {reportStep > s.step ? '✓' : s.step}
                           </span>
                           <span className="hidden sm:inline">{s.label}</span>
@@ -1522,19 +1522,19 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                 {/* STEP 1: PHOTO EVIDENCE INTAKE */}
                 {reportStep === 1 && (
-                  <div className="glass-panel border border-slate-800 rounded-2xl p-5 sm:p-8 text-center reveal-up">
-                    <div className="border-2 border-dashed border-slate-700 hover:border-sky-500 rounded-xl p-8 sm:p-12 transition-colors flex flex-col items-center justify-center space-y-5">
-                      <Icon name="camera" className="w-10 h-10 text-sky-400" />
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 sm:p-8 text-center reveal-up">
+                    <div className="border-2 border-dashed border-border-black hover:border-border-black rounded-lg p-8 sm:p-12 transition-colors flex flex-col items-center justify-center space-y-5">
+                      <Icon name="camera" className="w-10 h-10 text-accent-electric-cyan" />
                       <div className="max-w-md">
-                        <h3 className="text-xl font-bold text-white tracking-tight">Add a photo of the problem</h3>
-                        <p className="text-sm text-slate-400 mt-2 leading-relaxed">
+                        <h3 className="text-xl font-bold text-ink-primary tracking-tight">Add a photo of the problem</h3>
+                        <p className="text-sm text-ink-secondary mt-2 leading-relaxed">
                           A clear photo helps the responsible team understand what needs fixing.
                         </p>
                       </div>
                       
                       <div className="flex flex-col items-center gap-3 w-full sm:w-auto">
-                        <label className="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-lg bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-sm transition-colors flex items-center justify-center gap-2">
-                          <Icon name="upload-cloud" className="w-4 h-4 text-slate-950" />
+                        <label className="cursor-pointer w-full sm:w-auto px-8 py-3.5 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center justify-center gap-2">
+                          <Icon name="upload-cloud" className="w-4 h-4 text-on-primary-container" />
                           <span>{isAnalyzing ? 'Checking photo…' : 'Select or Take Photo'}</span>
                           <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handlePhotoUpload} disabled={isAnalyzing} className="hidden" />
                         </label>
@@ -1548,13 +1548,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             setAnalysisComplete(true);
                             setReportStep(2);
                           }} 
-                          className="text-xs text-slate-400 hover:text-sky-400 underline underline-offset-4 transition-colors"
+                          className="text-xs text-ink-secondary hover:text-accent-electric-cyan underline underline-offset-4 transition-colors"
                         >
                           I cannot add a photo
                         </button>
                       </div>
 
-                      <div className="text-xs text-slate-500 pt-2">
+                      <div className="text-xs text-ink-subtle pt-2">
                         JPEG, PNG or WebP · Up to 4 MB
                       </div>
                     </div>
@@ -1564,24 +1564,24 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                 {/* STEP 2: REPORT DETAILS */}
                 {reportStep === 2 && (
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-7 shadow-2xl reveal-up">
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-8 space-y-7 shadow-2xl reveal-up">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                       {/* EVIDENCE PREVIEW / SCANNER */}
                       <div>
-                        <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
+                        <div className="flex items-center justify-between text-xs font-mono text-ink-secondary mb-2">
                           <span>Photo preview</span>
-                          {uploadedImage && <span className="text-emerald-400">● Usable photo</span>}
+                          {uploadedImage && <span className="text-status-live-green">● Usable photo</span>}
                         </div>
                         {uploadedImage ? (
-                          <div className="ai-laser-container relative w-full h-64 rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950">
+                          <div className="ai-laser-container relative w-full h-64 rounded-lg overflow-hidden border-2 border-border-black bg-surface">
                             <img src={uploadedImage} alt="Report preview" className="w-full h-full object-cover" />
                             {isAnalyzing && (
                               <>
                                 <div className="ai-laser-beam"></div>
                                 <div className="ai-laser-grid"></div>
-                                <div className="absolute bottom-3 inset-x-3 z-30 bg-slate-950/90 backdrop-blur-md border border-sky-500/40 rounded-xl p-2.5 text-center shadow-lg">
-                                  <div className="text-xs font-bold text-sky-300 flex items-center justify-center gap-2">
-                                    <Icon name="scan" className="w-4 h-4 text-sky-400 animate-spin" />
+                                <div className="absolute bottom-3 inset-x-3 z-30 bg-surface backdrop-blur-md border border-border-black rounded-lg p-2.5 text-center shadow-lg">
+                                  <div className="text-xs font-bold text-accent-electric-cyan flex items-center justify-center gap-2">
+                                    <Icon name="scan" className="w-4 h-4 text-accent-electric-cyan animate-spin" />
                                     Checking photo…
                                   </div>
                                 </div>
@@ -1589,10 +1589,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             )}
                           </div>
                         ) : (
-                          <div className="w-full h-64 rounded-2xl border-2 border-dashed border-slate-800 flex flex-col items-center justify-center text-xs text-slate-500 bg-slate-950/40 p-6 text-center">
-                            <Icon name="image-off" className="w-8 h-8 text-slate-600 mb-2" />
+                          <div className="w-full h-64 rounded-lg border-2 border-dashed border-border-black flex flex-col items-center justify-center text-xs text-ink-subtle bg-surface-container p-6 text-center">
+                            <Icon name="image-off" className="w-8 h-8 text-ink-subtle mb-2" />
                             <span>No photo supplied</span>
-                            <span className="text-[10px] text-slate-600 mt-1">Incident will be logged for authority inspection</span>
+                            <span className="text-[10px] text-ink-subtle mt-1">Incident will be logged for authority inspection</span>
                           </div>
                         )}
                       </div>
@@ -1600,23 +1600,23 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       {/* AI ASSESSMENT SIGNALS */}
                       <div className="flex flex-col justify-between space-y-4">
                         {isAnalyzing ? (
-                          <div className="h-64 flex flex-col items-center justify-center space-y-4 py-8 glass-card rounded-2xl border border-sky-500/20">
-                            <Icon name="scan" className="w-8 h-8 text-sky-400 animate-spin" />
+                          <div className="h-64 flex flex-col items-center justify-center space-y-4 py-8 bg-surface-container border-2 border-border-black rounded-lg border border-border-black">
+                            <Icon name="scan" className="w-8 h-8 text-accent-electric-cyan animate-spin" />
                             <div className="text-center px-4">
-                              <div className="text-sm font-bold text-white">Checking your photo</div>
-                              <div className="text-xs text-slate-400 mt-1">We are identifying the type of problem.</div>
+                              <div className="text-sm font-bold text-ink-primary">Checking your photo</div>
+                              <div className="text-xs text-ink-secondary mt-1">We are identifying the type of problem.</div>
                             </div>
                           </div>
                         ) : (
                           <div className="space-y-3.5">
-                            <div className="border-b border-slate-800 pb-4">
+                            <div className="border-b-2 border-border-black/30 pb-4">
                               <div className="flex flex-wrap items-center justify-between gap-2">
                                 <div>
-                                  <div className="text-xs text-sky-400 font-semibold flex items-center gap-1.5">
-                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-sky-400" />
+                                  <div className="text-xs text-accent-electric-cyan font-semibold flex items-center gap-1.5">
+                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-accent-electric-cyan" />
                                     <span>Suggested description (AI-generated)</span>
                                   </div>
-                                  <p className="text-[11px] text-slate-400 mt-0.5">
+                                  <p className="text-[11px] text-ink-secondary mt-0.5">
                                     Draft suggestion based on your photo. You can edit or write your own below.
                                   </p>
                                 </div>
@@ -1624,27 +1624,27 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                   <button
                                     type="button"
                                     onClick={() => setReportForm(form => ({ ...form, description: aiAnalysis.summary }))}
-                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/40 transition-colors flex items-center gap-1.5"
+                                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary-container/20 text-accent-electric-cyan hover:bg-primary-container/30 border border-border-black transition-colors flex items-center gap-1.5"
                                   >
-                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-sky-400" />
+                                    <Icon name="sparkles" className="w-3.5 h-3.5 text-accent-electric-cyan" />
                                     <span>Use this suggestion</span>
                                   </button>
                                 ) : null}
                               </div>
-                              <p className="text-xs sm:text-sm font-medium text-slate-100 mt-2.5 leading-snug bg-slate-900/40 p-3 rounded-xl border border-slate-800/80">
+                              <p className="text-xs sm:text-sm font-medium text-ink-primary mt-2.5 leading-snug bg-surface-container p-3 rounded-lg border-2 border-border-black">
                                 {aiAnalysis?.summary || 'Your photo is ready. Add the location and a short description below.'}
                               </p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <span className="text-xs text-slate-400 block">Issue type</span>
-                                <span className="text-white font-bold truncate block mt-0.5">{aiAnalysis?.category || reportForm.category}</span>
+                                <span className="text-xs text-ink-secondary block">Issue type</span>
+                                <span className="text-ink-primary font-bold truncate block mt-0.5">{aiAnalysis?.category || reportForm.category}</span>
                               </div>
                               <div>
-                                <span className="text-xs text-slate-400 block">Urgency</span>
+                                <span className="text-xs text-ink-secondary block">Urgency</span>
                                 <span className={`font-bold block mt-0.5 ${
-                                  (aiAnalysis?.severity || reportForm.severity) === 'Critical' ? 'text-red-400' : 'text-amber-400'
+                                  (aiAnalysis?.severity || reportForm.severity) === 'Critical' ? 'text-red-400' : 'text-status-warning-amber'
                                 }`}>
                                   {aiAnalysis?.severity || reportForm.severity}
                                 </span>
@@ -1652,8 +1652,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             </div>
 
                             {aiAnalysis?.is_civic_issue === false && (
-                              <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-300 flex items-center gap-2">
-                                <Icon name="alert-triangle" className="w-4 h-4 text-amber-400 shrink-0" />
+                              <div className="rounded-lg border border-status-warning-amber bg-status-warning-amber/10 p-3 text-xs text-status-warning-amber flex items-center gap-2">
+                                <Icon name="alert-triangle" className="w-4 h-4 text-status-warning-amber shrink-0" />
                                 <span>
                                   {aiAnalysis?.visual_verification === 'unverified'
                                     ? 'AI visual verification is currently unavailable. Your report will be routed to municipal officers for human review.'
@@ -1667,16 +1667,16 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     </div>
 
                     {analysisComplete && (
-                      <div className="border-t border-slate-800/80 pt-6 space-y-5">
+                      <div className="border-t-2 border-border-black/30 pt-6 space-y-5">
                         {/* PHOTO LOCATION DETECTED BANNER */}
                         {photoLocation && (aiAnalysis?.is_civic_issue !== false || aiAnalysis?.confidence < 0.75) && (
-                          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                          <div className="rounded-lg border border-status-live-green bg-status-live-green/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
                             <div>
-                              <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5 font-mono">
-                                <Icon name="map-pin" className="w-4 h-4 text-emerald-400" />
+                              <div className="text-xs font-bold text-status-live-green flex items-center gap-1.5 font-mono">
+                                <Icon name="map-pin" className="w-4 h-4 text-status-live-green" />
                                 Location found in photo
                               </div>
-                              <div className="text-[11px] text-slate-300 mt-1 font-mono">
+                              <div className="text-[11px] text-ink-secondary mt-1 font-mono">
                                 {photoLocation.latitude.toFixed(5)}, {photoLocation.longitude.toFixed(5)}
                                 {photoLocation.captured_at ? ` · Captured ${new Date(photoLocation.captured_at).toLocaleTimeString()}` : ''}
                               </div>
@@ -1684,7 +1684,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             <button 
                               type="button" 
                               onClick={usePhotoLocation} 
-                              className="shrink-0 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all shadow-md"
+                              className="shrink-0 px-4 py-2 rounded-lg bg-status-live-green hover:opacity-90 text-on-primary-container text-xs font-mono font-bold border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] transition-all"
                             >
                               Use this location
                             </button>
@@ -1693,23 +1693,23 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                         {/* LOCATION PICKER & ADDRESS INPUT */}
                         <div>
-                          <label className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
-                            Where is the problem? <span className="text-sky-400">*</span>
+                          <label className="block text-xs font-mono text-ink-secondary mb-1.5 font-semibold">
+                            Where is the problem? <span className="text-accent-electric-cyan">*</span>
                           </label>
-                          <div className="flex items-center gap-2 glass-input rounded-xl px-3.5 py-2.5 text-sm">
-                            <Icon name="map-pin" className="w-4 h-4 text-sky-400 shrink-0" />
+                          <div className="flex items-center gap-2 glass-input rounded-lg px-3.5 py-2.5 text-sm">
+                            <Icon name="map-pin" className="w-4 h-4 text-accent-electric-cyan shrink-0" />
                             <input 
                               type="text" 
                               value={reportForm.location}
                               placeholder="Enter street, area or landmark"
                               onChange={(e) => setReportForm({...reportForm, location: e.target.value, locationSource: reportForm.latitude == null ? 'manual' : reportForm.locationSource, locationConfirmed: true})}
-                              className="bg-transparent text-white focus:outline-none w-full text-xs sm:text-sm"
+                              className="bg-transparent text-ink-primary focus:outline-none w-full text-xs sm:text-sm"
                             />
                             <button 
                               type="button" 
                               onClick={captureLocation} 
                               className={`shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-mono font-bold transition-all ${
-                                reportForm.locationSource === 'device_gps' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-sky-500/15 text-sky-400 border border-sky-500/30 hover:bg-sky-500/25'
+                                reportForm.locationSource === 'device_gps' ? 'bg-status-live-green text-status-live-green border border-status-live-green' : 'bg-surface-container text-accent-electric-cyan border border-border-black hover:bg-primary-container/25'
                               }`}
                             >
                               {reportForm.locationSource === 'device_gps' ? '✓ Location added' : 'Use my location'}
@@ -1720,13 +1720,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             <button 
                               type="button" 
                               onClick={() => setShowLocationMap(value => !value)} 
-                              className="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1 transition-colors"
+                              className="text-xs text-accent-electric-cyan hover:text-accent-electric-cyan font-semibold flex items-center gap-1 transition-colors"
                             >
                               <Icon name={showLocationMap ? 'chevron-up' : 'map'} className="w-3.5 h-3.5" />
                               {showLocationMap ? 'Hide map' : 'Choose on map'}
                             </button>
                             {reportForm.locationSource && (
-                              <span className="text-[10px] font-mono text-emerald-400">
+                              <span className="text-[10px] font-mono text-status-live-green">
                                 Location added
                               </span>
                             )}
@@ -1741,7 +1741,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                         {/* PRIVATE REPORTER CONTACT */}
                         <div>
-                          <label className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
+                          <label className="block text-xs font-mono text-ink-secondary mb-1.5 font-semibold">
                             Phone or email <span className="font-normal">(optional)</span>
                           </label>
                           <input 
@@ -1749,21 +1749,21 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             value={reportForm.reporterContact} 
                             onChange={e => setReportForm({...reportForm, reporterContact: e.target.value})} 
                             placeholder="For updates about this report"
-                            className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm focus:outline-none" 
+                            className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm focus:outline-none" 
                           />
                         </div>
 
                         {/* DESCRIPTION */}
                         <div>
-                          <label className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
-                            What happened? <span className="text-sky-400">*</span>
+                          <label className="block text-xs font-mono text-ink-secondary mb-1.5 font-semibold">
+                            What happened? <span className="text-accent-electric-cyan">*</span>
                           </label>
                           <textarea 
                             rows={3}
                             value={reportForm.description}
                             onChange={(e) => setReportForm({...reportForm, description: e.target.value})}
                             placeholder="Briefly describe the problem"
-                            className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm focus:outline-none"
+                            className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm focus:outline-none"
                           />
                         </div>
 
@@ -1771,24 +1771,24 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <div className="flex items-center justify-between pt-3">
                           <button 
                             onClick={() => setReportStep(1)} 
-                            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+                            className="px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold text-ink-secondary hover:text-ink-primary transition-colors"
                           >
                             ← Change photo
                           </button>
                           <button 
                             onClick={handleFinalSubmit}
                             disabled={isSubmitting || (aiAnalysis?.is_civic_issue === false && aiAnalysis?.confidence >= 0.75)}
-                            className="px-7 py-3.5 rounded-lg text-sm font-bold bg-sky-400 hover:bg-sky-300 disabled:opacity-50 text-slate-950 flex items-center gap-2 transition-colors"
+                            className="px-7 py-3.5 rounded-lg text-sm font-bold bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 flex items-center gap-2"
                           >
                             {isSubmitting ? (
                               <>
-                                <Icon name="refresh-cw" className="w-4 h-4 animate-spin text-slate-950" />
+                                <Icon name="refresh-cw" className="w-4 h-4 animate-spin text-on-primary-container" />
                                 <span>Submitting…</span>
                               </>
                             ) : (
                               <>
                                 <span>Submit report</span>
-                                <Icon name="arrow-right" className="w-4 h-4 text-slate-950" />
+                                <Icon name="arrow-right" className="w-4 h-4 text-on-primary-container" />
                               </>
                             )}
                           </button>
@@ -1803,19 +1803,19 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {/* 3. TRACK REPORT & BEFORE/AFTER INTERACTIVE SLIDER */}
             {activeTab === 'track' && submittedReportId && (
               <div className="max-w-xl mx-auto px-4 py-12 sm:py-16">
-                <section aria-labelledby="report-success-title" className="glass-panel border border-emerald-500/30 rounded-2xl p-6 sm:p-8 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
+                <section aria-labelledby="report-success-title" className="bg-surface-clean border-2 border-status-live-green shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-8 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-status-live-green/10 text-status-live-green">
                     <Icon name="check" className="h-6 w-6" />
                   </div>
-                  <h1 id="report-success-title" className="mt-5 text-2xl font-bold text-white">Report submitted</h1>
-                  <p className="mt-2 text-sm text-slate-400">Save this report ID. You can use it to check progress anytime.</p>
-                  <div className="mt-6 rounded-xl border border-slate-700 bg-slate-950 px-4 py-5">
-                    <div className="text-xs text-slate-400">Your report ID</div>
-                    <div className="mt-1 font-mono text-2xl font-bold text-sky-400">{submittedReportId}</div>
+                  <h1 id="report-success-title" className="mt-5 text-2xl font-bold text-ink-primary">Report submitted</h1>
+                  <p className="mt-2 text-sm text-ink-secondary">Save this report ID. You can use it to check progress anytime.</p>
+                  <div className="mt-6 rounded-lg border-2 border-border-black bg-surface px-4 py-5">
+                    <div className="text-xs text-ink-secondary">Your report ID</div>
+                    <div className="mt-1 font-mono text-2xl font-bold text-accent-electric-cyan">{submittedReportId}</div>
                   </div>
                   <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <button onClick={() => { navigator.clipboard?.writeText(submittedReportId); showToast('Report ID copied.'); }} className="min-h-12 rounded-lg border border-slate-700 px-5 text-sm font-semibold text-slate-200 hover:border-slate-500">Copy report ID</button>
-                    <button onClick={() => setSubmittedReportId('')} className="min-h-12 rounded-lg bg-sky-400 px-5 text-sm font-bold text-slate-950 hover:bg-sky-300">Track this report</button>
+                    <button onClick={() => { navigator.clipboard?.writeText(submittedReportId); showToast('Report ID copied.'); }} className="min-h-12 rounded-lg border-2 border-border-black px-5 text-sm font-semibold text-ink-primary hover:border-border-black">Copy report ID</button>
+                    <button onClick={() => setSubmittedReportId('')} className="min-h-12 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all px-5">Track this report</button>
                   </div>
                 </section>
               </div>
@@ -1823,12 +1823,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
             {activeTab === 'track' && !submittedReportId && !selectedReport && (
               <div className="max-w-xl mx-auto px-4 py-16">
-                <div className="rounded-2xl glass-panel border border-slate-800 p-6 sm:p-8 space-y-4 reveal-up">
-                  <h1 className="text-2xl font-bold text-white tracking-tight">Track a Report</h1>
-                  <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+                <div className="rounded-lg bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 sm:p-8 space-y-4 reveal-up">
+                  <h1 className="text-2xl font-bold text-ink-primary tracking-tight">Track a Report</h1>
+                  <p className="text-sm text-ink-secondary max-w-sm leading-relaxed">
                     Enter your report ID to see its current status and latest update.
                   </p>
-                  <label htmlFor="tracking-id" className="block text-sm font-semibold text-slate-200">Report ID</label>
+                  <label htmlFor="tracking-id" className="block text-sm font-semibold text-ink-primary">Report ID</label>
                   <div className="flex flex-col sm:flex-row gap-2.5 mt-2">
                     <input 
                       id="tracking-id"
@@ -1836,18 +1836,18 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       onChange={e => setTrackingQuery(e.target.value)} 
                       onKeyDown={e => e.key === 'Enter' && trackById()} 
                       placeholder="CP-ABC123 or ABC123"
-                      className="flex-1 glass-input rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none"
+                      className="flex-1 glass-input rounded-lg px-4 py-3 text-ink-primary font-mono text-sm focus:outline-none"
                     />
                     <button 
                       onClick={trackById} 
                       disabled={trackingBusy}
-                      className="px-6 py-3 rounded-lg bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-sm transition-colors"
+                      className="px-6 py-3 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
                     >
                       {trackingBusy ? 'Finding…' : 'Track'}
                     </button>
                   </div>
-                  {trackingError && <div role="alert" className="text-xs text-red-300 rounded-xl border border-red-500/30 bg-red-500/10 p-3">{trackingError}</div>}
-                  <button onClick={openJudgeDemo} className="text-sm font-semibold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1.5">
+                  {trackingError && <div role="alert" className="text-xs text-red-300 rounded-lg border border-red-500 bg-transparent p-3">{trackingError}</div>}
+                  <button onClick={openJudgeDemo} className="text-sm font-semibold text-accent-electric-cyan hover:text-sky-200 inline-flex items-center gap-1.5">
                     See public report
                   </button>
                 </div>
@@ -1857,29 +1857,29 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {activeTab === 'track' && !submittedReportId && selectedReport && (
               <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-8 reveal-up">
                 {/* INCIDENT HEADER CARD */}
-                <div className="glass-panel border border-slate-800/80 rounded-3xl p-6 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-2xl">
+                <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-2xl">
                   <div>
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="text-2xl font-bold font-mono text-sky-400">
+                      <span className="text-2xl font-bold font-mono text-accent-electric-cyan">
                         {selectedReport.id}
                       </span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold border ${
+                      <span className={`px-3 py-1 rounded-lg text-xs font-mono font-bold border-2 ${
                         selectedReport.status === 'Resolved' 
-                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40' 
-                          : 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                          ? 'bg-status-live-green/10 text-status-live-green border-status-live-green' 
+                          : 'bg-status-warning-amber text-status-warning-amber border-status-warning-amber'
                       }`}>
                         {selectedReport.status}
                       </span>
                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono border ${
-                        selectedReport.severity === 'Critical' ? 'bg-red-500/10 text-red-400 border-red-500/30' : 'bg-slate-800 text-slate-300 border-slate-700'
+                        selectedReport.severity === 'Critical' ? 'bg-transparent text-red-400 border-red-500' : 'bg-canvas-paper text-ink-secondary border-border-black'
                       }`}>
                         {selectedReport.severity}
                       </span>
                     </div>
 
-                    <h1 className="text-xl font-bold text-white mt-2 tracking-tight break-words">{selectedReport.title}</h1>
-                    <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-1 font-sans">
-                      <Icon name="map-pin" className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                    <h1 className="text-xl font-bold text-ink-primary mt-2 tracking-tight break-words">{selectedReport.title}</h1>
+                    <p className="text-xs text-ink-secondary flex items-center gap-1.5 mt-1 font-sans">
+                      <Icon name="map-pin" className="w-3.5 h-3.5 text-accent-electric-cyan shrink-0" />
                       <span>{selectedReport.location}</span>
                     </p>
                   </div>
@@ -1891,11 +1891,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         onChange={e => setTrackingQuery(e.target.value)} 
                         onKeyDown={e => e.key === 'Enter' && trackById()} 
                         placeholder="Search ID" 
-                        className="glass-input rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none w-36" 
+                        className="glass-input rounded-lg px-3.5 py-2 text-xs font-mono text-ink-primary focus:outline-none w-36" 
                       />
                       <button 
                         onClick={trackById} 
-                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-all shadow-md"
+                        className="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container text-xs font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
                       >
                         Track
                       </button>
@@ -1903,10 +1903,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <select 
                       value={selectedReport.id}
                       onChange={(e) => setSelectedReport(reports.find(r => r.id === e.target.value))}
-                      className="glass-input rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none cursor-pointer"
+                      className="glass-input rounded-lg px-3 py-2 text-xs font-mono text-ink-primary focus:outline-none cursor-pointer"
                     >
                       {reports.map(r => (
-                        <option key={r.id} value={r.id} className="bg-slate-900 text-white">{r.id} · {r.category}</option>
+                        <option key={r.id} value={r.id} className="bg-surface-container text-ink-primary">{r.id} · {r.category}</option>
                       ))}
                     </select>
                   </div>
@@ -1915,60 +1915,60 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 {/* 2-COLUMN TIMELINE & EVIDENCE VERIFICATION WORKSPACE */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                   {/* TIMELINE COLUMN */}
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-6 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-                      <h2 className="text-xs font-bold text-sky-400 uppercase tracking-widest font-mono flex items-center gap-2">
-                        <Icon name="clock" className="w-4 h-4 text-sky-400" />
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-7 space-y-6 shadow-xl">
+                    <div className="flex items-center justify-between border-b-2 border-border-black/30 pb-3">
+                      <h2 className="text-xs font-bold text-accent-electric-cyan uppercase tracking-widest font-mono flex items-center gap-2">
+                        <Icon name="clock" className="w-4 h-4 text-accent-electric-cyan" />
                         Report progress
                       </h2>
                     </div>
                     
-                    <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2.5 before:bottom-2.5 before:w-0.5 before:bg-slate-800">
+                    <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2.5 before:bottom-2.5 before:w-0.5 before:bg-canvas-paper">
                       {selectedReport.timeline.map((item, idx) => (
                         <div key={idx} className="relative">
                           <div className={`absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 transition-all ${
-                            item.done ? 'bg-sky-400 border-slate-950' : 'bg-slate-950 border-slate-700'
+                            item.done ? 'bg-primary-container border-border-black' : 'bg-surface border-border-black'
                           }`} />
-                          <div className="text-xs font-bold text-slate-100">{item.step}</div>
-                          <div className="text-[11px] font-mono text-slate-400 mt-0.5">{item.time}</div>
-                          {item.note && <div className="text-[10px] text-slate-500 mt-1 leading-snug">{item.note}</div>}
+                          <div className="text-xs font-bold text-ink-primary">{item.step}</div>
+                          <div className="text-[11px] font-mono text-ink-secondary mt-0.5">{item.time}</div>
+                          {item.note && <div className="text-[10px] text-ink-subtle mt-1 leading-snug">{item.note}</div>}
                         </div>
                       ))}
                     </div>
 
-                    <div className="border-t border-slate-800/80 pt-4 space-y-3">
-                      <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-slate-400">
+                    <div className="border-t-2 border-border-black/30 pt-4 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-ink-secondary">
                         <span>Responsible Public Authority</span>
                         <div className="flex flex-wrap items-center gap-1">
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
                             {selectedReport.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
                           </span>
                           {selectedReport.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-live-green/10 text-status-live-green border border-status-live-green">
                               Statutory Verified
                             </span>
                           ) : selectedReport.assigned_authority?.jurisdiction_data_status === 'heuristic_bbox' ? (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
                               Heuristic Area
                             </span>
                           ) : (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container text-accent-electric-cyan border border-border-black">
                               Location Inferred
                             </span>
                           )}
                           {selectedReport.assigned_authority?.assignment_status === 'officer_assigned' && (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container border-2 border-border-black text-ink-secondary">
                               Officer Assigned
                             </span>
                           )}
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-canvas-paper text-ink-secondary border-2 border-border-black">
                             Simulated Workflow
                           </span>
                         </div>
                       </div>
-                      <div className="glass-card p-3 rounded-xl text-xs text-slate-200 space-y-2 border border-slate-800">
+                      <div className="bg-surface-container border-2 border-border-black p-3 rounded-lg text-xs text-ink-primary space-y-2 border-2 border-border-black">
                         <div className="flex items-center gap-2 font-semibold">
-                          <Icon name="building-2" className="w-4 h-4 text-sky-400 shrink-0" />
+                          <Icon name="building-2" className="w-4 h-4 text-accent-electric-cyan shrink-0" />
                           <span>
                             {selectedReport.assigned_authority?.authority_name
                               ? `${selectedReport.assigned_authority.authority_name} (${selectedReport.assigned_authority.short_code})`
@@ -1976,48 +1976,48 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           </span>
                         </div>
                         {selectedReport.assigned_authority?.department && selectedReport.assigned_authority?.authority_name && (
-                          <div className="text-[11px] text-slate-400 pl-6">
-                            Department: <span className="text-slate-200 font-medium">{selectedReport.assigned_authority.department}</span>
+                          <div className="text-[11px] text-ink-secondary pl-6">
+                            Department: <span className="text-ink-primary font-medium">{selectedReport.assigned_authority.department}</span>
                           </div>
                         )}
                         {selectedReport.assigned_authority?.jurisdiction && (
-                          <div className="text-[11px] text-slate-400 pl-6 flex items-center gap-1.5">
-                            <Icon name="map-pin" className="w-3 h-3 text-sky-400 shrink-0" />
+                          <div className="text-[11px] text-ink-secondary pl-6 flex items-center gap-1.5">
+                            <Icon name="map-pin" className="w-3 h-3 text-accent-electric-cyan shrink-0" />
                             <span>{selectedReport.assigned_authority.jurisdiction}</span>
                           </div>
                         )}
                         {selectedReport.assigned_authority?.assignment_reason && (
-                          <div className="text-[10px] text-slate-500 pl-6 border-t border-slate-800/60 pt-1.5 leading-snug">
+                          <div className="text-[10px] text-ink-subtle pl-6 border-t-2 border-border-black/30/60 pt-1.5 leading-snug">
                             {selectedReport.assigned_authority.assignment_reason}
                           </div>
                         )}
                       </div>
                       {selectedReport.priority_score != null && (
-                        <details className="rounded-xl border border-slate-800 p-3">
-                          <summary className="cursor-pointer text-xs font-semibold text-slate-300">Why this priority?</summary>
+                        <details className="rounded-lg border-2 border-border-black p-3">
+                          <summary className="cursor-pointer text-xs font-semibold text-ink-secondary">Why this priority?</summary>
                           <div className="flex items-center justify-between text-xs">
-                            <span className="mt-2 font-bold text-slate-200">Priority</span>
-                            <span className="font-mono font-extrabold text-sky-300">{selectedReport.priority_score}/100</span>
+                            <span className="mt-2 font-bold text-ink-primary">Priority</span>
+                            <span className="font-mono font-extrabold text-accent-electric-cyan">{selectedReport.priority_score}/100</span>
                           </div>
-                          <p className="mt-1.5 text-xs leading-relaxed text-slate-400">Based on urgency, how many people reported it, how long it has waited, and location safety.</p>
+                          <p className="mt-1.5 text-xs leading-relaxed text-ink-secondary">Based on urgency, how many people reported it, how long it has waited, and location safety.</p>
                         </details>
                       )}
                     </div>
                   </div>
 
                   {/* EVIDENCE & VERIFICATION COLUMN */}
-                  <div className="lg:col-span-2 glass-panel border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-6 shadow-xl">
-                    <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-                      <h2 className="text-xs font-bold text-sky-400 uppercase tracking-widest font-mono flex items-center gap-2">
-                        <Icon name="shield-check" className="w-4 h-4 text-sky-400" />
+                  <div className="lg:col-span-2 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-7 space-y-6 shadow-xl">
+                    <div className="flex items-center justify-between border-b-2 border-border-black/30 pb-3">
+                      <h2 className="text-xs font-bold text-accent-electric-cyan uppercase tracking-widest font-mono flex items-center gap-2">
+                        <Icon name="shield-check" className="w-4 h-4 text-accent-electric-cyan" />
                         RESOLUTION & EVIDENCE
                       </h2>
                       {selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed ? (
-                        <span className="text-xs text-emerald-400 font-mono bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30 font-bold flex items-center gap-1">
+                        <span className="text-xs text-status-live-green font-mono bg-status-live-green/10 px-2.5 py-1 rounded-full border border-status-live-green font-bold flex items-center gap-1">
                           <span>✓</span> Citizen Confirmed & Resolved
                         </span>
                       ) : selectedReport.afterImage || selectedReport.resolution_evidence ? (
-                        <span className="text-xs text-amber-400 font-mono bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/30 font-bold flex items-center gap-1">
+                        <span className="text-xs text-status-warning-amber font-mono bg-status-warning-amber/10 px-2.5 py-1 rounded-full border border-status-warning-amber font-bold flex items-center gap-1">
                           <span>⏳</span> Awaiting Citizen Verification
                         </span>
                       ) : null}
@@ -2025,27 +2025,27 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     {/* RESOLUTION VERIFICATION */}
                     <div>
-                      <div className="text-[11px] font-mono text-slate-400 mb-2 font-semibold">RESOLUTION VERIFICATION</div>
+                      <div className="text-[11px] font-mono text-ink-secondary mb-2 font-semibold">RESOLUTION VERIFICATION</div>
                       <div className="grid grid-cols-2 gap-2.5">
-                        <div className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
+                        <div className={`p-3 rounded-lg border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
                           selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence
-                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400'
+                            ? 'bg-status-live-green/10 border-status-live-green text-status-live-green'
+                            : 'bg-surface-container border-border-black text-ink-secondary'
                         }`}>
-                          <Icon name="landmark" className={`w-4 h-4 ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-emerald-400' : 'text-slate-500'}`} />
+                          <Icon name="landmark" className={`w-4 h-4 ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-status-live-green' : 'text-ink-subtle'}`} />
                           <span className="text-[11px] font-bold tracking-tight">Field Officer Evidence</span>
-                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
+                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-status-live-green/10 text-status-live-green font-bold' : 'text-ink-subtle bg-surface-container'}`}>
                             {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? '✓ SUBMITTED' : 'PENDING'}
                           </span>
                         </div>
-                        <div className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
+                        <div className={`p-3 rounded-lg border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
                           selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter
-                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                            : 'bg-slate-950/60 border-slate-800/80 text-slate-400'
+                            ? 'bg-status-live-green/10 border-status-live-green text-status-live-green'
+                            : 'bg-surface-container border-border-black text-ink-secondary'
                         }`}>
-                          <Icon name="check" className={`w-4 h-4 ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-emerald-400' : 'text-slate-500'}`} />
+                          <Icon name="check" className={`w-4 h-4 ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-status-live-green' : 'text-ink-subtle'}`} />
                           <span className="text-[11px] font-bold tracking-tight">Citizen Verification</span>
-                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-slate-600 bg-slate-900'}`}>
+                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-status-live-green/10 text-status-live-green font-bold' : 'text-ink-subtle bg-surface-container'}`}>
                             {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? '✓ VERIFIED' : 'PENDING'}
                           </span>
                         </div>
@@ -2055,20 +2055,20 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     {/* CONTRACTOR STAR RATING */}
                     {selectedReport.afterImage && selectedReport.assigned_contractor_id && (authUser?.role === 'admin' || sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`)) && (
-                      <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="rounded-lg border-2 border-border-black bg-surface-container p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                            <Icon name="star" className="w-3.5 h-3.5 text-amber-400" />
+                          <div className="text-xs font-bold text-ink-primary flex items-center gap-1.5">
+                            <Icon name="star" className="w-3.5 h-3.5 text-status-warning-amber" />
                             Rate Contractor Performance
                           </div>
-                          <p className="text-[11px] text-slate-400 mt-0.5">Rate quality, speed, and clean-up execution</p>
+                          <p className="text-[11px] text-ink-secondary mt-0.5">Rate quality, speed, and clean-up execution</p>
                         </div>
                         <div className="flex gap-1.5">
                           {[1, 2, 3, 4, 5].map(score => (
                             <button 
                               key={score} 
                               onClick={() => rateContractor(selectedReport, score)} 
-                              className="text-2xl text-amber-400 hover:scale-125 transition-transform" 
+                              className="text-2xl text-status-warning-amber hover:scale-125 transition-transform" 
                               aria-label={`${score} stars`}
                             >
                               ★
@@ -2088,54 +2088,54 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     {/* CITIZEN VERIFICATION CARD */}
                     {(selectedReport.afterImage || selectedReport.resolution_evidence || ['Evidence Uploaded', 'Verification', 'Resolution Submitted', 'Resolved', 'Reopened - Needs Review'].includes(selectedReport.status)) && (
-                      <div data-testid="citizen-verification-card" className="rounded-2xl border border-slate-700/80 bg-slate-950/70 p-5 space-y-4 shadow-lg">
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                      <div data-testid="citizen-verification-card" className="rounded-lg border-2 border-border-black bg-surface p-5 space-y-4 shadow-lg">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-border-black/30 pb-3">
                           <div className="flex items-center gap-2">
-                            <Icon name="shield-check" className="w-4 h-4 text-sky-400" />
-                            <span className="text-xs font-bold font-mono text-white tracking-wider uppercase">Citizen Verification Gate</span>
+                            <Icon name="shield-check" className="w-4 h-4 text-accent-electric-cyan" />
+                            <span className="text-xs font-bold font-mono text-ink-primary tracking-wider uppercase">Citizen Verification Gate</span>
                           </div>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-canvas-paper text-ink-secondary border-2 border-border-black">
                             Simulated Authority Workflow
                           </span>
                         </div>
 
                         {/* If already confirmed & resolved */}
                         {(selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed) ? (
-                          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 space-y-2">
+                          <div className="rounded-lg border border-status-live-green bg-status-live-green/10 p-4 space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold font-mono text-emerald-400 flex items-center gap-1.5">
+                              <span className="text-xs font-bold font-mono text-status-live-green flex items-center gap-1.5">
                                 <Icon name="circle-check" className="w-4 h-4" />
                                 RESOLUTION CONFIRMED BY CITIZEN
                               </span>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-live-green/10 text-status-live-green font-bold">
                                 Status: Resolved
                               </span>
                             </div>
-                            <p className="text-xs text-slate-300 leading-relaxed">
+                            <p className="text-xs text-ink-secondary leading-relaxed">
                               The reporter confirmed this incident was successfully fixed on site.
                             </p>
                             {selectedReport.citizen_verification?.note && (
-                              <div className="text-xs text-slate-300 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 italic">
+                              <div className="text-xs text-ink-secondary bg-surface-container p-2.5 rounded-lg border-2 border-border-black italic">
                                 "{selectedReport.citizen_verification.note}"
                               </div>
                             )}
                           </div>
                         ) : selectedReport.status === 'Reopened - Needs Review' ? (
-                          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 space-y-2">
+                          <div className="rounded-lg border border-status-warning-amber bg-status-warning-amber/10 p-4 space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold font-mono text-amber-400 flex items-center gap-1.5">
+                              <span className="text-xs font-bold font-mono text-status-warning-amber flex items-center gap-1.5">
                                 <Icon name="alert-triangle" className="w-4 h-4" />
                                 RESOLUTION DISPUTED · REOPENED
                               </span>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber font-bold">
                                 Reopened - Needs Review
                               </span>
                             </div>
-                            <p className="text-xs text-slate-300 leading-relaxed">
+                            <p className="text-xs text-ink-secondary leading-relaxed">
                               The citizen reported that the problem was not satisfactorily fixed. Authority field crew has been notified to re-inspect.
                             </p>
                             {selectedReport.citizen_verification?.note && (
-                              <div className="text-xs text-amber-200 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 italic">
+                              <div className="text-xs text-status-warning-amber bg-surface-container p-2.5 rounded-lg border-2 border-border-black italic">
                                 Dispute reason: "{selectedReport.citizen_verification.note}"
                               </div>
                             )}
@@ -2144,19 +2144,19 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           /* Pending verification form */
                           <div className="space-y-3.5">
                             {(selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note) && (
-                              <div className="rounded-xl bg-slate-900/90 border border-slate-800 p-3 text-xs">
-                                <div className="text-[10px] font-mono text-sky-400 font-bold mb-1">FIELD OFFICER COMPLETION NOTE</div>
-                                <p className="text-slate-200 leading-relaxed">
+                              <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 text-xs">
+                                <div className="text-[10px] font-mono text-accent-electric-cyan font-bold mb-1">FIELD OFFICER COMPLETION NOTE</div>
+                                <p className="text-ink-primary leading-relaxed">
                                   {selectedReport.completion_notes || selectedReport.resolution_evidence?.completion_note}
                                 </p>
                               </div>
                             )}
 
                             <div>
-                              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1">
+                              <div className="flex items-center justify-between text-[11px] font-mono text-ink-secondary mb-1">
                                 <span>REPORTER VERIFICATION TOKEN</span>
                                 {sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) && (
-                                  <span className="text-[10px] text-emerald-400 font-bold">✓ Active on this device</span>
+                                  <span className="text-[10px] text-status-live-green font-bold">✓ Active on this device</span>
                                 )}
                               </div>
                               <input
@@ -2164,12 +2164,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                 placeholder="Paste or verify reporter token..."
                                 value={verificationToken || (selectedReport ? sessionStorage.getItem(`urbanfix-reporter-${selectedReport.id}`) || '' : '')}
                                 onChange={(e) => setVerificationToken(e.target.value)}
-                                className="w-full glass-input rounded-xl p-2.5 text-xs text-white font-mono"
+                                className="w-full glass-input rounded-lg p-2.5 text-xs text-ink-primary font-mono"
                               />
                             </div>
 
                             <div>
-                              <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                              <label className="block text-[11px] font-mono text-ink-secondary mb-1">
                                 FEEDBACK / NOTES (Required if rejecting or reporting partial fix)
                               </label>
                               <textarea
@@ -2177,7 +2177,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                 placeholder="Enter inspection feedback or reason for dispute..."
                                 value={citizenFeedback}
                                 onChange={(e) => setCitizenFeedback(e.target.value)}
-                                className="w-full glass-input rounded-xl p-2 text-xs text-white resize-none"
+                                className="w-full glass-input rounded-lg p-2 text-xs text-ink-primary resize-none"
                               />
                             </div>
 
@@ -2185,7 +2185,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               <button
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('fixed')}
-                                className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5"
+                                className="py-2.5 px-3 rounded-lg bg-status-live-green hover:opacity-90 disabled:opacity-40 text-on-primary-container text-xs font-mono font-bold border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center justify-center gap-1.5"
                               >
                                 <Icon name="check" className="w-4 h-4" />
                                 <span>Confirm Fixed</span>
@@ -2193,14 +2193,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               <button
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('partially_fixed')}
-                                className="py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                                className="py-2.5 px-3 rounded-lg bg-status-warning-amber/10 border-2 border-status-warning-amber text-status-warning-amber hover:bg-status-warning-amber/20 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
                               >
                                 <span>Partially Fixed</span>
                               </button>
                               <button
                                 disabled={isVerifying}
                                 onClick={() => handleCitizenVerify('not_fixed')}
-                                className="py-2.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                                className="py-2.5 px-3 rounded-lg bg-transparent border border-red-500 text-red-400 hover:bg-transparent text-xs font-bold transition-all flex items-center justify-center gap-1.5"
                               >
                                 <Icon name="x" className="w-4 h-4" />
                                 <span>Reject & Reopen</span>
@@ -2212,7 +2212,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     )}
 
                     {selectedReport.resolution_evidence?.report_url && (
-                      <a href={selectedReport.resolution_evidence.report_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm font-semibold text-sky-300 hover:border-sky-500/50">
+                      <a href={selectedReport.resolution_evidence.report_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 rounded-lg border-2 border-border-black bg-surface-container px-4 py-3 text-sm font-semibold text-accent-electric-cyan hover:border-border-black">
                         <span className="flex items-center gap-2"><Icon name="file-text" className="w-4 h-4" />View contractor work report</span>
                         <Icon name="external-link" className="w-4 h-4" />
                       </a>
@@ -2220,42 +2220,42 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     <div className="space-y-3">
                       <div>
-                        <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1">Citizen Description</div>
-                        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans glass-card p-4 rounded-2xl border border-slate-800">
+                        <div className="text-[10px] font-mono font-bold text-ink-secondary uppercase tracking-wider mb-1">Citizen Description</div>
+                        <p className="text-xs sm:text-sm text-ink-primary leading-relaxed font-sans bg-surface-container border-2 border-border-black p-4 rounded-lg">
                           {selectedReport.description || 'No written description was provided.'}
                         </p>
                       </div>
                       {selectedReport.summary && selectedReport.summary !== selectedReport.description && (
                         <div>
-                          <div className="text-[10px] font-mono font-bold text-sky-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                            <Icon name="sparkles" className="w-3 h-3 text-sky-400" />
+                          <div className="text-[10px] font-mono font-bold text-accent-electric-cyan uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                            <Icon name="sparkles" className="w-3 h-3 text-accent-electric-cyan" />
                             <span>AI Assessment Summary (AI-generated)</span>
                           </div>
-                          <p className="text-xs text-slate-400 leading-relaxed font-sans bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
+                          <p className="text-xs text-ink-secondary leading-relaxed font-sans bg-surface-container p-3.5 rounded-lg border-2 border-border-black">
                             {selectedReport.summary}
                           </p>
                         </div>
                       )}
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-4">
-                      <div className="text-xs text-slate-400">
-                        <span className="text-white font-bold">{selectedReport.affected_count || 1}</span> citizens affected · <span className="text-white font-bold">{selectedReport.duplicates || 1}</span> linked incident reports
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-border-black/30 pt-4">
+                      <div className="text-xs text-ink-secondary">
+                        <span className="text-ink-primary font-bold">{selectedReport.affected_count || 1}</span> citizens affected · <span className="text-ink-primary font-bold">{selectedReport.duplicates || 1}</span> linked incident reports
                       </div>
                       <button 
                         onClick={markAffected} 
-                        className="px-4 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-bold transition-all flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-lg bg-surface-container hover:bg-primary-container/20 border border-border-black text-accent-electric-cyan text-xs font-bold transition-all flex items-center gap-1.5"
                       >
-                        <Icon name="thumbs-up" className="w-3.5 h-3.5 text-sky-400" />
+                        <Icon name="thumbs-up" className="w-3.5 h-3.5 text-accent-electric-cyan" />
                         <span>I’m Affected Too (+1)</span>
                       </button>
                     </div>
 
                     <button 
                       onClick={() => loadAccountabilityReceipt(selectedReport)} 
-                      className="w-full py-3 rounded-xl glass-card border border-slate-700 hover:border-sky-500/50 text-xs font-semibold text-sky-400 transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="w-full py-3 rounded-lg bg-surface-container border-2 border-border-black hover:border-border-black text-xs font-semibold text-accent-electric-cyan transition-all flex items-center justify-center gap-2 shadow-sm"
                     >
-                      <Icon name="file-text" className="w-4 h-4 text-sky-400" />
+                      <Icon name="file-text" className="w-4 h-4 text-accent-electric-cyan" />
                       <span>View accountability receipt</span>
                     </button>
                   </div>
@@ -2263,37 +2263,37 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                 {/* ACCOUNTABILITY RECEIPT DISPLAY */}
                 {accountabilityReceipt && accountabilityReceipt.complaint_id === selectedReport.id && (
-                  <section aria-label="Public accountability receipt" className="rounded-3xl glass-panel border border-sky-500/40 p-6 sm:p-8 space-y-5 shadow-2xl reveal-up">
-                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800/80 pb-4">
+                  <section aria-label="Public accountability receipt" className="rounded-lg bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 sm:p-8 space-y-5 shadow-2xl reveal-up">
+                    <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-border-black/30 pb-4">
                       <div>
-                        <div className="text-[10px] font-mono text-sky-400 font-bold tracking-widest uppercase">ACCOUNTABILITY RECEIPT</div>
-                        <h2 className="text-xl font-extrabold text-white mt-1">{accountabilityReceipt.incident_id || accountabilityReceipt.complaint_id}</h2>
+                        <div className="text-[10px] font-mono text-accent-electric-cyan font-bold tracking-widest uppercase">ACCOUNTABILITY RECEIPT</div>
+                        <h2 className="text-xl font-extrabold text-ink-primary mt-1">{accountabilityReceipt.incident_id || accountabilityReceipt.complaint_id}</h2>
                       </div>
                     </div>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">AI CLASSIFICATION</div>
-                        <div className="text-white font-bold mt-1">{accountabilityReceipt.ai_assessment.category}</div>
-                        <div className="text-[11px] text-sky-400 mt-0.5">{Math.round((accountabilityReceipt.ai_assessment.confidence || 0)*100)}% Confidence</div>
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-4 rounded-lg">
+                        <div className="text-ink-secondary font-mono text-[10px]">AI CLASSIFICATION</div>
+                        <div className="text-ink-primary font-bold mt-1">{accountabilityReceipt.ai_assessment.category}</div>
+                        <div className="text-[11px] text-accent-electric-cyan mt-0.5">{Math.round((accountabilityReceipt.ai_assessment.confidence || 0)*100)}% Confidence</div>
                       </div>
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">PRIORITY SCORE</div>
-                        <div className="text-white font-bold mt-1 text-lg font-mono">{accountabilityReceipt.priority.score}/100</div>
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-4 rounded-lg">
+                        <div className="text-ink-secondary font-mono text-[10px]">PRIORITY SCORE</div>
+                        <div className="text-ink-primary font-bold mt-1 text-lg font-mono">{accountabilityReceipt.priority.score}/100</div>
                       </div>
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">LINKED REPORTS</div>
-                        <div className="text-white font-bold mt-1 text-lg font-mono">{accountabilityReceipt.incident_report_count}</div>
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-4 rounded-lg">
+                        <div className="text-ink-secondary font-mono text-[10px]">LINKED REPORTS</div>
+                        <div className="text-ink-primary font-bold mt-1 text-lg font-mono">{accountabilityReceipt.incident_report_count}</div>
                       </div>
-                      <div className="rounded-2xl glass-card p-4 border border-slate-800">
-                        <div className="text-slate-400 font-mono text-[10px]">STATUS</div>
-                        <div className={`font-bold mt-1 ${accountabilityReceipt.resolution.fully_verified ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-4 rounded-lg">
+                        <div className="text-ink-secondary font-mono text-[10px]">STATUS</div>
+                        <div className={`font-bold mt-1 ${accountabilityReceipt.resolution.fully_verified ? 'text-status-live-green' : 'text-status-warning-amber'}`}>
                           {accountabilityReceipt.resolution.fully_verified ? 'Verified (2/2)' : 'Awaiting Approval'}
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-400 leading-relaxed font-sans">
+                    <p className="text-xs text-ink-secondary leading-relaxed font-sans">
                       {accountabilityReceipt.priority.methodology}
                     </p>
                   </section>
@@ -2304,11 +2304,11 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {/* 4. PUBLIC CIVIC MAP */}
             {activeTab === 'map' && (
               <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-6 reveal-up">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel border border-slate-800 p-5 sm:p-6 rounded-3xl shadow-xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-5 sm:p-6 rounded-lg shadow-xl">
                   <div>
-                    <div className="text-xs text-sky-400 font-semibold uppercase">Public reports</div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">Issues near you</h1>
-                    <p className="text-sm text-slate-400 mt-1">Select a marker to see the problem and its current status.</p>
+                    <div className="text-xs text-accent-electric-cyan font-semibold uppercase">Public reports</div>
+                    <h1 className="text-xl sm:text-2xl font-bold text-ink-primary mt-1 tracking-tight">Issues near you</h1>
+                    <p className="text-sm text-ink-secondary mt-1">Select a marker to see the problem and its current status.</p>
                   </div>
                   
                   <div className="flex items-center gap-2 flex-wrap">
@@ -2318,14 +2318,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <button 
                           onClick={() => setMapFilter(f)} 
                           key={f} 
-                          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                          className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
                             mapFilter === f 
-                              ? 'bg-sky-500 text-slate-950 shadow-glow-sky' 
-                              : 'glass-card text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
+                              ? 'bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]' 
+                              : 'bg-surface-container border-2 border-border-black text-ink-secondary hover:text-ink-primary border-2 border-border-black hover:border-border-black'
                           }`}
                         >
                           <span>{f}</span>
-                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${mapFilter === f ? 'bg-slate-950 text-sky-300' : 'bg-slate-900 text-slate-400'}`}>
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${mapFilter === f ? 'bg-surface text-accent-electric-cyan' : 'bg-surface-container text-ink-secondary'}`}>
                             {count}
                           </span>
                         </button>
@@ -2334,26 +2334,26 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   </div>
                 </div>
 
-                <div className="glass-panel border border-slate-800/80 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-4">
+                <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-4 sm:p-6 shadow-2xl space-y-4">
                   <AuthorityMap
                     reports={reports.filter(rep => mapFilter === 'All' || (mapFilter === 'Roads' && /road/i.test(rep.category)) || (mapFilter === 'Sanitation' && /waste|sanitation/i.test(rep.category)) || (mapFilter === 'Water' && /water|drain|sewer/i.test(rep.category)))}
                     onSelect={report => { setSelectedReport(report); setActiveTab('track'); }}
                     useClusters={reportsTruncated}
                   />
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2 text-[11px] font-mono">
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-glow-emerald" /> 
+                    <div className="bg-surface-container border-2 border-border-black p-2.5 rounded-lg flex items-center gap-2 text-ink-secondary">
+                      <span className="w-2.5 h-2.5 rounded-full bg-status-live-green shadow-glow-emerald" /> 
                       <span>Contractor + authority verified</span>
                     </div>
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-glow-sky" /> 
+                    <div className="bg-surface-container border-2 border-border-black p-2.5 rounded-lg flex items-center gap-2 text-ink-secondary">
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary-container shadow-glow-sky" /> 
                       <span>Partly Approved / Progress</span>
                     </div>
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400" /> 
+                    <div className="bg-surface-container border-2 border-border-black p-2.5 rounded-lg flex items-center gap-2 text-ink-secondary">
+                      <span className="w-2.5 h-2.5 rounded-full bg-status-warning-amber" /> 
                       <span>Moderate Priority</span>
                     </div>
-                    <div className="glass-card p-2.5 rounded-xl border border-slate-800 flex items-center gap-2 text-slate-300">
+                    <div className="bg-surface-container border-2 border-border-black p-2.5 rounded-lg flex items-center gap-2 text-ink-secondary">
                       <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-glow-rose" /> 
                       <span>Critical / Urgent</span>
                     </div>
@@ -2365,10 +2365,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {/* 5. COMMUNITY ACTION (YOUTH MICRO-MAINTENANCE) */}
             {activeTab === 'community' && (
               <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
-                <div className="glass-panel border border-slate-800 p-6 sm:p-7 rounded-3xl shadow-xl">
-                  <div className="text-[10px] font-mono tracking-widest text-sky-400 font-bold uppercase">SUPERVISED COMMUNITY ACTION</div>
-                  <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-1 tracking-tight">Propose Low-Risk Micro-Maintenance</h1>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">
+                <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 sm:p-7 rounded-lg shadow-xl">
+                  <div className="text-[10px] font-mono tracking-widest text-accent-electric-cyan font-bold uppercase">SUPERVISED COMMUNITY ACTION</div>
+                  <h1 className="text-xl sm:text-2xl font-extrabold text-ink-primary mt-1 tracking-tight">Propose Low-Risk Micro-Maintenance</h1>
+                  <p className="text-xs sm:text-sm text-ink-secondary mt-1 leading-relaxed">
                     Only low-risk cleanup and neighborhood beautification tasks appear here. High-voltage, deep trenches, and hazardous tasks are restricted to certified municipal crews.
                   </p>
                 </div>
@@ -2386,53 +2386,53 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     error={authError} 
                   />
                 ) : authUser.role !== 'youth' ? (
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-8 text-center space-y-4">
-                    <p className="text-sm text-slate-300">The current active account is not registered as a youth worker.</p>
-                    <button onClick={logout} className="px-5 py-2.5 rounded-xl glass-card border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white">
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-8 text-center space-y-4">
+                    <p className="text-sm text-ink-secondary">The current active account is not registered as a youth worker.</p>
+                    <button onClick={logout} className="px-5 py-2.5 rounded-lg bg-surface-container border-2 border-border-black text-xs font-semibold text-ink-primary hover:text-ink-primary">
                       Log out
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div className="flex flex-wrap items-center justify-between gap-4 glass-panel border border-sky-500/30 bg-sky-950/20 rounded-2xl p-4 sm:p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] bg-surface-container rounded-lg p-4 sm:p-5">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-white">{authUser.name}</span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-mono text-emerald-300 font-bold">
+                          <span className="text-sm font-bold text-ink-primary">{authUser.name}</span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-status-live-green/10 border border-status-live-green text-[10px] font-mono text-status-live-green font-bold">
                             VERIFIED CITIZEN
                           </span>
                         </div>
-                        <div className="text-xs text-slate-400 mt-0.5 font-mono">{authUser.email} · Proposals & proof linked to escrow balance</div>
+                        <div className="text-xs text-ink-secondary mt-0.5 font-mono">{authUser.email} · Proposals & proof linked to escrow balance</div>
                       </div>
-                      <button onClick={logout} className="px-4 py-2 rounded-xl glass-card border border-slate-700 hover:border-slate-600 text-xs font-semibold text-slate-300">
+                      <button onClick={logout} className="px-4 py-2 rounded-lg bg-surface-container border-2 border-border-black hover:border-border-black text-xs font-semibold text-ink-secondary">
                         Log out
                       </button>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2.5 text-center text-xs font-mono">
-                      <div className="rounded-2xl glass-card p-3 border border-slate-800">
-                        <span className="text-sky-400 font-bold block text-sm">01</span> Submit Plan & Estimate
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 border-2 border-border-black">
+                        <span className="text-accent-electric-cyan font-bold block text-sm">01</span> Submit Plan & Estimate
                       </div>
-                      <div className="rounded-2xl glass-card p-3 border border-slate-800">
-                        <span className="text-amber-400 font-bold block text-sm">02</span> Authority Escrow Lock
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 border-2 border-border-black">
+                        <span className="text-status-warning-amber font-bold block text-sm">02</span> Authority Escrow Lock
                       </div>
-                      <div className="rounded-2xl glass-card p-3 border border-slate-800">
-                        <span className="text-emerald-400 font-bold block text-sm">03</span> After Photo & Payout
+                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 border-2 border-border-black">
+                        <span className="text-status-live-green font-bold block text-sm">03</span> After Photo & Payout
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* PROPOSAL FORM */}
-                      <div className="glass-panel border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Submit New Proposal</h2>
+                      <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 space-y-4 shadow-xl">
+                        <h2 className="text-sm font-bold text-ink-primary font-mono uppercase tracking-wider">Submit New Proposal</h2>
                         <select 
                           value={repairForm.complaint_id} 
                           onChange={e => setRepairForm({...repairForm, complaint_id: e.target.value})} 
-                          className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                          className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary"
                         >
-                          <option value="" className="bg-slate-900">Select an eligible low-risk task</option>
+                          <option value="" className="bg-surface-container">Select an eligible low-risk task</option>
                           {reports.filter(r => r.status !== 'Resolved' && r.volunteer_eligible === true).map(r => (
-                            <option key={r.id} value={r.id} className="bg-slate-900">{r.id} · {r.category} · {r.location}</option>
+                            <option key={r.id} value={r.id} className="bg-surface-container">{r.id} · {r.category} · {r.location}</option>
                           ))}
                         </select>
                         <div className="grid sm:grid-cols-2 gap-3">
@@ -2442,7 +2442,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             value={repairForm.estimated_price} 
                             onChange={e => setRepairForm({...repairForm, estimated_price: e.target.value})} 
                             placeholder="Estimate (BDT)" 
-                            className="min-w-0 glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                            className="min-w-0 glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary"
                           />
                           <input 
                             type="number" 
@@ -2450,7 +2450,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             value={repairForm.estimated_hours} 
                             onChange={e => setRepairForm({...repairForm, estimated_hours: e.target.value})} 
                             placeholder="Hours required" 
-                            className="min-w-0 glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                            className="min-w-0 glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary"
                           />
                         </div>
                         <textarea 
@@ -2458,12 +2458,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           value={repairForm.plan} 
                           onChange={e => setRepairForm({...repairForm, plan: e.target.value})} 
                           placeholder="Detail materials needed, safe tools, clean-up steps, and expected completion result..." 
-                          className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white"
+                          className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary"
                         />
                         <button 
                           onClick={submitRepairRequest} 
                           disabled={!repairForm.complaint_id || repairForm.plan.length < 10 || !repairForm.estimated_price} 
-                          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 text-slate-950 font-bold text-sm shadow-lg shadow-sky-500/20 transition-all"
+                          className="w-full py-3.5 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-40"
                         >
                           Send Proposal to Authority
                         </button>
@@ -2471,41 +2471,41 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                       {/* PROPOSAL HISTORY */}
                       <div className="space-y-3.5">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Your Proposal Ledger</h2>
+                        <h2 className="text-sm font-bold text-ink-primary font-mono uppercase tracking-wider">Your Proposal Ledger</h2>
                         {repairRequests.length ? repairRequests.slice().reverse().map(req => (
-                          <div key={req.request_id} className="glass-card border border-slate-800/80 rounded-2xl p-4 sm:p-5 space-y-3">
+                          <div key={req.request_id} className="bg-surface-container border-2 border-border-black rounded-lg p-4 sm:p-5 space-y-3">
                             <div className="flex justify-between gap-3">
                               <div>
-                                <div className="font-mono text-sky-400 text-xs font-bold">{req.request_id} · {req.complaint_id}</div>
-                                <div className="text-sm font-bold text-white mt-0.5">{req.issue_title || req.applicant_name}</div>
+                                <div className="font-mono text-accent-electric-cyan text-xs font-bold">{req.request_id} · {req.complaint_id}</div>
+                                <div className="text-sm font-bold text-ink-primary mt-0.5">{req.issue_title || req.applicant_name}</div>
                               </div>
-                              <span className="text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full h-fit">
+                              <span className="text-[10px] text-status-warning-amber font-mono font-bold bg-status-warning-amber/10 border-2 border-status-warning-amber px-2 py-0.5 rounded-full h-fit">
                                 {req.status}
                               </span>
                             </div>
-                            <div className="text-xs text-slate-400 font-mono">
+                            <div className="text-xs text-ink-secondary font-mono">
                               Budget: BDT {Number(req.estimated_price).toLocaleString()} · {req.estimated_hours}h
                             </div>
                             {req.admin_note && (
-                              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-xs text-slate-300">
-                                <span className="text-slate-500 font-mono text-[10px] block">AUTHORITY NOTE</span> {req.admin_note}
+                              <div className="rounded-lg border-2 border-border-black bg-surface p-2.5 text-xs text-ink-secondary">
+                                <span className="text-ink-subtle font-mono text-[10px] block">AUTHORITY NOTE</span> {req.admin_note}
                               </div>
                             )}
                             {req.status === 'Approved - Awaiting Work' && (
-                              <label className="block cursor-pointer text-center text-xs px-4 py-2.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/25 transition-colors font-bold">
+                              <label className="block cursor-pointer text-center text-xs px-4 py-2.5 rounded-lg bg-status-live-green/10 text-status-live-green border border-status-live-green hover:bg-status-live-green/20 border-2 border-status-live-green transition-colors font-bold">
                                 📷 Upload Required After-Repair Photo
                                 <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="hidden" onChange={e => submitProofFile(req, e.target.files?.[0])} />
                               </label>
                             )}
                             {req.proof && (
-                              <div className="flex gap-3 items-center glass-panel p-2.5 rounded-xl border border-slate-800">
-                                <img src={absoluteMediaUrl(req.proof.after_image_url)} alt="Your after-repair proof" className="w-16 h-14 object-cover rounded-lg border border-slate-700" />
-                                <span className="text-xs text-emerald-400 font-semibold">After photo uploaded for authority release.</span>
+                              <div className="flex gap-3 items-center bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-2.5 rounded-lg border-2 border-border-black">
+                                <img src={absoluteMediaUrl(req.proof.after_image_url)} alt="Your after-repair proof" className="w-16 h-14 object-cover rounded-lg border-2 border-border-black" />
+                                <span className="text-xs text-status-live-green font-semibold">After photo uploaded for authority release.</span>
                               </div>
                             )}
                           </div>
                         )) : (
-                          <div className="glass-card border border-slate-800 rounded-2xl p-8 text-center text-xs text-slate-400">
+                          <div className="bg-surface-container border-2 border-border-black rounded-lg p-8 text-center text-xs text-ink-secondary">
                             No repair proposals yet. Choose an open problem on the map to get started.
                           </div>
                         )}
@@ -2520,96 +2520,96 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
             {activeTab === 'contractor' && (
               authUser?.role !== 'contractor' ? (
                 <div className="max-w-md mx-auto px-4 py-12 space-y-5 reveal-up">
-                  <div className="flex glass-panel border border-slate-800 rounded-2xl p-1">
-                    <button onClick={() => setAuthMode('login')} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${authMode === 'login' ? 'bg-sky-500 text-slate-950 shadow-md' : 'text-slate-400'}`}>Login</button>
-                    <button onClick={() => setAuthMode('register')} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${authMode === 'register' ? 'bg-sky-500 text-slate-950 shadow-md' : 'text-slate-400'}`}>Register</button>
+                  <div className="flex bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-1">
+                    <button onClick={() => setAuthMode('login')} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${authMode === 'login' ? 'bg-primary-container text-on-primary-container' : 'text-ink-secondary'}`}>Login</button>
+                    <button onClick={() => setAuthMode('register')} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${authMode === 'register' ? 'bg-primary-container text-on-primary-container' : 'text-ink-secondary'}`}>Register</button>
                   </div>
-                  <div className="glass-panel border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl">
-                    <h1 className="text-xl font-extrabold text-white">Contractor Service Hub</h1>
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 sm:p-7 space-y-4 shadow-2xl">
+                    <h1 className="text-xl font-extrabold text-ink-primary">Contractor Service Hub</h1>
                     {authMode === 'register' && (
-                      <input value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} placeholder="Business or contractor name" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                      <input value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} placeholder="Business or contractor name" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
                     )}
-                    <input type="email" value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} placeholder="Contractor email" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                    <input type="email" value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} placeholder="Contractor email" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
                     {authMode === 'register' && (
                       <>
-                        <input value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} placeholder="Phone number" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
-                        <input value={contractorForm.service_area} onChange={e => setContractorForm({...contractorForm, service_area: e.target.value})} placeholder="Service area (e.g. Zone 4)" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
-                        <input value={contractorForm.skills} onChange={e => setContractorForm({...contractorForm, skills: e.target.value})} placeholder="Skills (Roads, Asphalt, Plumbing, Electrical)" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
-                        <input value={contractorForm.payout_account_id} onChange={e => setContractorForm({...contractorForm, payout_account_id: e.target.value})} placeholder="Stripe Connect account (acct_…)" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                        <input value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} placeholder="Phone number" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
+                        <input value={contractorForm.service_area} onChange={e => setContractorForm({...contractorForm, service_area: e.target.value})} placeholder="Service area (e.g. Zone 4)" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
+                        <input value={contractorForm.skills} onChange={e => setContractorForm({...contractorForm, skills: e.target.value})} placeholder="Skills (Roads, Asphalt, Plumbing, Electrical)" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
+                        <input value={contractorForm.payout_account_id} onChange={e => setContractorForm({...contractorForm, payout_account_id: e.target.value})} placeholder="Stripe Connect account (acct_…)" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
                       </>
                     )}
-                    <input type="password" value={authForm.password} onChange={e => setAuthForm({...authForm, password: e.target.value})} placeholder="Password" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                    <input type="password" value={authForm.password} onChange={e => setAuthForm({...authForm, password: e.target.value})} placeholder="Password" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
                     {authMode === 'register' && (
-                      <input type="password" value={authForm.confirmPassword} onChange={e => setAuthForm({...authForm, confirmPassword: e.target.value})} placeholder="Confirm password" className="w-full glass-input rounded-xl p-3 text-xs sm:text-sm text-white" />
+                      <input type="password" value={authForm.confirmPassword} onChange={e => setAuthForm({...authForm, confirmPassword: e.target.value})} placeholder="Confirm password" className="w-full glass-input rounded-lg p-3 text-xs sm:text-sm text-ink-primary" />
                     )}
-                    {authError && <div className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 p-2.5 rounded-xl">{authError}</div>}
-                    <button onClick={authenticateContractor} disabled={authBusy} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 text-slate-950 font-bold text-sm shadow-lg shadow-sky-500/20 transition-all">
+                    {authError && <div className="text-xs text-red-400 bg-transparent border border-red-500 p-2.5 rounded-lg">{authError}</div>}
+                    <button onClick={authenticateContractor} disabled={authBusy} className="w-full py-3.5 rounded-lg bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-40">
                       {authBusy ? 'Authenticating…' : authMode === 'register' ? 'Submit Registration' : 'Contractor Sign In'}
                     </button>
                   </div>
-                  {authUser && <button onClick={logout} className="block mx-auto text-xs text-slate-400 hover:text-white underline">Log out of current session</button>}
+                  {authUser && <button onClick={logout} className="block mx-auto text-xs text-ink-secondary hover:text-ink-primary underline">Log out of current session</button>}
                 </div>
               ) : (
                 <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 rounded-lg shadow-xl">
                     <div>
-                      <div className="text-[10px] font-mono tracking-widest text-sky-400 font-bold uppercase">CONTRACTOR OPERATIONS PORTAL</div>
-                      <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-1">{contractorProfile?.name || 'Contractor Hub'}</h1>
-                      <p className="text-xs text-slate-400 mt-0.5 font-mono">Status: {contractorProfile?.approval_status || 'Approved'} · Rating: ★ {contractorProfile?.rating || '5.0'}</p>
+                      <div className="text-[10px] font-mono tracking-widest text-accent-electric-cyan font-bold uppercase">CONTRACTOR OPERATIONS PORTAL</div>
+                      <h1 className="text-xl sm:text-2xl font-extrabold text-ink-primary mt-1">{contractorProfile?.name || 'Contractor Hub'}</h1>
+                      <p className="text-xs text-ink-secondary mt-0.5 font-mono">Status: {contractorProfile?.approval_status || 'Approved'} · Rating: ★ {contractorProfile?.rating || '5.0'}</p>
                     </div>
-                    <button onClick={logout} className="px-4 py-2 rounded-xl glass-card border border-slate-700 text-xs font-semibold text-slate-300">
+                    <button onClick={logout} className="px-4 py-2 rounded-lg bg-surface-container border-2 border-border-black text-xs font-semibold text-ink-secondary">
                       Log out
                     </button>
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Assigned Work Orders</h2>
+                    <h2 className="text-sm font-bold text-ink-primary font-mono uppercase tracking-wider">Assigned Work Orders</h2>
                     {contractorJobs.map(job => (
-                      <div key={job.offer_id} className="glass-panel border border-slate-800/80 rounded-3xl p-6 space-y-3 shadow-xl">
+                      <div key={job.offer_id} className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 space-y-3 shadow-xl">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
-                            <div className="text-xs font-mono text-sky-400 font-bold">{job.offer_id} · {job.complaint_id}</div>
-                            <h3 className="text-base font-bold text-white mt-0.5">{job.issue_title}</h3>
-                            <p className="text-xs text-slate-400 mt-1 font-mono">{job.work_location_area} · Budget: BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
+                            <div className="text-xs font-mono text-accent-electric-cyan font-bold">{job.offer_id} · {job.complaint_id}</div>
+                            <h3 className="text-base font-bold text-ink-primary mt-0.5">{job.issue_title}</h3>
+                            <p className="text-xs text-ink-secondary mt-1 font-mono">{job.work_location_area} · Budget: BDT {Number(job.budget_cap).toLocaleString()} · SLA: {job.sla_hours}h</p>
                           </div>
-                          <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full h-fit">
+                          <span className="text-xs font-mono font-bold text-status-warning-amber bg-status-warning-amber/10 border-2 border-status-warning-amber px-3 py-1 rounded-full h-fit">
                             {job.status}
                           </span>
                         </div>
                         <div className="flex gap-2.5 pt-2">
                           {job.status === 'Sent' && (
                             <>
-                              <button onClick={() => updateContractorJob(job, 'Rejected')} className="px-4 py-2 rounded-xl border border-red-500/40 text-red-400 hover:bg-red-500/10 text-xs font-bold transition-colors">
+                              <button onClick={() => updateContractorJob(job, 'Rejected')} className="px-4 py-2 rounded-lg border border-red-500 text-red-400 hover:bg-transparent text-xs font-bold transition-colors">
                                 Reject
                               </button>
-                              <button onClick={() => updateContractorJob(job, 'Accepted')} className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-colors shadow-md">
+                              <button onClick={() => updateContractorJob(job, 'Accepted')} className="px-5 py-2 rounded-lg bg-status-live-green hover:opacity-90 text-on-primary-container text-xs font-mono font-bold border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] transition-all">
                                 Accept Order
                               </button>
                             </>
                           )}
                           {job.status === 'Accepted' && (
-                            <button onClick={() => updateContractorJob(job, 'In Progress')} className="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-colors shadow-md">
+                            <button onClick={() => updateContractorJob(job, 'In Progress')} className="px-5 py-2 rounded-lg bg-primary-container hover:bg-primary-container text-on-primary-container text-xs font-bold transition-colors shadow-md">
                               Start Work On-Site
                             </button>
                           )}
                           {job.status === 'In Progress' && (
                             <div className="w-full grid gap-2 sm:grid-cols-2">
-                              <label className="glass-input rounded-xl p-3 text-xs text-slate-300 cursor-pointer"><span>{contractorProofs[job.offer_id]?.image?.name || 'Choose completion photo'}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),image:e.target.files?.[0] || null}})} /></label>
-                              <input type="url" value={contractorProofs[job.offer_id]?.report_url || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),report_url:e.target.value}})} placeholder="Public Google Drive report link" className="glass-input rounded-xl p-3 text-xs text-white" />
-                              <textarea value={contractorProofs[job.offer_id]?.note || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),note:e.target.value}})} placeholder="Short completion summary" rows="2" className="sm:col-span-2 glass-input rounded-xl p-3 text-xs text-white resize-none" />
-                              <label className="sm:col-span-2 flex items-start gap-2.5 rounded-xl border border-slate-700 bg-slate-900/60 p-3 text-xs text-slate-300 cursor-pointer">
+                              <label className="glass-input rounded-lg p-3 text-xs text-ink-secondary cursor-pointer"><span>{contractorProofs[job.offer_id]?.image?.name || 'Choose completion photo'}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),image:e.target.files?.[0] || null}})} /></label>
+                              <input type="url" value={contractorProofs[job.offer_id]?.report_url || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),report_url:e.target.value}})} placeholder="Public Google Drive report link" className="glass-input rounded-lg p-3 text-xs text-ink-primary" />
+                              <textarea value={contractorProofs[job.offer_id]?.note || ''} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),note:e.target.value}})} placeholder="Short completion summary" rows="2" className="sm:col-span-2 glass-input rounded-lg p-3 text-xs text-ink-primary resize-none" />
+                              <label className="sm:col-span-2 flex items-start gap-2.5 rounded-lg border-2 border-border-black bg-surface-container p-3 text-xs text-ink-secondary cursor-pointer">
                                 <input type="checkbox" checked={Boolean(contractorProofs[job.offer_id]?.public_access_confirmed)} onChange={e => setContractorProofs({...contractorProofs,[job.offer_id]:{...(contractorProofs[job.offer_id]||{}),public_access_confirmed:e.target.checked}})} className="mt-0.5 accent-sky-500" />
-                                <span>I confirm the Google Drive report is set to <strong className="text-white">Anyone with the link can view</strong>.</span>
+                                <span>I confirm the Google Drive report is set to <strong className="text-ink-primary">Anyone with the link can view</strong>.</span>
                               </label>
-                              <button onClick={() => updateContractorJob(job, 'Proof Submitted')} className="sm:col-span-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold">Submit completed work for review</button>
+                              <button onClick={() => updateContractorJob(job, 'Proof Submitted')} className="sm:col-span-2 px-5 py-2.5 rounded-lg bg-status-live-green hover:opacity-90 text-on-primary-container text-xs font-mono font-bold border-2 border-border-black">Submit completed work for review</button>
                             </div>
                           )}
-                          {job.status === 'Proof Submitted' && <p className="text-xs text-emerald-300">Completion proof submitted. Waiting for authority verification.</p>}
+                          {job.status === 'Proof Submitted' && <p className="text-xs text-status-live-green">Completion proof submitted. Waiting for authority verification.</p>}
                         </div>
                       </div>
                     ))}
                     {!contractorJobs.length && (
-                      <div className="glass-panel border border-slate-800 rounded-3xl p-12 text-center text-xs text-slate-400">
+                      <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-12 text-center text-xs text-ink-secondary">
                         No active work orders currently assigned to your team.
                       </div>
                     )}
@@ -2637,7 +2637,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     onDemoOfficerLogin={handleDemoOfficerLogin}
                   />
                   {authUser && (
-                    <button onClick={logout} className="block mx-auto text-xs text-slate-400 hover:text-white underline">
+                    <button onClick={logout} className="block mx-auto text-xs text-ink-secondary hover:text-ink-primary underline">
                       Log out of {authUser.email} first
                     </button>
                   )}
@@ -2645,23 +2645,23 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
               ) : (
                 <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 space-y-8 reveal-up">
                   {/* COMMAND HEADER */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel border border-slate-800 p-6 rounded-3xl shadow-xl">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 rounded-lg shadow-xl">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <div className="text-xs text-sky-400 font-semibold">Municipal operations</div>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                        <div className="text-xs text-accent-electric-cyan font-semibold">Municipal operations</div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
                           DEMO / SIMULATED ENVIRONMENT
                         </span>
                         {authUser?.role === 'officer' && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container border-2 border-border-black text-ink-secondary">
                             Authority Scoped ({authUser.authority_id})
                           </span>
                         )}
                       </div>
-                      <h1 className="text-xl sm:text-2xl font-bold text-white mt-1 tracking-tight">
+                      <h1 className="text-xl sm:text-2xl font-bold text-ink-primary mt-1 tracking-tight">
                         {authUser?.role === 'officer' ? `${authUser.name} Workspace` : 'Authority dashboard'}
                       </h1>
-                      <p className="text-sm text-slate-400 mt-1">
+                      <p className="text-sm text-ink-secondary mt-1">
                         {authUser?.role === 'officer'
                           ? `Simulated Officer Scoped to ${authUser.authority_id} · ${authUser.department || 'Department Operations'}`
                           : 'Review priority cases, approve evidence, and manage assignments.'}
@@ -2682,8 +2682,8 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           key={id}
                           onClick={() => setAdminView(id)}
                           className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${adminView === id
-                              ? 'bg-sky-500 text-slate-950 shadow-glow-sky'
-                              : 'glass-card border border-slate-800 text-slate-300 hover:text-white'
+                              ? 'bg-primary-container text-on-primary-container font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]'
+                              : 'bg-surface-container border-2 border-border-black text-ink-secondary hover:text-ink-primary'
                             }`}
                         >
                           <Icon name={icon} className="w-3.5 h-3.5" />
@@ -2701,12 +2701,12 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       { label: 'SLA Overdue', val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length, alert: true, icon: 'clock' },
                       { label: 'Active Work', val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length, alert: false, icon: 'inbox' }
                     ].map((kpi, idx) => (
-                      <div key={idx} className={`glass-panel rounded-2xl p-5 border transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500/40 bg-red-950/15' : 'border-slate-800'}`}>
-                        <div className="flex items-center justify-between text-slate-400">
+                      <div key={idx} className={`bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 border transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500 bg-transparent' : 'border-border-black'}`}>
+                        <div className="flex items-center justify-between text-ink-secondary">
                           <span className="text-xs font-semibold">{kpi.label}</span>
-                          <Icon name={kpi.icon} className={`w-4 h-4 ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-sky-400'}`} />
+                          <Icon name={kpi.icon} className={`w-4 h-4 ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-accent-electric-cyan'}`} />
                         </div>
-                        <div className={`text-3xl font-bold mt-2 tracking-tight ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-white'}`}>
+                        <div className={`text-3xl font-bold mt-2 tracking-tight ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-ink-primary'}`}>
                           {kpi.val}
                         </div>
                       </div>
@@ -2715,26 +2715,26 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                   {/* AI GOVERNANCE INSIGHT */}
                   {dashboard?.insight && (
-                    <div className="glass-panel border border-sky-500/30 bg-sky-950/20 rounded-2xl p-5 flex items-start gap-3.5 shadow-lg">
-                      <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] bg-surface-container rounded-lg p-5 flex items-start gap-3.5 shadow-lg">
+                      <div className="w-9 h-9 rounded-lg bg-surface-container border border-border-black flex items-center justify-center text-accent-electric-cyan shrink-0">
                         <Icon name="sparkles" className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-sky-400">Suggested priority summary</div>
-                        <p className="text-xs sm:text-sm text-slate-200 mt-1 leading-relaxed">{dashboard.insight}</p>
+                        <div className="text-xs font-semibold text-accent-electric-cyan">Suggested priority summary</div>
+                        <p className="text-xs sm:text-sm text-ink-primary mt-1 leading-relaxed">{dashboard.insight}</p>
                       </div>
                     </div>
                   )}
 
                   {/* QUEUE FILTERS */}
                   {['queue', 'map', 'review', 'proofs'].includes(adminView) && (
-                    <div className="glass-panel border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 sm:p-6 space-y-4 shadow-xl">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <h2 className="text-sm font-semibold text-white">Find and filter cases</h2>
-                          <p className="text-xs text-slate-400 mt-0.5">Showing {filteredAdminReports.length} of {reports.length} municipal incidents</p>
+                          <h2 className="text-sm font-semibold text-ink-primary">Find and filter cases</h2>
+                          <p className="text-xs text-ink-secondary mt-0.5">Showing {filteredAdminReports.length} of {reports.length} municipal incidents</p>
                         </div>
-                        <button onClick={resetQueueFilters} className="text-xs text-sky-400 hover:text-sky-300 font-mono font-semibold underline underline-offset-4">
+                        <button onClick={resetQueueFilters} className="text-xs text-accent-electric-cyan hover:text-accent-electric-cyan font-mono font-semibold underline underline-offset-4">
                           Reset All Filters
                         </button>
                       </div>
@@ -2746,34 +2746,34 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           placeholder="Search ID, area, type…"
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
-                          className="lg:col-span-2 glass-input rounded-xl px-3.5 py-2.5 text-xs text-white"
+                          className="lg:col-span-2 glass-input rounded-lg px-3.5 py-2.5 text-xs text-ink-primary"
                         />
-                        <select aria-label="Reported within" value={queueFilters.days} onChange={e => setQueueFilters({ ...queueFilters, days: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">Any age</option>
-                          <option value="1" className="bg-slate-900">Last 24 hours</option>
-                          <option value="7" className="bg-slate-900">Last 7 days</option>
-                          <option value="15" className="bg-slate-900">Last 15 days</option>
-                          <option value="30" className="bg-slate-900">Last 30 days</option>
+                        <select aria-label="Reported within" value={queueFilters.days} onChange={e => setQueueFilters({ ...queueFilters, days: e.target.value })} className="glass-input rounded-lg px-3 py-2.5 text-xs text-ink-primary">
+                          <option value="all" className="bg-surface-container">Any age</option>
+                          <option value="1" className="bg-surface-container">Last 24 hours</option>
+                          <option value="7" className="bg-surface-container">Last 7 days</option>
+                          <option value="15" className="bg-surface-container">Last 15 days</option>
+                          <option value="30" className="bg-surface-container">Last 30 days</option>
                         </select>
-                        <select aria-label="Work state" value={queueFilters.state} onChange={e => setQueueFilters({ ...queueFilters, state: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">All statuses</option>
-                          <option value="needs_action" className="bg-slate-900">Needs action</option>
-                          <option value="assigned" className="bg-slate-900">Assigned</option>
-                          <option value="unresolved" className="bg-slate-900">Unresolved</option>
-                          <option value="resolved" className="bg-slate-900">Resolved</option>
+                        <select aria-label="Work state" value={queueFilters.state} onChange={e => setQueueFilters({ ...queueFilters, state: e.target.value })} className="glass-input rounded-lg px-3 py-2.5 text-xs text-ink-primary">
+                          <option value="all" className="bg-surface-container">All statuses</option>
+                          <option value="needs_action" className="bg-surface-container">Needs action</option>
+                          <option value="assigned" className="bg-surface-container">Assigned</option>
+                          <option value="unresolved" className="bg-surface-container">Unresolved</option>
+                          <option value="resolved" className="bg-surface-container">Resolved</option>
                         </select>
-                        <select aria-label="Category" value={queueFilters.category} onChange={e => setQueueFilters({ ...queueFilters, category: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">All categories</option>
-                          {reportCategories.map(category => <option key={category} value={category} className="bg-slate-900">{category}</option>)}
+                        <select aria-label="Category" value={queueFilters.category} onChange={e => setQueueFilters({ ...queueFilters, category: e.target.value })} className="glass-input rounded-lg px-3 py-2.5 text-xs text-ink-primary">
+                          <option value="all" className="bg-surface-container">All categories</option>
+                          {reportCategories.map(category => <option key={category} value={category} className="bg-surface-container">{category}</option>)}
                         </select>
-                        <select aria-label="Severity" value={queueFilters.severity} onChange={e => setQueueFilters({ ...queueFilters, severity: e.target.value })} className="glass-input rounded-xl px-3 py-2.5 text-xs text-white">
-                          <option value="all" className="bg-slate-900">All severities</option>
-                          {['Critical', 'High', 'Medium', 'Low'].map(level => <option key={level} value={level} className="bg-slate-900">{level}</option>)}
+                        <select aria-label="Severity" value={queueFilters.severity} onChange={e => setQueueFilters({ ...queueFilters, severity: e.target.value })} className="glass-input rounded-lg px-3 py-2.5 text-xs text-ink-primary">
+                          <option value="all" className="bg-surface-container">All severities</option>
+                          {['Critical', 'High', 'Medium', 'Low'].map(level => <option key={level} value={level} className="bg-surface-container">{level}</option>)}
                         </select>
                       </div>
 
                       <div className="flex items-center gap-2 text-xs font-mono">
-                        <span className="text-slate-400">Sort by:</span>
+                        <span className="text-ink-secondary">Sort by:</span>
                         {[
                           ['priority', 'Highest Priority'],
                           ['oldest', 'Oldest First'],
@@ -2782,7 +2782,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           <button
                             key={value}
                             onClick={() => setQueueFilters({ ...queueFilters, sort: value })}
-                            className={`px-3 py-1 rounded-xl border text-[11px] font-bold transition-all ${queueFilters.sort === value ? 'border-sky-500/50 bg-sky-500/20 text-sky-300' : 'border-slate-800 text-slate-400 hover:text-white'
+                            className={`px-3 py-1 rounded-lg border text-[11px] font-bold transition-all ${queueFilters.sort === value ? 'border-border-black bg-primary-container/20 text-accent-electric-cyan' : 'border-border-black text-ink-secondary hover:text-ink-primary'
                               }`}
                           >
                             {label}
@@ -2794,10 +2794,10 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                   {/* SPATIAL MAP VIEW */}
                   {adminView === 'map' && (
-                    <div className="glass-panel border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-4">
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 sm:p-6 space-y-4">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Filtered Incident Telemetry Map</h2>
-                        <span className="text-xs font-mono text-slate-400">{filteredAdminReports.filter(r => Number.isFinite(r.coordinates?.lat)).length} mapped coordinates</span>
+                        <h2 className="text-sm font-bold text-ink-primary font-mono uppercase tracking-wider">Filtered Incident Telemetry Map</h2>
+                        <span className="text-xs font-mono text-ink-secondary">{filteredAdminReports.filter(r => Number.isFinite(r.coordinates?.lat)).length} mapped coordinates</span>
                       </div>
                       <AuthorityMap reports={filteredAdminReports} useClusters={reportsTruncated} onSelect={report => { setSelectedReport(report); showToast(`${report.id}: ${report.status}`); }} />
                     </div>
@@ -2812,9 +2812,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                           ['Pending Triage', reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length],
                           ['Resolved via Bot', reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length]
                         ].map(([label, value]) => (
-                          <div key={label} className="glass-panel border border-slate-800 rounded-2xl p-5">
-                            <div className="text-xs text-slate-400 font-mono">{label}</div>
-                            <div className="text-3xl font-extrabold text-white font-mono mt-1">{value}</div>
+                          <div key={label} className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5">
+                            <div className="text-xs text-ink-secondary font-mono">{label}</div>
+                            <div className="text-3xl font-extrabold text-ink-primary font-mono mt-1">{value}</div>
                           </div>
                         ))}
                       </div>
@@ -2825,20 +2825,20 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   {adminView === 'contractors' && (
                     <div className="space-y-3">
                       {contractors.map(contractor => (
-                        <div key={contractor.contractor_id} className="glass-panel border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div key={contractor.contractor_id} className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                           <div>
-                            <div className="text-xs font-mono text-sky-400 font-bold">{contractor.contractor_id}</div>
-                            <div className="text-base font-bold text-white mt-0.5">{contractor.name}</div>
-                            <div className="text-xs text-slate-400 mt-1 font-mono">
+                            <div className="text-xs font-mono text-accent-electric-cyan font-bold">{contractor.contractor_id}</div>
+                            <div className="text-base font-bold text-ink-primary mt-0.5">{contractor.name}</div>
+                            <div className="text-xs text-ink-secondary mt-1 font-mono">
                               {contractor.service_area} · {(contractor.skills || []).join(', ') || 'General Works'} · {contractor.approval_status || (contractor.verified ? 'Approved' : 'Pending Verification')}
                             </div>
                           </div>
                           {!contractor.verified && (
                             <div className="flex gap-2">
-                              <button onClick={() => approveContractor(contractor, false)} className="px-4 py-2 rounded-xl border border-red-500/30 text-red-400 text-xs font-bold">
+                              <button onClick={() => approveContractor(contractor, false)} className="px-4 py-2 rounded-lg border border-red-500 text-red-400 text-xs font-bold">
                                 Reject
                               </button>
-                              <button onClick={() => approveContractor(contractor, true)} className="px-5 py-2 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold">
+                              <button onClick={() => approveContractor(contractor, true)} className="px-5 py-2 rounded-lg bg-status-live-green text-on-primary-container text-xs font-mono font-bold border-2 border-border-black">
                                 Approve Contractor
                               </button>
                             </div>
@@ -2851,65 +2851,65 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   {/* ESCROW FUNDING VIEW */}
                   {adminView === 'funding' && (
                     <div className="space-y-4">
-                      <div className="glass-panel border border-slate-800 rounded-3xl p-6">
-                        <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">Community Repair Escrow Dispatch</h2>
-                        <p className="text-xs text-slate-400 mt-1">Review applicant work plans, lock budget in escrow, inspect completion proof photos, and release funds.</p>
+                      <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6">
+                        <h2 className="text-sm font-bold text-ink-primary font-mono uppercase tracking-wider">Community Repair Escrow Dispatch</h2>
+                        <p className="text-xs text-ink-secondary mt-1">Review applicant work plans, lock budget in escrow, inspect completion proof photos, and release funds.</p>
                       </div>
                       {repairRequests.length ? repairRequests.map(req => (
-                        <div key={req.request_id} className="glass-panel border border-slate-800 rounded-3xl p-6 grid lg:grid-cols-[1fr_300px] gap-6 shadow-xl">
+                        <div key={req.request_id} className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-6 grid lg:grid-cols-[1fr_300px] gap-6 shadow-xl">
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-xs font-mono text-sky-400 font-bold">{req.request_id}</span>
-                              <span className="text-xs font-mono text-slate-400">Incident: {req.complaint_id}</span>
-                              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-mono text-amber-400 font-bold">{req.status}</span>
+                              <span className="text-xs font-mono text-accent-electric-cyan font-bold">{req.request_id}</span>
+                              <span className="text-xs font-mono text-ink-secondary">Incident: {req.complaint_id}</span>
+                              <span className="px-2.5 py-0.5 rounded-full bg-status-warning-amber/10 border-2 border-status-warning-amber text-[10px] font-mono text-status-warning-amber font-bold">{req.status}</span>
                             </div>
-                            <div className="text-lg font-bold text-white mt-2">{req.applicant_name} · BDT {Number(req.estimated_price).toLocaleString()}</div>
-                            <div className="text-xs text-slate-400 mt-0.5 font-mono">Contact: {req.applicant_contact} · Est. Hours: {req.estimated_hours}h</div>
-                            <div className="mt-4 p-4 rounded-2xl bg-slate-950/80 border border-slate-800">
-                              <div className="text-[10px] font-mono text-slate-400 mb-1 font-bold">SUBMITTED WORK PLAN</div>
-                              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{req.plan}</p>
+                            <div className="text-lg font-bold text-ink-primary mt-2">{req.applicant_name} · BDT {Number(req.estimated_price).toLocaleString()}</div>
+                            <div className="text-xs text-ink-secondary mt-0.5 font-mono">Contact: {req.applicant_contact} · Est. Hours: {req.estimated_hours}h</div>
+                            <div className="mt-4 p-4 rounded-lg bg-surface border-2 border-border-black">
+                              <div className="text-[10px] font-mono text-ink-secondary mb-1 font-bold">SUBMITTED WORK PLAN</div>
+                              <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">{req.plan}</p>
                             </div>
                             {req.proof && (
-                              <div className="mt-4 flex items-center gap-3 glass-card p-3 rounded-2xl border border-slate-800">
-                                <img src={absoluteMediaUrl(req.proof.after_image_url)} className="w-24 h-20 object-cover rounded-xl border border-slate-700" alt="Completion proof" />
+                              <div className="mt-4 flex items-center gap-3 bg-surface-container border-2 border-border-black p-3 rounded-lg">
+                                <img src={absoluteMediaUrl(req.proof.after_image_url)} className="w-24 h-20 object-cover rounded-lg border-2 border-border-black" alt="Completion proof" />
                                 <div>
-                                  <div className="text-xs text-emerald-400 font-bold">Youth completion photo uploaded</div>
-                                  <div className="text-xs text-slate-400 mt-1">{req.proof.completion_note}</div>
+                                  <div className="text-xs text-status-live-green font-bold">Youth completion photo uploaded</div>
+                                  <div className="text-xs text-ink-secondary mt-1">{req.proof.completion_note}</div>
                                 </div>
                               </div>
                             )}
                           </div>
                           <div className="space-y-3">
-                            <div className="rounded-2xl glass-card border border-slate-800 p-4">
-                              <div className="text-[10px] font-mono text-slate-400 font-bold">ESCROW STATUS</div>
-                              <div className="text-xs text-white mt-1">{req.funds_status}</div>
-                              {req.approved_budget && <div className="text-xl font-extrabold text-emerald-400 font-mono mt-1">BDT {Number(req.approved_budget).toLocaleString()}</div>}
+                            <div className="rounded-lg bg-surface-container border-2 border-border-black p-4">
+                              <div className="text-[10px] font-mono text-ink-secondary font-bold">ESCROW STATUS</div>
+                              <div className="text-xs text-ink-primary mt-1">{req.funds_status}</div>
+                              {req.approved_budget && <div className="text-xl font-extrabold text-status-live-green font-mono mt-1">BDT {Number(req.approved_budget).toLocaleString()}</div>}
                             </div>
                             {req.status === 'Pending Admin Review' && (
                               <>
-                                <label className="block text-xs text-slate-400 font-mono">Approved Escrow Amount
-                                  <input type="number" value={fundingBudgets[req.request_id] ?? req.estimated_price} onChange={e => setFundingBudgets({ ...fundingBudgets, [req.request_id]: e.target.value })} className="mt-1 w-full glass-input rounded-xl p-2.5 text-xs text-white font-mono" />
+                                <label className="block text-xs text-ink-secondary font-mono">Approved Escrow Amount
+                                  <input type="number" value={fundingBudgets[req.request_id] ?? req.estimated_price} onChange={e => setFundingBudgets({ ...fundingBudgets, [req.request_id]: e.target.value })} className="mt-1 w-full glass-input rounded-lg p-2.5 text-xs text-ink-primary font-mono" />
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
-                                  <button onClick={() => decideRepair(req, false)} className="px-3 py-2 rounded-xl border border-red-500/30 text-red-400 text-xs font-bold">Reject</button>
-                                  <button onClick={() => decideRepair(req, true)} className="px-3 py-2 rounded-xl bg-sky-500 text-slate-950 text-xs font-bold shadow-md">Reserve Escrow</button>
+                                  <button onClick={() => decideRepair(req, false)} className="px-3 py-2 rounded-lg border border-red-500 text-red-400 text-xs font-bold">Reject</button>
+                                  <button onClick={() => decideRepair(req, true)} className="px-3 py-2 rounded-lg bg-primary-container text-on-primary-container text-xs font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]">Reserve Escrow</button>
                                 </div>
                               </>
                             )}
                             {req.status === 'Approved - Awaiting Work' && (
-                              <div className="rounded-2xl bg-amber-500/10 border border-amber-500/25 p-3.5 text-xs text-amber-300 leading-snug">
+                              <div className="rounded-lg bg-status-warning-amber/10 border-2 border-status-warning-amber p-3.5 text-xs text-status-warning-amber leading-snug">
                                 Waiting for youth worker on-site execution and after photo upload.
                               </div>
                             )}
                             {req.status === 'Proof Submitted - Awaiting Verification' && (
-                              <button onClick={() => releaseFunds(req)} className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 transition-all">
+                              <button onClick={() => releaseFunds(req)} className="w-full py-3 rounded-lg bg-status-live-green hover:bg-status-live-green text-on-primary-container text-xs font-bold shadow-lg shadow-status-live-green transition-all">
                                 ✓ Verify Proof & Release Funds
                               </button>
                             )}
                           </div>
                         </div>
                       )) : (
-                        <div className="glass-panel border border-slate-800 rounded-3xl p-10 text-center text-xs text-slate-400">
+                        <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-10 text-center text-xs text-ink-secondary">
                           No community funding requests currently awaiting review.
                         </div>
                       )}
@@ -2918,79 +2918,79 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                   {/* WORK QUEUE VIEW */}
                   {['queue', 'review', 'proofs'].includes(adminView) && (
-                    <div className="glass-panel border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-                      <div className="px-6 py-4 border-b border-slate-800/80 flex items-center justify-between">
-                        <h2 className="text-xs font-bold text-white font-mono uppercase tracking-wider">{adminView === 'proofs' ? 'Contractor proof review' : adminView === 'review' ? 'Human review queue' : 'Municipal work queue'}</h2>
-                        <span className="text-xs font-mono text-slate-400">{displayedAdminReports.length} shown</span>
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg overflow-hidden shadow-2xl">
+                      <div className="px-6 py-4 border-b-2 border-border-black/30 flex items-center justify-between">
+                        <h2 className="text-xs font-bold text-ink-primary font-mono uppercase tracking-wider">{adminView === 'proofs' ? 'Contractor proof review' : adminView === 'review' ? 'Human review queue' : 'Municipal work queue'}</h2>
+                        <span className="text-xs font-mono text-ink-secondary">{displayedAdminReports.length} shown</span>
                       </div>
 
                       {/* INCIDENT WORKSPACE DRAWER */}
                       {(operationLoading || operationDetail) && (
-                        <div className="border-b border-slate-800 p-6 bg-slate-950/80 reveal-up">
+                        <div className="border-b-2 border-border-black/30 p-6 bg-surface reveal-up">
                           {operationLoading ? (
-                            <div className="text-xs text-slate-400 font-mono">Loading incident workspace…</div>
+                            <div className="text-xs text-ink-secondary font-mono">Loading incident workspace…</div>
                           ) : (
                             <div className="space-y-5">
                               <div className="flex items-start justify-between gap-4">
                                 <div>
-                                  <div className="text-xs font-mono text-sky-400 font-bold">INCIDENT WORKSPACE · {operationDetail.complaint.id}</div>
-                                  <h3 className="text-lg font-bold text-white mt-0.5">{operationDetail.complaint.title}</h3>
-                                  <p className="text-xs text-slate-400 mt-0.5 font-mono">{operationDetail.complaint.location}</p>
+                                  <div className="text-xs font-mono text-accent-electric-cyan font-bold">INCIDENT WORKSPACE · {operationDetail.complaint.id}</div>
+                                  <h3 className="text-lg font-bold text-ink-primary mt-0.5">{operationDetail.complaint.title}</h3>
+                                  <p className="text-xs text-ink-secondary mt-0.5 font-mono">{operationDetail.complaint.location}</p>
                                 </div>
-                                <button onClick={() => setOperationDetail(null)} className="text-slate-400 hover:text-white text-lg font-bold">×</button>
+                                <button onClick={() => setOperationDetail(null)} className="text-ink-secondary hover:text-ink-primary text-lg font-bold">×</button>
                               </div>
 
                               <div className="grid lg:grid-cols-[240px_1fr] gap-5">
                                 {operationDetail.complaint.beforeImage ? (
-                                  <img src={operationDetail.complaint.beforeImage} alt="Citizen evidence" className="w-full h-48 object-cover rounded-2xl border border-slate-800 shadow-md" />
+                                  <img src={operationDetail.complaint.beforeImage} alt="Citizen evidence" className="w-full h-48 object-cover rounded-lg border-2 border-border-black shadow-md" />
                                 ) : (
-                                  <div className="h-48 rounded-2xl glass-card border border-slate-800 flex items-center justify-center text-xs text-slate-500">
+                                  <div className="h-48 rounded-lg bg-surface-container border-2 border-border-black flex items-center justify-center text-xs text-ink-subtle">
                                     No photo evidence supplied
                                   </div>
                                 )}
                                 <div className="grid sm:grid-cols-2 gap-3 text-xs">
-                                  <div className="p-3.5 rounded-2xl glass-card border border-slate-800">
-                                    <div className="text-slate-400 font-mono text-[10px] font-bold">CITIZEN INPUT</div>
-                                    <p className="text-slate-200 mt-1.5 leading-relaxed">{operationDetail.complaint.description}</p>
+                                  <div className="p-3.5 rounded-lg bg-surface-container border-2 border-border-black">
+                                    <div className="text-ink-secondary font-mono text-[10px] font-bold">CITIZEN INPUT</div>
+                                    <p className="text-ink-primary mt-1.5 leading-relaxed">{operationDetail.complaint.description}</p>
                                   </div>
-                                  <div className="p-3.5 rounded-2xl glass-card border border-slate-800">
-                                    <div className="text-slate-400 font-mono text-[10px] font-bold">AI VISION ASSESSMENT</div>
-                                    <div className="text-white font-bold mt-1.5">{operationDetail.complaint.category} · {operationDetail.complaint.severity}</div>
-                                    <p className="text-slate-400 mt-1 text-[11px] leading-snug">{operationDetail.complaint.ai_reasoning || operationDetail.complaint.title}</p>
-                                    <div className="text-sky-400 font-mono text-[11px] mt-1.5">Confidence: {operationDetail.complaint.confidence}</div>
+                                  <div className="p-3.5 rounded-lg bg-surface-container border-2 border-border-black">
+                                    <div className="text-ink-secondary font-mono text-[10px] font-bold">AI VISION ASSESSMENT</div>
+                                    <div className="text-ink-primary font-bold mt-1.5">{operationDetail.complaint.category} · {operationDetail.complaint.severity}</div>
+                                    <p className="text-ink-secondary mt-1 text-[11px] leading-snug">{operationDetail.complaint.ai_reasoning || operationDetail.complaint.title}</p>
+                                    <div className="text-accent-electric-cyan font-mono text-[11px] mt-1.5">Confidence: {operationDetail.complaint.confidence}</div>
                                   </div>
-                                  <div className="sm:col-span-2 p-3.5 rounded-2xl glass-card border border-slate-800">
+                                  <div className="sm:col-span-2 p-3.5 rounded-lg bg-surface-container border-2 border-border-black">
                                     <div className="flex flex-wrap items-center justify-between gap-1.5">
-                                      <div className="text-slate-400 font-mono text-[10px] font-bold">ASSIGNED RESPONSIBLE AUTHORITY</div>
+                                      <div className="text-ink-secondary font-mono text-[10px] font-bold">ASSIGNED RESPONSIBLE AUTHORITY</div>
                                       <div className="flex flex-wrap items-center gap-1">
-                                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
                                           {operationDetail.complaint.assigned_authority?.authority_data_status === 'gazette_verified' ? 'Gazette Verified' : 'Candidate Authority'}
                                         </span>
                                         {operationDetail.complaint.assigned_authority?.jurisdiction_data_status === 'statutory_polygon_verified' ? (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-live-green/10 text-status-live-green border border-status-live-green">
                                             Statutory Verified
                                           </span>
                                         ) : operationDetail.complaint.assigned_authority?.jurisdiction_data_status === 'heuristic_bbox' ? (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
                                             Heuristic Area
                                           </span>
                                         ) : (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container text-accent-electric-cyan border border-border-black">
                                             Location Inferred
                                           </span>
                                         )}
                                         {operationDetail.complaint.assigned_authority?.assignment_status === 'officer_assigned' && (
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container border-2 border-border-black text-ink-secondary">
                                             Officer Assigned
                                           </span>
                                         )}
-                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-canvas-paper text-ink-secondary border-2 border-border-black">
                                           Simulated Workflow
                                         </span>
                                       </div>
                                     </div>
-                                    <div className="mt-2 text-white font-semibold flex items-center gap-2">
-                                      <Icon name="building-2" className="w-4 h-4 text-sky-400" />
+                                    <div className="mt-2 text-ink-primary font-semibold flex items-center gap-2">
+                                      <Icon name="building-2" className="w-4 h-4 text-accent-electric-cyan" />
                                       <span>
                                         {operationDetail.complaint.assigned_authority?.authority_name
                                           ? `${operationDetail.complaint.assigned_authority.authority_name} (${operationDetail.complaint.assigned_authority.short_code})`
@@ -2998,40 +2998,40 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                       </span>
                                     </div>
                                     {operationDetail.complaint.assigned_authority?.department && operationDetail.complaint.assigned_authority?.authority_name && (
-                                      <div className="text-[11px] text-slate-300 mt-1 pl-6">
-                                        Department: <span className="text-slate-100 font-medium">{operationDetail.complaint.assigned_authority.department}</span>
+                                      <div className="text-[11px] text-ink-secondary mt-1 pl-6">
+                                        Department: <span className="text-ink-primary font-medium">{operationDetail.complaint.assigned_authority.department}</span>
                                       </div>
                                     )}
                                     {operationDetail.complaint.assigned_authority?.jurisdiction && (
-                                      <div className="text-[11px] text-slate-400 mt-0.5 pl-6 flex items-center gap-1.5">
-                                        <Icon name="map-pin" className="w-3 h-3 text-sky-400" />
+                                      <div className="text-[11px] text-ink-secondary mt-0.5 pl-6 flex items-center gap-1.5">
+                                        <Icon name="map-pin" className="w-3 h-3 text-accent-electric-cyan" />
                                         <span>Jurisdiction: {operationDetail.complaint.assigned_authority.jurisdiction}</span>
                                         {operationDetail.complaint.assigned_authority.routing_method && (
-                                          <span className="font-mono text-[10px] text-slate-500">({operationDetail.complaint.assigned_authority.routing_method})</span>
+                                          <span className="font-mono text-[10px] text-ink-subtle">({operationDetail.complaint.assigned_authority.routing_method})</span>
                                         )}
                                       </div>
                                     )}
                                   </div>
-                                  <div className="sm:col-span-2 p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/25">
-                                    <div className="text-sky-400 font-mono text-[10px] font-bold">RECOMMENDED NEXT ACTION</div>
-                                    <p className="text-slate-200 mt-1 text-xs">{operationDetail.recommended_action}</p>
+                                  <div className="sm:col-span-2 p-3.5 rounded-lg bg-surface-container border border-border-black">
+                                    <div className="text-accent-electric-cyan font-mono text-[10px] font-bold">RECOMMENDED NEXT ACTION</div>
+                                    <p className="text-ink-primary mt-1 text-xs">{operationDetail.recommended_action}</p>
                                   </div>
                                 </div>
                               </div>
 
                               {/* SIMULATED FIELD OFFICER WORKFLOW CONTROLS */}
                               {(authUser?.role === 'officer' || authUser?.role === 'admin') && (
-                                <div data-testid="officer-workflow-controls" className="rounded-2xl border border-sky-500/30 bg-slate-900/80 p-4 space-y-4">
-                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                                    <div className="text-xs font-bold font-mono text-sky-400 flex items-center gap-2">
-                                      <Icon name="briefcase" className="w-4 h-4 text-sky-400" />
+                                <div data-testid="officer-workflow-controls" className="rounded-lg border border-border-black bg-surface-container p-4 space-y-4">
+                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-border-black/30 pb-2.5">
+                                    <div className="text-xs font-bold font-mono text-accent-electric-cyan flex items-center gap-2">
+                                      <Icon name="briefcase" className="w-4 h-4 text-accent-electric-cyan" />
                                       <span>SIMULATED FIELD OFFICER WORKFLOW</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-canvas-paper text-ink-secondary border-2 border-border-black">
                                         Current Status: {operationDetail.complaint.status}
                                       </span>
-                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-status-warning-amber/10 text-status-warning-amber border border-status-warning-amber">
                                         Simulated Demo
                                       </span>
                                     </div>
@@ -3039,14 +3039,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                                   {/* Acknowledge Button */}
                                   {['Submitted', 'Assigned'].includes(operationDetail.complaint.status) && operationDetail.complaint.assigned_authority?.routing_status === 'assigned' && (
-                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg bg-surface-container border-2 border-border-black">
                                       <div>
-                                        <div className="text-xs font-bold text-white">Step 1: Acknowledge Assignment</div>
-                                        <div className="text-[11px] text-slate-400">Confirm authority ownership and dispatch inspection crew.</div>
+                                        <div className="text-xs font-bold text-ink-primary">Step 1: Acknowledge Assignment</div>
+                                        <div className="text-[11px] text-ink-secondary">Confirm authority ownership and dispatch inspection crew.</div>
                                       </div>
                                       <button
                                         onClick={() => handleOfficerStatusUpdate('Acknowledged', 'Officer acknowledged incident and dispatched inspection team.')}
-                                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                        className="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container text-xs font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center gap-1.5"
                                       >
                                         <Icon name="check" className="w-4 h-4" />
                                         <span>Acknowledge Incident</span>
@@ -3056,30 +3056,30 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                                   {/* Reopened Incident Reinspection Card */}
                                   {operationDetail.complaint.status === 'Reopened - Needs Review' && (
-                                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+                                    <div className="p-4 rounded-lg bg-status-warning-amber/10 border-2 border-status-warning-amber space-y-3">
                                       <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                          <span className="text-amber-400 font-bold text-xs uppercase font-mono tracking-wider">Citizen Dispute · Reinspection Required</span>
-                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-500/15 text-red-300 border border-red-500/30 font-bold">
+                                          <span className="text-status-warning-amber font-bold text-xs uppercase font-mono tracking-wider">Citizen Dispute · Reinspection Required</span>
+                                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-transparent border border-red-500 text-red-400 font-bold">
                                             {operationDetail.complaint.citizen_verification?.outcome || 'not_fixed'}
                                           </span>
                                         </div>
                                       </div>
-                                      <div className="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                                        <span className="text-slate-400 font-semibold">Citizen feedback: </span>
+                                      <div className="text-xs text-ink-secondary bg-surface-container p-2.5 rounded-lg border-2 border-border-black">
+                                        <span className="text-ink-secondary font-semibold">Citizen feedback: </span>
                                         {operationDetail.complaint.citizen_verification?.note || operationDetail.complaint.review_reason || 'Citizen disputed resolution completion.'}
                                       </div>
                                       <div className="flex flex-wrap gap-2 pt-1">
                                         <button
                                           onClick={() => handleOfficerStatusUpdate('Acknowledged', 'Officer acknowledged citizen dispute and scheduled reinspection.')}
-                                          className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                          className="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container text-xs font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center gap-1.5"
                                         >
                                           <Icon name="check" className="w-4 h-4" />
                                           <span>Acknowledge Reinspection</span>
                                         </button>
                                         <button
                                           onClick={() => handleOfficerStatusUpdate('In Progress', 'Field team deployed to address citizen dispute.')}
-                                          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                          className="px-4 py-2 rounded-lg bg-status-warning-amber hover:opacity-90 text-on-primary-container text-xs font-mono font-bold border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5"
                                         >
                                           <Icon name="play" className="w-4 h-4" />
                                           <span>Resume Field Work</span>
@@ -3090,14 +3090,14 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                                   {/* Start Work Button */}
                                   {operationDetail.complaint.status === 'Acknowledged' && (
-                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg bg-surface-container border-2 border-border-black">
                                       <div>
-                                        <div className="text-xs font-bold text-white">Step 2: Mobilize Crew & Start Work</div>
-                                        <div className="text-[11px] text-slate-400">Deploy maintenance equipment to site.</div>
+                                        <div className="text-xs font-bold text-ink-primary">Step 2: Mobilize Crew & Start Work</div>
+                                        <div className="text-[11px] text-ink-secondary">Deploy maintenance equipment to site.</div>
                                       </div>
                                       <button
                                         onClick={() => handleOfficerStatusUpdate('In Progress', 'Field maintenance team deployed to site.')}
-                                        className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                                        className="px-4 py-2 rounded-lg bg-status-warning-amber hover:opacity-90 text-on-primary-container text-xs font-mono font-bold border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5"
                                       >
                                         <Icon name="play" className="w-4 h-4" />
                                         <span>Start Field Work</span>
@@ -3110,18 +3110,18 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                     <div className="space-y-4 pt-1">
                                       {/* Progress Note Form */}
                                       <div className="space-y-1.5">
-                                        <label className="block text-[10px] font-mono text-slate-400 uppercase">Field Progress Note</label>
+                                        <label className="block text-[10px] font-mono text-ink-secondary uppercase">Field Progress Note</label>
                                         <div className="flex gap-2">
                                           <input
                                             type="text"
                                             placeholder="Add progress note (e.g. materials arriving at 2 PM)..."
                                             value={officerProgressNote}
                                             onChange={(e) => setOfficerProgressNote(e.target.value)}
-                                            className="min-w-0 flex-1 glass-input rounded-xl p-2.5 text-xs text-white font-mono"
+                                            className="min-w-0 flex-1 glass-input rounded-lg p-2.5 text-xs text-ink-primary font-mono"
                                           />
                                           <button
                                             onClick={handleOfficerProgressUpdate}
-                                            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-sky-400 transition-all shrink-0"
+                                            className="px-4 py-2 rounded-lg bg-canvas-paper hover:bg-surface-container border-2 border-border-black text-xs font-bold text-accent-electric-cyan transition-all shrink-0"
                                           >
                                             Add Note
                                           </button>
@@ -3129,36 +3129,36 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                                       </div>
 
                                       {/* Upload Resolution Evidence Form */}
-                                      <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 space-y-3">
-                                        <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                      <div className="rounded-lg border-2 border-border-black bg-surface p-3.5 space-y-3">
+                                        <div className="text-[11px] font-mono text-status-live-green font-bold uppercase tracking-wider flex items-center gap-1.5">
                                           <Icon name="camera" className="w-3.5 h-3.5" />
                                           <span>Upload Completed Resolution Proof</span>
                                         </div>
                                         <div className="grid sm:grid-cols-2 gap-3">
                                           <div>
-                                            <label className="block text-[10px] font-mono text-slate-400 mb-1 uppercase">Completion Photograph</label>
+                                            <label className="block text-[10px] font-mono text-ink-secondary mb-1 uppercase">Completion Photograph</label>
                                             <input
                                               type="file"
                                               accept="image/*"
                                               onChange={(e) => setEvidenceFile(e.target.files?.[0] || null)}
-                                              className="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-500/20 file:text-sky-300 hover:file:bg-sky-500/30"
+                                              className="w-full text-xs text-ink-secondary file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-primary-container/20 file:text-accent-electric-cyan hover:file:bg-primary-container/30"
                                             />
                                           </div>
                                           <div>
-                                            <label className="block text-[10px] font-mono text-slate-400 mb-1 uppercase">Completion Notes</label>
+                                            <label className="block text-[10px] font-mono text-ink-secondary mb-1 uppercase">Completion Notes</label>
                                             <textarea
                                               rows={2}
                                               placeholder="Describe work performed on site..."
                                               value={evidenceNote}
                                               onChange={(e) => setEvidenceNote(e.target.value)}
-                                              className="w-full glass-input rounded-xl p-2 text-xs text-white resize-none"
+                                              className="w-full glass-input rounded-lg p-2 text-xs text-ink-primary resize-none"
                                             />
                                           </div>
                                         </div>
                                         <button
                                           disabled={!evidenceFile || !evidenceNote.trim() || isUploadingEvidence}
                                           onClick={handleEvidenceUpload}
-                                          className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                                          className="w-full py-2.5 rounded-lg bg-status-live-green hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed text-on-primary-container text-xs font-mono font-bold border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] transition-all flex items-center justify-center gap-2"
                                         >
                                           {isUploadingEvidence ? (
                                             <span>Uploading & Verifying Image…</span>
@@ -3175,13 +3175,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                                   {/* If already in Evidence Uploaded or Verification */}
                                   {['Evidence Uploaded', 'Verification'].includes(operationDetail.complaint.status) && (
-                                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                      <span className="text-emerald-300 flex items-center gap-2">
-                                        <Icon name="clock" className="w-4 h-4 text-emerald-400" />
+                                    <div className="rounded-lg border-2 border-status-live-green bg-status-live-green/5 p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                                      <span className="text-status-live-green flex items-center gap-2">
+                                        <Icon name="clock" className="w-4 h-4 text-status-live-green" />
                                         <span>Evidence submitted. Awaiting citizen confirmation gate.</span>
                                       </span>
                                       {operationDetail.complaint.afterImage && (
-                                        <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-sky-400 font-mono text-[11px] underline">
+                                        <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-accent-electric-cyan font-mono text-[11px] underline">
                                           View proof photo ↗
                                         </a>
                                       )}
@@ -3192,51 +3192,51 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                               <div className="grid lg:grid-cols-2 gap-5 pt-2">
                                 <div>
-                                  <div className="text-xs font-mono text-slate-400 mb-2 font-bold">MATCHED CONTRACTORS</div>
+                                  <div className="text-xs font-mono text-ink-secondary mb-2 font-bold">MATCHED CONTRACTORS</div>
                                   <div className="flex gap-2">
-                                    <select value={offerForm.contractor_id} onChange={e => setOfferForm({ ...offerForm, contractor_id: e.target.value })} className="min-w-0 flex-1 glass-input rounded-xl p-2.5 text-xs text-white">
-                                      {operationDetail.contractor_matches.map(c => <option key={c.contractor_id} value={c.contractor_id} className="bg-slate-900">{c.name} · {c.match_score}% Match · ★{c.rating}</option>)}
+                                    <select value={offerForm.contractor_id} onChange={e => setOfferForm({ ...offerForm, contractor_id: e.target.value })} className="min-w-0 flex-1 glass-input rounded-lg p-2.5 text-xs text-ink-primary">
+                                      {operationDetail.contractor_matches.map(c => <option key={c.contractor_id} value={c.contractor_id} className="bg-surface-container">{c.name} · {c.match_score}% Match · ★{c.rating}</option>)}
                                     </select>
-                                    <input type="number" placeholder="Budget BDT" value={offerForm.budget_cap} onChange={e => setOfferForm({ ...offerForm, budget_cap: e.target.value })} className="w-28 glass-input rounded-xl p-2.5 text-xs text-white font-mono" />
-                                    <button disabled={operationDetail.complaint.needs_review || operationDetail.offers.some(o => ['Sent','Accepted','In Progress','Proof Submitted','Approved'].includes(o.status))} onClick={assignContractor} className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-35 disabled:cursor-not-allowed text-slate-950 text-xs font-bold shadow-md">Dispatch Order</button>
+                                    <input type="number" placeholder="Budget BDT" value={offerForm.budget_cap} onChange={e => setOfferForm({ ...offerForm, budget_cap: e.target.value })} className="w-28 glass-input rounded-lg p-2.5 text-xs text-ink-primary font-mono" />
+                                    <button disabled={operationDetail.complaint.needs_review || operationDetail.offers.some(o => ['Sent','Accepted','In Progress','Proof Submitted','Approved'].includes(o.status))} onClick={assignContractor} className="px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container text-xs font-mono font-bold uppercase border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)] disabled:opacity-35 disabled:cursor-not-allowed">Dispatch Order</button>
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="text-xs font-mono text-slate-400 mb-2 font-bold">ACTIVE WORK ORDERS</div>
+                                  <div className="text-xs font-mono text-ink-secondary mb-2 font-bold">ACTIVE WORK ORDERS</div>
                                   {operationDetail.offers.length ? (
                                     <div className="space-y-2">
                                       {operationDetail.offers.map(offer => (
-                                        <div key={offer.offer_id} className="glass-card p-3 rounded-xl border border-slate-800 text-xs">
+                                        <div key={offer.offer_id} className="bg-surface-container border-2 border-border-black p-3 rounded-lg text-xs">
                                           <div className="flex flex-wrap items-center justify-between gap-2">
                                             <div>
-                                              <span className="text-white font-bold">{offer.contractor_name}</span>
-                                              <span className="text-slate-400"> · BDT {Number(offer.budget_cap).toLocaleString()}</span>
+                                              <span className="text-ink-primary font-bold">{offer.contractor_name}</span>
+                                              <span className="text-ink-secondary"> · BDT {Number(offer.budget_cap).toLocaleString()}</span>
                                             </div>
-                                            <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${offer.status === 'Proof Submitted' ? 'bg-amber-500/15 text-amber-300' : offer.status === 'Approved' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-sky-500/10 text-sky-300'}`}>{offer.status}</span>
+                                            <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${offer.status === 'Proof Submitted' ? 'bg-status-warning-amber text-status-warning-amber' : offer.status === 'Approved' ? 'bg-status-live-green/10 text-status-live-green' : 'bg-surface-container text-accent-electric-cyan'}`}>{offer.status}</span>
                                           </div>
                                           {offer.status === 'Proof Submitted' && (
-                                            <div className="mt-3 grid sm:grid-cols-[88px_1fr] gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
-                                              {offer.after_image_url && <img src={absoluteMediaUrl(offer.after_image_url)} alt="Contractor completion evidence" className="h-20 w-full rounded-lg object-cover" />}
+                                            <div className="mt-3 grid sm:grid-cols-[88px_1fr] gap-3 rounded-lg border-2 border-status-warning-amber bg-status-warning-amber/5 p-3">
+                                              {offer.after_image_url && <img src={absoluteMediaUrl(offer.after_image_url)} alt="Contractor completion evidence" className="h-20 w-full rounded-lg object-cover border-2 border-border-black" />}
                                               <div className="space-y-2 min-w-0">
-                                                <p className="text-slate-300 leading-relaxed">{offer.note || 'Completion proof submitted for final review.'}</p>
-                                                <a href={offer.report_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sky-400 font-semibold hover:underline"><Icon name="external-link" className="w-3.5 h-3.5" />Open public Drive report</a>
+                                                <p className="text-ink-secondary leading-relaxed">{offer.note || 'Completion proof submitted for final review.'}</p>
+                                                <a href={offer.report_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-accent-electric-cyan font-semibold hover:underline"><Icon name="external-link" className="w-3.5 h-3.5" />Open public Drive report</a>
                                                 <div className="flex flex-wrap gap-2 pt-1">
-                                                  <button onClick={() => changeOfferStatus(offer, 'In Progress', 'Final review requested changes; contractor must resubmit proof.')} className="px-3 py-2 rounded-lg border border-slate-600 text-slate-300 font-semibold">Request changes</button>
-                                                  <button onClick={() => changeOfferStatus(offer, 'Approved', 'Final proof approved; contractor payment released.')} className="px-3 py-2 rounded-lg bg-emerald-500 text-slate-950 font-bold">Approve & release payment</button>
+                                                  <button onClick={() => changeOfferStatus(offer, 'In Progress', 'Final review requested changes; contractor must resubmit proof.')} className="px-3 py-2 rounded-lg border-2 border-border-black text-ink-secondary font-semibold">Request changes</button>
+                                                  <button onClick={() => changeOfferStatus(offer, 'Approved', 'Final proof approved; contractor payment released.')} className="px-3 py-2 rounded-lg bg-status-live-green text-on-primary-container font-mono font-bold border-2 border-border-black">Approve & release payment</button>
                                                 </div>
                                               </div>
                                             </div>
                                           )}
-                                          {offer.status === 'Approved' && <div className="mt-2 flex items-center gap-2 text-emerald-400"><Icon name="circle-check" className="w-4 h-4" /><span>Final review approved · Payment released</span></div>}
+                                          {offer.status === 'Approved' && <div className="mt-2 flex items-center gap-2 text-status-live-green"><Icon name="circle-check" className="w-4 h-4" /><span>Final review approved · Payment released</span></div>}
                                           <div className="flex gap-1.5 mt-2">
-                                            {offer.status === 'Sent' && <button onClick={() => changeOfferStatus(offer, 'Accepted')} className="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">Accept</button>}
-                                            {offer.status === 'Accepted' && <button onClick={() => changeOfferStatus(offer, 'In Progress')} className="px-2.5 py-1 rounded-lg bg-sky-500/15 text-sky-300 border border-sky-500/30 text-[10px] font-bold">Start</button>}
+                                            {offer.status === 'Sent' && <button onClick={() => changeOfferStatus(offer, 'Accepted')} className="px-2.5 py-1 rounded-lg bg-status-live-green/10 text-status-live-green border border-status-live-green text-[10px] font-bold">Accept</button>}
+                                            {offer.status === 'Accepted' && <button onClick={() => changeOfferStatus(offer, 'In Progress')} className="px-2.5 py-1 rounded-lg bg-surface-container text-accent-electric-cyan border border-border-black text-[10px] font-bold">Start</button>}
                                           </div>
                                         </div>
                                       ))}
                                     </div>
                                   ) : (
-                                    <div className="text-xs text-slate-500 font-mono glass-card p-3 rounded-xl border border-slate-800">No contractor assigned yet.</div>
+                                    <div className="text-xs text-ink-subtle font-mono bg-surface-container border-2 border-border-black p-3 rounded-lg">No contractor assigned yet.</div>
                                   )}
                                 </div>
                               </div>
@@ -3249,7 +3249,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-mono text-slate-400 uppercase">
+                            <tr className="border-b-2 border-border-black/30 bg-surface-container text-[11px] font-mono text-ink-secondary uppercase">
                               <th className="p-4">ID</th>
                               <th className="p-4">Category & Location</th>
                               <th className="p-4">Severity</th>
@@ -3258,55 +3258,55 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                               <th className="p-4 text-right">Action</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-800/60 text-xs">
+                          <tbody className="divide-y divide-border-black/20 text-xs">
                             {displayedAdminReports.map((item) => (
-                              <tr key={item.id} className="hover:bg-slate-800/30 transition-colors">
-                                <td className="p-4 font-mono font-bold text-sky-400">{item.id}</td>
+                              <tr key={item.id} className="hover:bg-canvas-paper/30 transition-colors">
+                                <td className="p-4 font-mono font-bold text-accent-electric-cyan">{item.id}</td>
                                 <td className="p-4">
-                                  <div className="font-semibold text-white">{item.category}</div>
-                                  <div className="text-[11px] text-slate-400 font-mono">{item.location}</div>
+                                  <div className="font-semibold text-ink-primary">{item.category}</div>
+                                  <div className="text-[11px] text-ink-secondary font-mono">{item.location}</div>
                                   {item.assigned_authority?.short_code && (
-                                    <div className="text-[10px] text-sky-400 font-mono mt-0.5">
+                                    <div className="text-[10px] text-accent-electric-cyan font-mono mt-0.5">
                                       {item.assigned_authority.short_code} • {item.assigned_authority.department || item.department}
                                     </div>
                                   )}
                                 </td>
                                 <td className="p-4">
                                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${item.severity === 'Critical'
-                                      ? 'bg-red-500/10 text-red-400 border-red-500/30'
-                                      : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                                      ? 'bg-transparent text-red-400 border-red-500'
+                                      : 'bg-status-warning-amber/10 text-status-warning-amber border-status-warning-amber'
                                     }`}>
                                     {item.severity}
                                   </span>
                                 </td>
-                                <td className="p-4 font-mono text-[11px] text-slate-300">
+                                <td className="p-4 font-mono text-[11px] text-ink-secondary">
                                   {item.confidence}
                                 </td>
                                 <td className="p-4">
-                                  <span className="text-slate-300 font-medium font-mono">{item.status}</span>
+                                  <span className="text-ink-secondary font-medium font-mono">{item.status}</span>
                                 </td>
                                 <td className="p-4 text-right">
                                   <div className="flex justify-end gap-2">
                                     {((item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review') && (
                                       authUser?.role === 'admin' ? (
-                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/35 text-amber-300 font-semibold text-xs">Review AI</button>
+                                        <button onClick={() => setReviewReport(item)} className="px-3 py-1.5 rounded-lg bg-status-warning-amber border border-status-warning-amber text-status-warning-amber font-semibold text-xs">Review AI</button>
                                       ) : (
-                                        <span className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-[10px] font-mono">Admin Review</span>
+                                        <span className="px-2.5 py-1 rounded-lg bg-surface-container border-2 border-border-black text-ink-subtle text-[10px] font-mono">Admin Review</span>
                                       )
                                     )}
                                     {item.status === 'Reopened - Needs Review' && (
-                                      <span className="px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono">Disputed</span>
+                                      <span className="px-2.5 py-1 rounded-lg bg-status-warning-amber/10 border-2 border-status-warning-amber text-status-warning-amber text-[10px] font-mono">Disputed</span>
                                     )}
                                     <button
                                       disabled={!nextOperationalStatus(item) || (item.needs_review && item.review_type === 'routing_uncertain') || item.status === 'Needs Review'}
                                       onClick={() => nextOperationalStatus(item) && updateStatus(item, nextOperationalStatus(item))}
-                                      className="px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 disabled:opacity-30 text-sky-400 font-semibold text-xs transition-all"
+                                      className="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-primary-container/20 border border-border-black disabled:opacity-30 text-accent-electric-cyan font-semibold text-xs transition-all"
                                     >
                                       {nextOperationalStatus(item) ? `→ ${nextOperationalStatus(item)}` : 'Await proof'}
                                     </button>
                                     <button
                                       onClick={() => inspectIncident(item)}
-                                      className="px-3.5 py-1.5 rounded-xl glass-card border border-slate-700 hover:border-slate-600 text-slate-200 font-semibold text-xs transition-all shadow-sm"
+                                      className="px-3.5 py-1.5 rounded-lg bg-surface-container border-2 border-border-black hover:border-border-black text-ink-primary font-semibold text-xs transition-all shadow-sm"
                                     >
                                       Workspace
                                     </button>
@@ -3316,7 +3316,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                             ))}
                             {!displayedAdminReports.length && (
                               <tr>
-                                <td colSpan="6" className="p-12 text-center text-xs text-slate-400">
+                                <td colSpan="6" className="p-12 text-center text-xs text-ink-secondary">
                                   No incidents match the active filter criteria.
                                 </td>
                               </tr>
