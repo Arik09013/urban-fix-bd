@@ -34,8 +34,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        sans: ['"Hind Siliguri"', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        headline: ['"Hind Siliguri"', 'Inter', 'sans-serif'],
+        bengali: ['"Hind Siliguri"', 'sans-serif'],
         mono: ['JetBrains Mono', 'SFMono-Regular', 'Menlo', 'monospace'],
         code: ['JetBrains Mono', 'monospace'],
       },

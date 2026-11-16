@@ -11,7 +11,7 @@
 
 - **Primary Repository:** `https://github.com/Arik09013/urban-fix-bd`
 - **Current Working Branch:** `feature/ui-update` (tracking `origin/feature/ui-update`)
-- **Active Development Phase:** Redesigning UI with neo-brutalist civic cadastre aesthetic, default dark mode focus, and breathable navigation.
+- **Active Development Phase:** Redesigning UI with the **"GovTech Civic Trust"** design system tailored for Bangladeshi citizens and government stakeholders, including bilingual English/Bengali localization, high-contrast "Report. Track. Verify." 3-stage process cards, and prominent red logout buttons across all portals.
 - **License:** MIT License
 - **Target Deployment:** Fast-response civic remediation across Bangladeshi metropolitan jurisdictions (Chattogram City Corporation - CCC, Dhaka North City Corporation - DNCC, Dhaka South City Corporation - DSCC, and regional utilities).
 
@@ -482,13 +482,18 @@ CLOUDINARY_CLOUD_NAME="" CLOUDINARY_API_KEY="" CLOUDINARY_API_SECRET="" CLOUDINA
 - [x] Shared dialog and media components (`ReviewDialog`, `InteractiveBeforeAfter`, `AuthCard`) restyled to 2px solid brutalist borders and high-contrast CSS variable tokens.
 - [x] Elevated Authority Portal login card with prominent front-and-center Username and Password inputs, clear uppercase labels, demo officer shortcut access, and full compatibility with Playwright test locators.
 - [x] Neo-brutalist styling for Admin Operations Center: active officer identity badge, persistent header `[Log Out]` button (styled prominent red by default across all roles), horizontal view tab ribbon, high-contrast red KPI stat alerts, and brutalist work queue actions.
-- [x] Standardized contiguous cadastre card grid boxes with 2px borders, top metric/badge indicators, and bottom metadata ribbons matching `Report. Track. Verify.` across Admin KPI stats, WhatsApp intake metrics, Landing Ground Truth metrics, Track Verification Gates, Youth Escrow 3-step workflow, and Public Map telemetry.
+- [x] Standardized contiguous 3-stage process card box layout with 1px slate borders, top colored indicator badges, and bottom metadata ribbons matching `Report. Track. Verify.` layout across homepage, with dark contrast background and vibrant cyan/green accents.
+- [x] Native Bilingual (Bangla `[ বাংলা ]` & English `[ EN ]`) UI switcher in navbar with instant localized dictionary, persisting to `localStorage` and syncing `html.lang`.
+- [x] High-visibility solid red Logout buttons (`bg-red-600 hover:bg-red-700 text-white`) deployed persistently across all role consoles (Officer, Admin, Youth Worker, Contractor).
+- [x] Fixed destructive global CSS `.text-white` override in `src/styles.css` that was causing dark-on-dark unreadable text inside dark containers and buttons.
 
 ### 10.2 Immediate Priorities for Incoming AI Agents
-1. **Bengali (`বাংলা`) Language Support:**
+1. **Teammate & User Feedback Review:**
+   - Confirm teammate review of the GovTech Civic Trust homepage, bilingual Bangla toggle, and "Report. Track. Verify." box layout.
+   - Upon teammate sign-off, propagate the GovTech Civic Trust styling and bilingual terms to sub-pages (Citizen Report stepper, Track Report verification gates, Public Map, Admin Operations Center, Youth Escrow, Contractor Hub).
+2. **Bengali (`বাংলা`) Multimodal AI Intake:**
    - Expand `_language_hint` in `backend/app/services/ai/gemini.py` to support mixed Banglish municipal colloquialisms (e.g., *bhanga rasta*, *moylar stup*, *pani bondi*, *batti jole na*).
-   - Add bilingual UI toggle (English / বাংলা) in `src/App.jsx`.
-2. **Official GIS Boundary Ingestion:**
+3. **Official GIS Boundary Ingestion:**
    - Transition candidate polygons in `backend/app/services/routing/jurisdiction.py` from bounding boxes to official ward GeoJSON boundaries when official open data is available.
-3. **Local Mobile Financial Services (MFS) Integration:**
+4. **Local Mobile Financial Services (MFS) Integration:**
    - Model bKash and Nagad disbursement payout schema alongside existing demo Stripe rails for community micro-grants.

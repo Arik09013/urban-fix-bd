@@ -470,10 +470,157 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
       );
     }
 
+    // --- BILINGUAL BANGLADESH CIVIC TRANSLATION DICTIONARY ---
+    const I18N = {
+      en: {
+        home: 'Home',
+        reportIssue: 'Report Issue',
+        trackReport: 'Track Report',
+        publicMap: 'Public Map',
+        authorityPortal: 'Authority Portal',
+        tickerStatus: 'CITIZEN SERVICES · LIVE CITY MONITORING',
+        tickerPill1: 'NO APP DOWNLOAD REQUIRED',
+        tickerPill2: 'AVG DISPATCH: 4.2 HRS',
+        tickerPill3: 'ACTIVE INCIDENTS:',
+        tickerPill4: 'MUNICIPAL AUDIT 2026',
+        govBadge: 'PEOPLE\'S REPUBLIC OF BANGLADESH · CIVIC PLATFORM',
+        heroTitle1: 'See a problem in your area?',
+        heroTitle2: 'Report it directly to authorities.',
+        heroSubtext: 'Take a photo, share the location, and track municipal action in real time. No app download or prior registration required.',
+        reportBtn: 'Report an Issue',
+        trackBtn: 'Track a Report',
+        check1: 'No account needed',
+        check2: 'Get a report ID',
+        check3: 'See proof when fixed',
+        categoriesBadge: 'POPULAR CATEGORIES',
+        categoriesTitle: 'Common Municipal Issues',
+        categoriesSub: 'Select a category below for rapid AI categorization and direct department routing',
+        catRoadsTitle: 'Roads & Potholes',
+        catRoadsSub: 'Damaged asphalt, potholes, open manholes, footpaths',
+        catDrainageTitle: 'Waterlogging & Drains',
+        catDrainageSub: 'Monsoon overflow, blocked drains, CWASA/DWASA lines',
+        catWasteTitle: 'Waste & Sanitation',
+        catWasteSub: 'Overflowing dumpsters, roadside waste, uncollected garbage',
+        catLightsTitle: 'Street Lights & Cables',
+        catLightsSub: 'Broken streetlights, dangling live wires, electric poles',
+        howItWorksTitle: 'Report. Track. Verify.',
+        howItWorksSub: 'A simple process, with a clear record at every step.',
+        step1Num: '01',
+        step1Title: 'Report',
+        step1Desc: 'Take or upload a photo, add the location, and briefly describe the problem.',
+        step1Meta: 'STEP DURATION: < 60 SECONDS',
+        step2Num: '02',
+        step2Title: 'Track',
+        step2Desc: 'Save your report ID and check progress whenever you need to.',
+        step2Meta: 'REAL-TIME MUNICIPAL DISPATCH SYNC',
+        step3Num: '03',
+        step3Title: 'Verify',
+        step3Desc: 'See the repair evidence and whether the resolution has been confirmed.',
+        step3Meta: 'INCLUDES PHOTOGRAPHIC PROOF',
+        metricsBadge: 'LIVE PERFORMANCE METRICS',
+        metric1Val: '12,840',
+        metric1Label: 'Incidents Logged',
+        metric1Desc: 'Citizen reports received across municipal wards.',
+        metric1Meta: 'All City Corporations',
+        metric2Val: '89.4%',
+        metric2Label: 'Resolution Rate',
+        metric2Desc: 'Verified fixes backed by citizen confirmation.',
+        metric2Meta: 'Citizen Verified',
+        metric3Val: '18.2h',
+        metric3Label: 'Avg Dispatch Turn',
+        metric3Desc: 'Average time from report submission to field crew mobilization.',
+        metric3Meta: 'Statutory SLA',
+        metric4Val: '100%',
+        metric4Label: 'Public Transparency',
+        metric4Desc: 'All verified cases accessible on the public map.',
+        metric4Meta: 'Open Citizen Ledger',
+        sliderBadge: 'RESOLUTION EVIDENCE',
+        sliderTitle: 'Interactive Before & After Verification',
+        sliderSub: 'Drag the slider to compare original citizen reports with verified municipal repairs.',
+        sliderTag: 'TWO-PARTY AUDITED',
+        bannerTitle: 'Spot a civic hazard right now? No app required.',
+        bannerSub: 'Open camera, pin your coordinates, and UrbanFix routes directly to the assigned zone authority.',
+        hotline: 'Civic Helpline: 16104 / 311',
+        bannerBtn: 'Report Issue Now'
+      },
+      bn: {
+        home: 'হোম',
+        reportIssue: 'অভিযোগ করুন',
+        trackReport: 'ট্র্যাক করুন',
+        publicMap: 'সিটি ম্যাপ',
+        authorityPortal: 'কর্তৃপক্ষ পোর্টাল',
+        tickerStatus: 'নাগরিক সেবা ও পৌর অভিযোগ ব্যবস্থাপনা প্ল্যাটফর্ম · লাইভ মনিটরিং',
+        tickerPill1: 'অ্যাপ ছাড়াই সরাসরি ব্রাউজার থেকে অভিযোগ',
+        tickerPill2: 'গড় ব্যবস্থা গ্রহণ: ৪.২ ঘণ্টা',
+        tickerPill3: 'চলমান অভিযোগ:',
+        tickerPill4: 'ডিজিটাল বাংলাদেশ নাগরিক সেবা ২০২৬',
+        govBadge: 'গণপ্রজাতন্ত্রী বাংলাদেশ · ডিজিটাল পৌর নাগরিক প্ল্যাটফর্ম',
+        heroTitle1: 'এলাকায় কোনো নাগরিক সমস্যা দেখছেন?',
+        heroTitle2: 'সরাসরি সিটি কর্তৃপক্ষকে জানান।',
+        heroSubtext: 'একটি ছবি তুলুন, লোকেশন দিন এবং সমাধান না হওয়া পর্যন্ত সরাসরি ট্র্যাক করুন। কোনো অ্যাপ ইনস্টল বা পূর্ব নিবন্ধনের প্রয়োজন নেই।',
+        reportBtn: 'অভিযোগ দায়ের করুন',
+        trackBtn: 'অভিযোগ ট্র্যাক করুন',
+        check1: 'অ্যাকাউন্ট ছাড়াই তাৎক্ষণিক অভিযোগ',
+        check2: 'এসএমএস ও ট্র্যাকিং নম্বর',
+        check3: 'ছবিসহ সমাধান নিশ্চিতকরণ',
+        categoriesBadge: 'জরুরি নাগরিক সেবা',
+        categoriesTitle: 'সমস্যার ধরন বেছে নিন',
+        categoriesSub: 'দ্রুত সমাধানের জন্য নিচের ক্যাটাগরি থেকে সরাসরি অভিযোগ দাখিল করুন',
+        catRoadsTitle: 'ভাঙা রাস্তা ও ম্যানহোল',
+        catRoadsSub: 'ভাঙা পিচ, বিপজ্জনক গর্ত, খোলা ম্যানহোল, ফুটপাত ক্ষতি',
+        catDrainageTitle: 'জলাবদ্ধতা ও ড্রেন',
+        catDrainageSub: 'বৃষ্টির পানি জমে থাকা, বন্ধ নালা, ড্রেন উপচে পড়া',
+        catWasteTitle: 'বর্জ্য ও ময়লা-আবর্জনা',
+        catWasteSub: 'রাস্তায় আবর্জনার স্তূপ, উপচে পড়া ডাস্টবিন, দুর্গন্ধ',
+        catLightsTitle: 'সড়ক বাতি ও বৈদ্যুতিক তার',
+        catLightsSub: 'নষ্ট সড়ক বাতি, অন্ধকার পথ, বিপজ্জনকভাবে ঝুলন্ত তার',
+        howItWorksTitle: 'রিপোর্ট. ট্র্যাক. যাচাই.',
+        howItWorksSub: 'প্রতিটি পদক্ষেপে স্পষ্ট ও সুনির্দিষ্ট রেকর্ডসহ একটি সহজ প্রক্রিয়া।',
+        step1Num: '০১',
+        step1Title: 'রিপোর্ট (Report)',
+        step1Desc: 'একটি ছবি তুলুন বা আপলোড করুন, লোকেশন দিন এবং সংক্ষেপে সমস্যাটি লিখুন।',
+        step1Meta: 'ধাপের সময়সীমা: < ৬০ সেকেন্ড',
+        step2Num: '০২',
+        step2Title: 'ট্র্যাক (Track)',
+        step2Desc: 'আপনার রিপোর্ট আইডি সংরক্ষণ করুন এবং প্রয়োজনমতো যেকোনো সময় অগ্রগতি দেখুন।',
+        step2Meta: 'রিয়েল-টাইম পৌর ডিসপ্যাচ সিঙ্ক',
+        step3Num: '০৩',
+        step3Title: 'যাচাই (Verify)',
+        step3Desc: 'মেরামতের প্রমাণ ও ছবি দেখুন এবং সমাধান নিশ্চিত করা হয়েছে কি না যাচাই করুন।',
+        step3Meta: 'আলোকচিত্র প্রমাণ অন্তর্ভুক্ত',
+        metricsBadge: 'লাইভ কার্যক্রম পরিসংখ্যান',
+        metric1Val: '১২,৮৪০',
+        metric1Label: 'মোট গৃহীত অভিযোগ',
+        metric1Desc: 'বিভিন্ন সিটি করপোরেশন ও পৌরসভায় দায়েরকৃত নাগরিক অভিযোগ।',
+        metric1Meta: 'সকল পৌর ওয়ার্ড',
+        metric2Val: '৮৯.৪%',
+        metric2Label: 'সফল সমাধানের হার',
+        metric2Desc: 'নাগরিক কর্তৃক ছবিসহ যাচাইকৃত সম্পূর্ণ সমাধান।',
+        metric2Meta: 'নাগরিক কর্তৃক অনুমোদিত',
+        metric3Val: '১৮.২ ঘণ্টা',
+        metric3Label: 'গড় ব্যবস্থা গ্রহণের সময়',
+        metric3Desc: 'অভিযোগ প্রাপ্তি থেকে ফিল্ড টিম মোতায়েনের গড় সময়।',
+        metric3Meta: 'পৌর মানদণ্ড',
+        metric4Val: '১০০%',
+        metric4Label: 'উন্মুক্ত নাগরিক তথ্য',
+        metric4Desc: 'জনস্বার্থে সকল রিপোর্ট উন্মুক্ত সিটি ম্যাপে দৃশ্যমান।',
+        metric4Meta: 'স্বচ্ছ নাগরিক অডিট',
+        sliderBadge: 'সমাধানের বাস্তব প্রমাণ',
+        sliderTitle: 'কাজের আগের ও পরের দৃশ্য (ইন্টারেক্টিভ স্লাইডার)',
+        sliderSub: 'স্লাইডারটি টেনে দেখুন কীভাবে অভিযোগ অনুযায়ী পৌর মেরামত কাজ সম্পন্ন হয়েছে।',
+        sliderTag: 'দ্বিপাক্ষিক যাচাইকৃত',
+        bannerTitle: 'আপনার এলাকায় কোনো জরুরি নাগরিক সমস্যা আছে?',
+        bannerSub: 'ভাঙা রাস্তা, জলাবদ্ধতা বা আবর্জনার সমস্যা সরাসরি রিপোর্ট করুন এখনই। কোনো অ্যাপ লাগবে না।',
+        hotline: 'পৌর নাগরিক হটলাইন: ১৬১০৪ / ৩১১',
+        bannerBtn: 'এখনই অভিযোগ দায়ের করুন'
+      }
+    };
+
     // --- MAIN APP COMPONENT ---
     export default function App() {
       const [activeTab, setActiveTab] = useState('landing');
-      const [darkMode, setDarkMode] = useState(() => localStorage.getItem('urbanfix-theme') !== 'light');
+      const [lang, setLang] = useState(() => localStorage.getItem('urbanfix-lang') || 'bn');
+      const [darkMode, setDarkMode] = useState(() => localStorage.getItem('urbanfix-theme') === 'dark');
       const [reports, setReports] = useState(INITIAL_REPORTS);
       const [reportsTruncated, setReportsTruncated] = useState(false);
       const [selectedReport, setSelectedReport] = useState(null);
@@ -553,8 +700,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
       useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode);
         localStorage.setItem('urbanfix-theme', darkMode ? 'dark' : 'light');
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', darkMode ? '#0B0F17' : '#f5f5f7');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', darkMode ? '#0B0F17' : '#059669');
       }, [darkMode]);
+
+      useEffect(() => {
+        localStorage.setItem('urbanfix-lang', lang);
+        document.documentElement.lang = lang;
+      }, [lang]);
+
+      const t = I18N[lang] || I18N.bn;
 
       useEffect(() => {
         loadSession();
@@ -1121,60 +1275,64 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
         <div className="min-h-screen flex flex-col bg-surface font-sans text-ink-primary transition-colors duration-200">
           <a href="#main-content" className="skip-link">Skip to main content</a>
 
-          {/* TOP CADASTRE TICKER RIBBON */}
-          <div className="w-full bg-[#070A11] text-slate-200 border-b-2 border-border-black py-1.5 px-4 overflow-hidden whitespace-nowrap">
-            <div className="inline-flex items-center gap-6 font-mono text-xs uppercase tracking-wider animate-pulse">
-              <span className="flex items-center gap-2 text-slate-100 font-semibold">
-                <span className="w-2 h-2 rounded-full bg-status-live-green inline-block shadow-[0_0_8px_#10B981]"></span>
-                DISPATCH STATUS: ACTIVE · WARD NETWORK MONITORING
-              </span>
-              <span className="text-slate-600">/</span>
-              <span className="text-accent-electric-cyan font-bold">NO APP DOWNLOAD REQUIRED</span>
-              <span className="text-slate-600">/</span>
-              <span className="text-slate-300">AVERAGE VERIFICATION TIME: 4.2 HRS</span>
-              <span className="text-slate-600">/</span>
-              <span className="text-status-warning-amber font-bold">CURRENT INCIDENT LOAD: {reports.length} OPEN CADASTRES</span>
-              <span className="text-slate-600">/</span>
-              <span className="text-slate-400">OPEN CIVIC LEDGER 2026</span>
+          {/* TOP MUNICIPAL SERVICE TICKER RIBBON */}
+          <div className="w-full bg-emerald-950 text-emerald-100 border-b border-emerald-900 py-1.5 px-4 overflow-hidden whitespace-nowrap">
+            <div className="max-w-7xl mx-auto flex items-center justify-between text-xs font-sans">
+              <div className="inline-flex items-center gap-4 sm:gap-6 overflow-hidden">
+                <span className="flex items-center gap-2 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34D399]"></span>
+                  <span>{t.tickerStatus}</span>
+                </span>
+                <span className="text-emerald-700">|</span>
+                <span className="text-emerald-300 font-semibold hidden md:inline">{t.tickerPill1}</span>
+                <span className="text-emerald-700 hidden md:inline">|</span>
+                <span className="hidden sm:inline">{t.tickerPill2}</span>
+                <span className="text-emerald-700 hidden sm:inline">|</span>
+                <span className="text-amber-300 font-medium">{t.tickerPill3} {reports.length}</span>
+              </div>
+              <div className="hidden lg:flex items-center gap-3 text-emerald-200 text-[11px] font-medium">
+                <span>🏛️ {t.tickerPill4}</span>
+              </div>
             </div>
           </div>
 
           {/* HEADER / NAVIGATION */}
-          <header className="sticky top-0 z-50 bg-surface border-b-2 border-border-black">
+          <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-6">
               <div className="flex items-center gap-4 lg:gap-6">
                 <button aria-label="UrbanFix home" className="flex shrink-0 items-center gap-2.5 text-left focus:outline-none cursor-pointer" onClick={() => setActiveTab('landing')}>
-                  <div className="w-8 h-8 bg-primary-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                    <Icon name="check" className="w-5 h-5 text-on-primary-container stroke-[3]" />
+                  <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center shadow-sm">
+                    <Icon name="check" className="w-5 h-5 text-white stroke-[3]" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-headline font-black text-lg uppercase tracking-tight text-ink-primary leading-none">UrbanFix</span>
-                    <span className="font-mono text-[9px] text-ink-subtle uppercase tracking-wider">Civic Engine</span>
+                    <span className="font-headline font-bold text-lg tracking-tight text-slate-900 dark:text-white leading-none">UrbanFix BD</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">{lang === 'bn' ? 'ডিজিটাল পৌর নাগরিক প্ল্যাটফর্ম' : 'Municipal Civic Portal'}</span>
                   </div>
                 </button>
-                <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-surface-container border-2 border-border-black shadow-[2px_2px_0px_var(--shadow-color)]">
-                  <span className="w-2 h-2 rounded-full bg-status-live-green shadow-[0_0_6px_#10B981]"></span>
-                  <span className="font-mono text-[10px] uppercase font-bold text-ink-primary tracking-wider">CADASTRE-SYNC: LIVE</span>
+                <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10B981]"></span>
+                  <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">{lang === 'bn' ? 'লাইভ পৌর নেটওয়ার্ক' : 'Live Civic Sync'}</span>
                 </div>
               </div>
 
-              <nav className="hidden md:flex items-center gap-2 lg:gap-3 font-mono text-xs uppercase font-bold tracking-wide">
+              <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 text-xs font-semibold">
                 {[
-                  { id: 'landing', label: 'Home' },
-                  { id: 'report', label: 'Report Issue' },
-                  { id: 'track', label: 'Track Report' },
-                  { id: 'map', label: 'Public Map' },
+                  { id: 'landing', label: t.home, enLabel: 'Home' },
+                  { id: 'report', label: t.reportIssue, enLabel: 'Report Issue' },
+                  { id: 'track', label: t.trackReport, enLabel: 'Track Report' },
+                  { id: 'map', label: t.publicMap, enLabel: 'Public Map' },
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => { if (tab.id === 'track') { setSelectedReport(null); setSubmittedReportId(''); } setActiveTab(tab.id); }}
+                      aria-label={tab.enLabel}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`px-4 py-2 border-2 transition-all cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
                         isActive 
-                          ? 'bg-primary-container text-on-primary-container font-black border-border-black shadow-[2px_2px_0px_var(--shadow-color)]'
-                          : 'border-transparent text-ink-secondary hover:border-border-black hover:bg-surface-container hover:text-ink-primary'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800 shadow-sm'
+                          : 'border border-transparent text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       {tab.label}
@@ -1183,27 +1341,41 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 })}
               </nav>
 
-              <div className="flex shrink-0 items-center gap-3">
+              <div className="flex shrink-0 items-center gap-2.5 sm:gap-3">
+                {/* BILINGUAL LANGUAGE TOGGLE (বাংলা / EN) */}
+                <button 
+                  onClick={() => setLang(l => l === 'bn' ? 'en' : 'bn')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-xs font-bold shadow-sm hover:border-emerald-500 transition-all cursor-pointer"
+                  title="Switch Language / ভাষা পরিবর্তন করুন"
+                  aria-label="Language Toggle"
+                >
+                  <span className={lang === 'bn' ? 'text-emerald-700 dark:text-emerald-400 font-black' : 'text-slate-400 font-normal'}>বাং</span>
+                  <span className="text-slate-300 dark:text-slate-600 font-normal">|</span>
+                  <span className={lang === 'en' ? 'text-emerald-700 dark:text-emerald-400 font-black' : 'text-slate-400 font-normal'}>EN</span>
+                </button>
+
+                {/* THEME TOGGLE */}
                 <button 
                   onClick={() => setDarkMode(value => !value)} 
                   aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`} 
                   title={`Switch to ${darkMode ? 'light' : 'dark'} mode`} 
-                  className="w-9 h-9 border-2 border-border-black bg-surface-clean text-ink-primary hover:bg-surface-container flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)] transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center shadow-sm transition-colors cursor-pointer"
                 >
-                  <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4 text-accent-electric-cyan" />
+                  <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </button>
 
+                {/* AUTHORITY PORTAL BUTTON */}
                 <button 
                   onClick={() => setActiveTab('admin')}
                   aria-label="Authority Portal"
-                  className={`px-3.5 py-2 font-mono text-xs font-bold border-2 border-border-black transition-all flex items-center gap-2 cursor-pointer shadow-[2px_2px_0px_var(--shadow-color)] ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 cursor-pointer shadow-sm ${
                     activeTab === 'admin'
-                      ? 'bg-primary-container text-on-primary-container font-black'
-                      : 'bg-surface-clean hover:bg-primary-container hover:text-on-primary-container text-ink-primary'
+                      ? 'bg-emerald-600 text-white font-bold border-emerald-700'
+                      : 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
                   }`}
                 >
-                  <Icon name="shield-alert" className={`w-4 h-4 ${activeTab === 'admin' ? 'text-on-primary-container' : 'text-accent-electric-cyan'}`} />
-                  <span className="hidden sm:inline">Authority Portal</span>
+                  <Icon name="shield-alert" className="w-4 h-4 text-emerald-400" />
+                  <span className="hidden sm:inline">{t.authorityPortal}</span>
                 </button>
               </div>
             </div>
@@ -1244,69 +1416,70 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
           {/* MAIN BODY ROUTING */}
           <main id="main-content" className="flex-1" tabIndex="-1">
-            {/* 1. LANDING PAGE */}
+            {/* 1. LANDING PAGE (GovTech Civic Trust Design System) */}
             {activeTab === 'landing' && (
               <div className="flex flex-col w-full">
                 {/* HERO SECTION */}
-                <section aria-labelledby="hero-title" className="w-full border-b-2 border-border-black bg-surface py-12 md:py-20">
+                <section aria-labelledby="hero-title" className="w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12 md:py-20 transition-colors">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                       {/* Left Column: Primary Messaging & Trigger Actions */}
                       <div className="lg:col-span-7 flex flex-col justify-between">
                         <div className="flex flex-col">
-                          {/* Classification Badge */}
-                          <div className="inline-flex items-center gap-2 self-start bg-surface-container border-2 border-border-black px-3 py-1 shadow-[2px_2px_0px_var(--shadow-color)] mb-4">
-                            <span className="font-mono text-xs font-bold text-ink-primary uppercase tracking-wider">// OPEN CIVIC ENGINE</span>
-                            <span className="w-1.5 h-1.5 bg-accent-electric-cyan"></span>
-                            <span className="font-mono text-xs text-ink-secondary uppercase">MUNICIPAL PORTAL</span>
+                          {/* Official Republic Badge */}
+                          <div className="inline-flex items-center gap-2 self-start bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-800 dark:text-emerald-300 shadow-sm mb-5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>🏛️ {t.govBadge}</span>
                           </div>
 
                           {/* Massive Punchy Headline */}
-                          <h1 id="hero-title" className="font-headline text-3xl sm:text-5xl lg:text-6xl font-black text-ink-primary tracking-tight leading-[1.1] mb-4">
-                            See a problem in your area?<br/>
-                            <span className="inline-block mt-2 bg-primary-container text-on-primary-container px-3 py-1 border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)]">
-                              Report it here.
+                          <h1 id="hero-title" className="font-headline text-3xl sm:text-5xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.2] mb-4">
+                            {t.heroTitle1}<br/>
+                            <span className="text-emerald-600 dark:text-emerald-400">
+                              {t.heroTitle2}
                             </span>
                           </h1>
 
                           {/* Subtext */}
-                          <p className="text-base sm:text-lg text-ink-secondary max-w-xl mb-6 leading-relaxed">
-                            Take a photo, share the location, and track what happens next. You do not need an account or identity pre-registration.
+                          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mb-7 leading-relaxed font-normal">
+                            {t.heroSubtext}
                           </p>
 
-                          {/* Action CTAs with Neo-Brutalist hard offsets */}
-                          <div className="flex flex-wrap items-center gap-4 mb-8">
+                          {/* Action CTAs: GovTech Primary & Secondary Buttons */}
+                          <div className="flex flex-wrap items-center gap-3.5 mb-8">
                             <button 
                               onClick={() => { setReportStep(1); setActiveTab('report'); }}
-                              className="inline-flex items-center justify-center gap-2 bg-primary-container text-on-primary-container font-mono text-sm uppercase font-bold border-2 border-border-black px-6 py-3 shadow-[4px_4px_0px_var(--shadow-color)] hover:shadow-[2px_2px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer" 
+                              aria-label="Report an Issue"
+                              className="inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold text-sm sm:text-base px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer" 
                               data-path="report-issue"
                             >
-                              <Icon name="camera" className="w-5 h-5 text-on-primary-container" />
-                              <span>Report an Issue →</span>
+                              <Icon name="camera" className="w-5 h-5 text-white" />
+                              <span>{t.reportBtn} →</span>
                             </button>
                             <button 
                               onClick={() => { setSelectedReport(null); setTrackingError(''); setActiveTab('track'); }}
-                              className="inline-flex items-center justify-center gap-2 bg-surface-clean text-ink-primary font-mono text-sm uppercase font-bold border-2 border-border-black px-6 py-3 shadow-[4px_4px_0px_var(--shadow-color)] hover:bg-surface-container hover:shadow-[2px_2px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer" 
+                              aria-label="Track a Report"
+                              className="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 text-slate-800 dark:text-slate-100 font-semibold text-sm sm:text-base border border-slate-300 dark:border-slate-700 px-6 py-3.5 rounded-xl shadow-sm hover:shadow transition-all cursor-pointer" 
                               data-path="track-report"
                             >
-                              <Icon name="search" className="w-5 h-5 text-accent-electric-cyan" />
-                              <span>Track a Report</span>
+                              <Icon name="search" className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                              <span>{t.trackBtn}</span>
                             </button>
                           </div>
 
                           {/* Trust / Value Proposition Checklist */}
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t-2 border-border-black/30">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                             <div className="flex items-center gap-2">
-                              <div className="w-5 h-5 bg-status-live-green/20 border border-status-live-green/50 text-status-live-green flex items-center justify-center text-xs font-bold">✓</div>
-                              <span className="font-mono text-xs uppercase text-ink-primary font-bold">No account needed</span>
+                              <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold">✓</div>
+                              <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{t.check1}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-5 h-5 bg-status-live-green/20 border border-status-live-green/50 text-status-live-green flex items-center justify-center text-xs font-bold">✓</div>
-                              <span className="font-mono text-xs uppercase text-ink-primary font-bold">Get a report ID</span>
+                              <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold">✓</div>
+                              <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{t.check2}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-5 h-5 bg-status-live-green/20 border border-status-live-green/50 text-status-live-green flex items-center justify-center text-xs font-bold">✓</div>
-                              <span className="font-mono text-xs uppercase text-ink-primary font-bold">See proof when fixed</span>
+                              <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold">✓</div>
+                              <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{t.check3}</span>
                             </div>
                           </div>
                         </div>
@@ -1314,74 +1487,74 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                       {/* Right Column: Featured Public Report Card */}
                       <div className="lg:col-span-5 w-full">
-                        <div className="bg-surface-clean border-2 border-border-black shadow-[6px_6px_0px_var(--shadow-color)] flex flex-col relative">
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl overflow-hidden flex flex-col relative transition-all">
                           {/* Card Header Ribbon */}
-                          <div className="bg-surface-container border-b-2 border-border-black px-4 py-2.5 flex items-center justify-between">
+                          <div className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 px-5 py-3 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <Icon name="globe" className="w-4 h-4 text-accent-electric-cyan" />
-                              <span className="font-mono text-xs uppercase font-bold text-ink-primary">A Public Report</span>
+                              <Icon name="globe" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{lang === 'bn' ? 'সাম্প্রতিক নাগরিক রিপোর্ট' : 'Recent Public Report'}</span>
                             </div>
-                            <span className="bg-primary-container text-on-primary-container font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-border-black">
-                              Live Cadastre
+                            <span className="bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                              {lang === 'bn' ? 'সরাসরি পর্যবেক্ষণ' : 'Live Incident'}
                             </span>
                           </div>
 
                           {/* Card Visual Evidence / Image container */}
-                          <div className="relative border-b-2 border-border-black h-48 bg-surface-container-high overflow-hidden group">
+                          <div className="relative h-52 bg-slate-100 dark:bg-slate-900 overflow-hidden group">
                             <img 
-                              className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-300" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                               alt="Civic report evidence"
                               src={featuredReport?.beforeImage || featuredReport?.image_url || "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800"} 
                             />
-                            <div className="absolute bottom-2 left-2 bg-surface-container/90 border border-border-black text-ink-primary px-2 py-1 font-mono text-[10px] uppercase flex items-center gap-1.5 backdrop-blur-sm">
-                              <Icon name="camera" className="w-3.5 h-3.5 text-accent-electric-cyan" />
+                            <div className="absolute bottom-2 left-2 bg-slate-900/85 text-white px-2.5 py-1 rounded-lg text-[10px] font-mono flex items-center gap-1.5 backdrop-blur-sm">
+                              <Icon name="camera" className="w-3.5 h-3.5 text-emerald-400" />
                               <span>PHOTO-LOG #{featuredReport?.id || '4092-B'}</span>
                             </div>
                           </div>
 
                           {/* Incident Details */}
-                          <div className="p-4 flex flex-col gap-3 bg-surface-clean">
+                          <div className="p-5 flex flex-col gap-3">
                             <div className="flex items-center justify-between">
                               {/* Status Pill */}
-                              <div className="inline-flex items-center gap-1.5 bg-surface-container border border-border-black px-2.5 py-0.5">
-                                <span className={`w-2 h-2 rounded-full ${featuredReport?.status === 'Resolved' ? 'bg-status-live-green shadow-[0_0_6px_#10B981]' : 'bg-status-warning-amber animate-ping'}`}></span>
-                                <span className="font-mono text-[10px] uppercase font-bold text-ink-primary">{featuredReport?.status || 'In Progress'}</span>
+                              <div className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-full">
+                                <span className={`w-2 h-2 rounded-full ${featuredReport?.status === 'Resolved' ? 'bg-emerald-500 shadow-[0_0_6px_#10B981]' : 'bg-amber-500 animate-ping'}`}></span>
+                                <span className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300">{featuredReport?.status || 'In Progress'}</span>
                               </div>
-                              <span className="font-mono text-[10px] text-ink-subtle uppercase">LOGGED: RECENT</span>
+                              <span className="text-[11px] text-slate-400 font-medium">{lang === 'bn' ? 'আজকের আপডেট' : 'Updated recently'}</span>
                             </div>
 
                             {/* Incident Title and Description */}
-                            <h2 className="font-headline text-sm font-bold text-ink-primary leading-snug line-clamp-2">
+                            <h2 className="font-headline text-sm font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
                               {featuredReport?.title || 'Severe waterlogging and overflow along Muradpur main road following morning rainfall.'}
                             </h2>
 
                             {/* Location Tag Meta */}
-                            <div className="flex items-center gap-1.5 bg-surface-container border border-border-black px-3 py-1.5 text-xs">
-                              <Icon name="map-pin" className="w-3.5 h-3.5 text-accent-electric-cyan shrink-0" />
-                              <span className="font-mono text-[11px] uppercase text-ink-primary font-bold truncate">
+                            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg text-xs text-slate-700 dark:text-slate-300">
+                              <Icon name="map-pin" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                              <span className="font-medium truncate">
                                 {featuredReport?.location || 'Muradpur Junction, Ward 08'}
                               </span>
                             </div>
 
                             {/* Metadata Key-Value Spec Grid */}
-                            <div className="grid grid-cols-2 gap-2 border-t border-border-black/30 pt-2 font-mono text-[10px]">
+                            <div className="grid grid-cols-2 gap-2 border-t border-slate-200 dark:border-slate-700 pt-2.5 text-[11px]">
                               <div>
-                                <span className="text-ink-subtle uppercase block">Report ID:</span>
-                                <span className="font-bold text-ink-primary">#{featuredReport?.id || 'UF-2026-0841'}</span>
+                                <span className="text-slate-400 block text-[10px]">{lang === 'bn' ? 'অভিযোগ নং:' : 'Report ID:'}</span>
+                                <span className="font-bold font-mono text-slate-800 dark:text-slate-200">#{featuredReport?.id || 'UF-2026-0841'}</span>
                               </div>
                               <div>
-                                <span className="text-ink-subtle uppercase block">Dept Routed:</span>
-                                <span className="font-bold text-ink-primary truncate block">{featuredReport?.department || 'Road Maintenance'}</span>
+                                <span className="text-slate-400 block text-[10px]">{lang === 'bn' ? 'দায়িত্বপ্রাপ্ত দপ্তর:' : 'Assigned Dept:'}</span>
+                                <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">{featuredReport?.department || 'Road Maintenance'}</span>
                               </div>
                             </div>
 
                             {/* Card Action Button */}
-                            <div className="mt-1 pt-2 border-t-2 border-border-black">
+                            <div className="mt-1 pt-2 border-t border-slate-200 dark:border-slate-700">
                               <button 
                                 onClick={() => setActiveTab('map')} 
-                                className="w-full flex items-center justify-between bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-ink-primary px-3 py-2 border border-border-black transition-colors font-mono text-xs uppercase font-bold cursor-pointer"
+                                className="w-full flex items-center justify-between bg-emerald-50 dark:bg-slate-700/60 hover:bg-emerald-600 hover:text-white text-emerald-800 dark:text-emerald-300 px-3.5 py-2 rounded-xl transition-colors text-xs font-semibold cursor-pointer"
                               >
-                                <span>View public reports</span>
+                                <span>{lang === 'bn' ? 'সকল উন্মুক্ত রিপোর্ট দেখুন' : 'View all public reports'}</span>
                                 <Icon name="arrow-right" className="w-4 h-4" />
                               </button>
                             </div>
@@ -1392,196 +1565,273 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   </div>
                 </section>
 
-                {/* "HOW IT WORKS" SECTION */}
-                <section aria-labelledby="workflow-title" className="w-full bg-canvas-paper py-12 md:py-20 border-b-2 border-border-black">
+                {/* QUICK CITIZEN ISSUE CATEGORIES */}
+                <section className="w-full bg-slate-50 dark:bg-slate-900/50 py-12 md:py-16 border-b border-slate-200 dark:border-slate-800 transition-colors">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Section Header */}
-                    <div className="max-w-3xl mb-10">
-                      <div className="font-mono text-xs text-accent-electric-cyan uppercase tracking-widest mb-1 font-bold">
-                        // HOW IT WORKS
+                    <div className="max-w-2xl mb-8">
+                      <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                        {t.categoriesBadge}
                       </div>
-                      <h2 id="workflow-title" className="font-headline text-3xl sm:text-4xl font-black text-ink-primary tracking-tight mb-2">
-                        Report. Track. Verify.
+                      <h2 className="font-headline text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {t.categoriesTitle}
                       </h2>
-                      <p className="text-base text-ink-secondary">
-                        A simple process, with a clear record at every step.
+                      <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                        {t.categoriesSub}
                       </p>
                     </div>
 
-                    {/* Clean 3-Column Minimal Grid with 2px borders */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-2 border-border-black bg-surface-clean shadow-[6px_6px_0px_var(--shadow-color)]">
-                      {/* Column 01: Report */}
-                      <div className="p-6 md:p-8 border-b-2 md:border-b-0 md:border-r-2 border-border-black flex flex-col justify-between hover:bg-surface-container transition-colors">
-                        <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-4xl text-accent-electric-cyan font-black select-none leading-none">
-                              01
-                            </span>
-                            <div className="w-9 h-9 bg-primary-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="camera" className="w-5 h-5 text-on-primary-container" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {[
+                        {
+                          title: t.catRoadsTitle,
+                          desc: t.catRoadsSub,
+                          icon: 'hammer',
+                          color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                          cat: 'Road Infrastructure'
+                        },
+                        {
+                          title: t.catDrainageTitle,
+                          desc: t.catDrainageSub,
+                          icon: 'droplets',
+                          color: 'bg-blue-50 text-blue-700 border-blue-200',
+                          cat: 'Drainage & Sewerage'
+                        },
+                        {
+                          title: t.catWasteTitle,
+                          desc: t.catWasteSub,
+                          icon: 'trash-2',
+                          color: 'bg-amber-50 text-amber-700 border-amber-200',
+                          cat: 'Waste Management'
+                        },
+                        {
+                          title: t.catLightsTitle,
+                          desc: t.catLightsSub,
+                          icon: 'zap',
+                          color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                          cat: 'Street Lighting'
+                        }
+                      ].map((item, idx) => (
+                        <div 
+                          key={idx}
+                          onClick={() => {
+                            setReportForm(prev => ({ ...prev, category: item.cat }));
+                            setReportStep(1);
+                            setActiveTab('report');
+                          }}
+                          className="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-emerald-500 dark:hover:border-emerald-500 transition-all cursor-pointer flex flex-col justify-between group"
+                        >
+                          <div>
+                            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
+                              <Icon name={item.icon} className="w-5 h-5" />
                             </div>
+                            <h3 className="font-headline font-bold text-base text-slate-900 dark:text-white mb-1 group-hover:text-emerald-600 transition-colors">
+                              {item.title}
+                            </h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                              {item.desc}
+                            </p>
                           </div>
-                          <h3 className="font-headline text-xl font-bold text-ink-primary mb-2 tracking-tight">
-                            Report
-                          </h3>
-                          <p className="text-sm text-ink-secondary leading-relaxed">
-                            Take or upload a photo, add the location, and briefly describe the problem.
-                          </p>
+                          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            <span>{lang === 'bn' ? 'অভিযোগ করুন' : 'Report Now'}</span>
+                            <span className="group-hover:translate-x-1 transition-transform">→</span>
+                          </div>
                         </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-accent-electric-cyan"></span>
-                          <span>Step Duration: &lt; 60 seconds</span>
-                        </div>
-                      </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
 
-                      {/* Column 02: Track */}
-                      <div className="p-6 md:p-8 border-b-2 md:border-b-0 md:border-r-2 border-border-black flex flex-col justify-between hover:bg-surface-container transition-colors">
-                        <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-4xl text-ink-primary font-black select-none leading-none">
-                              02
-                            </span>
-                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="search" className="w-5 h-5 text-accent-electric-cyan" />
-                            </div>
-                          </div>
-                          <h3 className="font-headline text-xl font-bold text-ink-primary mb-2 tracking-tight">
-                            Track
-                          </h3>
-                          <p className="text-sm text-ink-secondary leading-relaxed">
-                            Save your report ID and check progress whenever you need to.
-                          </p>
-                        </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-accent-electric-cyan"></span>
-                          <span>Real-time municipal dispatch sync</span>
-                        </div>
-                      </div>
+                {/* "HOW IT WORKS" 3-STEP PROCESS SECTION */}
+                <section aria-labelledby="workflow-title" className="w-full bg-[#050B14] py-14 md:py-20 text-white border-y border-slate-800 transition-colors">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Section Header */}
+                    <div className="max-w-2xl mb-8">
+                      <h2 id="workflow-title" className="font-headline text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
+                        {t.howItWorksTitle}
+                      </h2>
+                      <p className="text-sm sm:text-base text-slate-400">
+                        {t.howItWorksSub}
+                      </p>
+                    </div>
 
-                      {/* Column 03: Verify */}
-                      <div className="p-6 md:p-8 flex flex-col justify-between hover:bg-surface-container transition-colors">
-                        <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-4xl text-status-live-green font-black select-none leading-none">
-                              03
-                            </span>
-                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="check" className="w-5 h-5 text-status-live-green" />
+                    {/* Unified 3-Column Box Container Matching Reference Image */}
+                    <div className="border border-[#1E293B] rounded-xl overflow-hidden bg-[#0A101D] shadow-2xl">
+                      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1E293B]">
+                        {/* Step 01: Report */}
+                        <div className="p-6 md:p-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-6">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#38BDF8] select-none tracking-tight">
+                                {t.step1Num || '01'}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#0C243C] border border-[#0284C7]/60 flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="camera" className="w-5 h-5" />
+                              </div>
                             </div>
+                            <h3 className="font-headline text-xl font-bold text-white mb-2">
+                              {t.step1Title}
+                            </h3>
+                            <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                              {t.step1Desc}
+                            </p>
                           </div>
-                          <h3 className="font-headline text-xl font-bold text-ink-primary mb-2 tracking-tight">
-                            Verify
-                          </h3>
-                          <p className="text-sm text-ink-secondary leading-relaxed">
-                            See the repair evidence and whether the resolution has been confirmed.
-                          </p>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-[#38BDF8] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.step1Meta}
+                            </span>
+                          </div>
                         </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-status-live-green"></span>
-                          <span>Includes photographic proof</span>
+
+                        {/* Step 02: Track */}
+                        <div className="p-6 md:p-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-6">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-white select-none tracking-tight">
+                                {t.step2Num || '02'}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#131D2D] border border-[#223247] flex items-center justify-center text-[#38BDF8]">
+                                <Icon name="search" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-xl font-bold text-white mb-2">
+                              {t.step2Title}
+                            </h3>
+                            <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                              {t.step2Desc}
+                            </p>
+                          </div>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-[#38BDF8] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.step2Meta}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Step 03: Verify */}
+                        <div className="p-6 md:p-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-6">
+                              <span className="font-headline text-3xl sm:text-4xl font-black text-[#10B981] select-none tracking-tight">
+                                {t.step3Num || '03'}
+                              </span>
+                              <div className="w-10 h-10 rounded-md bg-[#082820] border border-[#059669]/60 flex items-center justify-center text-[#10B981]">
+                                <Icon name="check" className="w-5 h-5" />
+                              </div>
+                            </div>
+                            <h3 className="font-headline text-xl font-bold text-white mb-2">
+                              {t.step3Title}
+                            </h3>
+                            <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                              {t.step3Desc}
+                            </p>
+                          </div>
+                          <div className="mt-8 pt-4 border-t border-[#1E293B] flex items-center gap-2">
+                            <span className="w-2 h-2 bg-[#10B981] inline-block flex-shrink-0"></span>
+                            <span className="font-mono text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                              {t.step3Meta}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </section>
 
-                {/* LIVE CADASTRE METRICS / GROUND TRUTH STRIP */}
-                <section className="w-full bg-surface py-12 md:py-16 border-b-2 border-border-black">
+                {/* LIVE PERFORMANCE METRICS STRIP */}
+                <section className="w-full bg-slate-50 dark:bg-slate-900/50 py-12 md:py-16 border-b border-slate-200 dark:border-slate-800 transition-colors">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-2 border-border-black bg-surface-clean shadow-[6px_6px_0px_var(--shadow-color)]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {/* Metric 01: Total Logged */}
-                      <div className="p-6 md:p-8 border-b-2 sm:border-b-0 border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                      <div className="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-3xl sm:text-4xl font-black text-ink-primary select-none leading-none">
-                              12,840
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+                              {t.metric1Val}
                             </span>
-                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="inbox" className="w-5 h-5 text-accent-electric-cyan" />
+                            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                              <Icon name="inbox" className="w-5 h-5" />
                             </div>
                           </div>
-                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
-                            Total Logged
+                          <h3 className="font-headline text-base font-bold text-slate-900 dark:text-white mb-0.5">
+                            {t.metric1Label}
                           </h3>
-                          <p className="text-xs text-ink-secondary leading-relaxed">
-                            Municipal incidents logged across all regional city corporations.
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {t.metric1Desc}
                           </p>
                         </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-accent-electric-cyan"></span>
-                          <span>All Municipal Wards</span>
+                        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          ● {t.metric1Meta}
                         </div>
                       </div>
 
                       {/* Metric 02: Resolution Rate */}
-                      <div className="p-6 md:p-8 border-b-2 sm:border-b-0 border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                      <div className="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-3xl sm:text-4xl font-black text-accent-electric-cyan select-none leading-none">
-                              89.4%
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400">
+                              {t.metric2Val}
                             </span>
-                            <div className="w-9 h-9 bg-primary-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="check-circle" className="w-5 h-5 text-on-primary-container" />
+                            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                              <Icon name="check-circle" className="w-5 h-5" />
                             </div>
                           </div>
-                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
-                            Resolution Rate
+                          <h3 className="font-headline text-base font-bold text-slate-900 dark:text-white mb-0.5">
+                            {t.metric2Label}
                           </h3>
-                          <p className="text-xs text-ink-secondary leading-relaxed">
-                            Two-party verified fixes backed by photographic evidence.
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {t.metric2Desc}
                           </p>
                         </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-status-live-green"></span>
-                          <span>Verified By Citizens</span>
+                        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          ● {t.metric2Meta}
                         </div>
                       </div>
 
                       {/* Metric 03: Avg Dispatch Turn */}
-                      <div className="p-6 md:p-8 border-b-2 sm:border-b-0 border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                      <div className="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-3xl sm:text-4xl font-black text-ink-primary select-none leading-none">
-                              18.2h
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+                              {t.metric3Val}
                             </span>
-                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="clock" className="w-5 h-5 text-status-warning-amber" />
+                            <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                              <Icon name="clock" className="w-5 h-5" />
                             </div>
                           </div>
-                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
-                            Avg Dispatch Turn
+                          <h3 className="font-headline text-base font-bold text-slate-900 dark:text-white mb-0.5">
+                            {t.metric3Label}
                           </h3>
-                          <p className="text-xs text-ink-secondary leading-relaxed">
-                            Mean duration from citizen photo submission to field crew dispatch.
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {t.metric3Desc}
                           </p>
                         </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-status-warning-amber"></span>
-                          <span>From Log to Field Crew</span>
+                        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 text-[11px] font-semibold text-amber-600 dark:text-amber-400">
+                          ● {t.metric3Meta}
                         </div>
                       </div>
 
-                      {/* Metric 04: Open Telemetry */}
-                      <div className="p-6 md:p-8 flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                      {/* Metric 04: Open Transparency */}
+                      <div className="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="font-headline text-3xl sm:text-4xl font-black text-status-live-green select-none leading-none">
-                              100%
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400">
+                              {t.metric4Val}
                             </span>
-                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
-                              <Icon name="shield-check" className="w-5 h-5 text-status-live-green" />
+                            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                              <Icon name="shield-check" className="w-5 h-5" />
                             </div>
                           </div>
-                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
-                            Open Telemetry
+                          <h3 className="font-headline text-base font-bold text-slate-900 dark:text-white mb-0.5">
+                            {t.metric4Label}
                           </h3>
-                          <p className="text-xs text-ink-secondary leading-relaxed">
-                            Full audit transparency on public map without login barriers.
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {t.metric4Desc}
                           </p>
                         </div>
-                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
-                          <span className="w-2 h-2 bg-status-live-green"></span>
-                          <span>Public Audit Access</span>
+                        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          ● {t.metric4Meta}
                         </div>
                       </div>
                     </div>
@@ -1589,24 +1839,24 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 </section>
 
                 {/* INTERACTIVE BEFORE/AFTER SHOWCASE */}
-                <section className="w-full bg-canvas-paper py-12 md:py-16 border-b-2 border-border-black">
+                <section className="w-full bg-white dark:bg-slate-900 py-12 md:py-16 border-b border-slate-200 dark:border-slate-800 transition-colors">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-surface-clean border-2 border-border-black p-6 sm:p-8 shadow-[6px_6px_0px_var(--shadow-color)]">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-10 shadow-sm">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <div>
-                          <div className="font-mono text-xs text-accent-electric-cyan uppercase tracking-wider mb-1 font-bold">
-                            // VERIFIED RESOLUTION EVIDENCE
+                          <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                            {t.sliderBadge}
                           </div>
-                          <h2 className="font-headline text-2xl font-black text-ink-primary tracking-tight">
-                            Interactive Before & After Verification Slider
+                          <h2 className="font-headline text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {t.sliderTitle}
                           </h2>
-                          <p className="text-sm text-ink-secondary mt-1">
-                            Drag the slider to compare original incident reports with confirmed municipal repairs.
+                          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                            {t.sliderSub}
                           </p>
                         </div>
-                        <div className="inline-flex items-center gap-2 bg-surface-container border border-border-black px-3 py-1 font-mono text-xs font-bold text-accent-electric-cyan self-start md:self-auto">
-                          <span className="w-2 h-2 rounded-full bg-status-live-green shadow-[0_0_6px_#10B981]"></span>
-                          <span>TWO-PARTY VERIFIED</span>
+                        <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-800 dark:text-emerald-300 self-start md:self-auto shadow-sm">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span>{t.sliderTag}</span>
                         </div>
                       </div>
 
@@ -1620,33 +1870,33 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   </div>
                 </section>
 
-                {/* QUICK ACTION & BOTTOM DISPATCH BANNER */}
-                <section className="w-full bg-surface py-12">
+                {/* EMERGENCY CALLOUT & DIRECT CITIZEN DISPATCH BANNER */}
+                <section className="w-full bg-slate-50 dark:bg-slate-900/50 py-12 md:py-16 transition-colors">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-surface-clean border-2 border-accent-electric-cyan p-6 sm:p-8 shadow-[6px_6px_0px_var(--shadow-color)] flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white rounded-3xl p-7 sm:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
                       <div className="flex flex-col max-w-xl text-left">
-                        <div className="inline-flex items-center gap-2 font-mono text-xs uppercase font-bold text-accent-electric-cyan mb-1">
-                          <span className="w-2.5 h-2.5 bg-accent-electric-cyan"></span>
-                          <span>IMMEDIATE MUNICIPAL RESPONSE</span>
+                        <div className="inline-flex items-center gap-2 text-emerald-200 text-xs uppercase font-bold tracking-wider mb-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                          <span>{lang === 'bn' ? 'জরুরি পৌর সাহায্য' : 'URGENT CITIZEN HOTLINE'}</span>
                         </div>
-                        <h2 className="font-headline text-xl sm:text-2xl font-black text-ink-primary tracking-tight mb-2">
-                          Spot a hazard right now? No app download required.
+                        <h2 className="font-headline text-xl sm:text-2xl font-black tracking-tight mb-2">
+                          {t.bannerTitle}
                         </h2>
-                        <p className="text-sm text-ink-secondary font-medium">
-                          Open camera, pin your coordinates, and UrbanFix routes directly to the assigned zone authority.
+                        <p className="text-sm text-emerald-100 font-normal leading-relaxed">
+                          {t.bannerSub}
                         </p>
                       </div>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto shrink-0">
-                        <div className="flex items-center justify-center gap-2 bg-surface-container border-2 border-border-black px-4 py-2.5 font-mono text-sm font-bold text-ink-primary shadow-[2px_2px_0px_var(--shadow-color)]">
-                          <span className="material-symbols-outlined text-lg text-error">emergency</span>
-                          <span>Hotline: 16104</span>
+                        <div className="flex items-center justify-center gap-2 bg-emerald-900/70 border border-emerald-500/50 px-4 py-3 rounded-xl text-xs sm:text-sm font-bold text-white shadow-sm">
+                          <span className="material-symbols-outlined text-lg text-amber-300">call</span>
+                          <span>{t.hotline}</span>
                         </div>
                         <button 
                           onClick={() => { setReportStep(1); setActiveTab('report'); }} 
-                          className="flex items-center justify-center gap-2 bg-primary-container text-on-primary-container hover:bg-accent-electric-cyan border-2 border-border-black px-6 py-2.5 font-mono text-sm uppercase font-black shadow-[4px_4px_0px_var(--shadow-color)] hover:shadow-[2px_2px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer"
+                          className="flex items-center justify-center gap-2 bg-white text-emerald-800 hover:bg-emerald-50 px-6 py-3 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
                         >
-                          <span>Report Issue Now</span>
-                          <Icon name="arrow-right" className="w-4 h-4 text-on-primary-container" />
+                          <span>{t.bannerBtn}</span>
+                          <Icon name="arrow-right" className="w-4 h-4 text-emerald-800" />
                         </button>
                       </div>
                     </div>
@@ -2586,7 +2836,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <p className="text-sm text-ink-secondary">The current active account is not registered as a youth worker.</p>
                     <button 
                       onClick={logout} 
-                      className="px-5 py-2.5 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                      className="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
                     >
                       <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                       <span>Log Out</span>
@@ -2606,7 +2856,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       </div>
                       <button 
                         onClick={logout} 
-                        className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
                       >
                         <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                         <span>Log Out</span>
@@ -2818,7 +3068,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <div className="text-center pt-2">
                       <button 
                         onClick={logout} 
-                        className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
                       >
                         <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                         <span>Log out of current session</span>
@@ -2836,7 +3086,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     </div>
                     <button 
                       onClick={logout} 
-                      className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
                     >
                       <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                       <span>Log Out</span>
@@ -2921,7 +3171,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     <div className="text-center pt-2">
                       <button 
                         onClick={logout} 
-                        className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all inline-flex items-center gap-1.5 cursor-pointer border border-red-700"
                       >
                         <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                         <span>Log out of {authUser.email}</span>
@@ -2968,7 +3218,7 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <button 
                           onClick={logout} 
                           title="Sign out of authority session"
-                          className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                          className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
                         >
                           <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                           <span>Log Out</span>
