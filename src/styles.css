@@ -7,11 +7,25 @@
   --bg-primary: #FCF9F2;
   --bg-secondary: #F4F1EA;
   --bg-card: #FFFFFF;
-  --border-subtle: #0B0C0E;
-  --border-highlight: #00A3C4;
-  --text-primary: #0B0C0E;
-  --text-secondary: #4A4D53;
-  --text-muted: #7D828A;
+  --surface: #FCF9F2;
+  --surface-clean: #FFFFFF;
+  --surface-dim: #DCDAD3;
+  --canvas-paper: #F4F1EA;
+  --surface-container: #F1EEE7;
+  --surface-container-low: #F6F3EC;
+  --surface-container-high: #EBE8E1;
+  --surface-container-highest: #E5E2DB;
+  --border-black: #0B0C0E;
+  --ink-primary: #0B0C0E;
+  --ink-secondary: #4A4D53;
+  --ink-subtle: #7D828A;
+  --primary: #00677D;
+  --on-primary: #FFFFFF;
+  --primary-container: #00A3C4;
+  --on-primary-container: #00333F;
+  --accent-cyan-light: #E0F7FA;
+  --accent-electric-cyan: #00A3C4;
+  --shadow-color: #0B0C0E;
   --brand-sky: #00A3C4;
   --brand-cyan: #00A3C4;
   --brand-blue: #00677D;
@@ -20,13 +34,27 @@
 .dark {
   color-scheme: dark;
   --bg-primary: #0B0F17;
-  --bg-secondary: #111827;
-  --bg-card: #15223A;
-  --border-subtle: #334155;
-  --border-highlight: #38bdf8;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --bg-secondary: #070A11;
+  --bg-card: #111827;
+  --surface: #0B0F17;
+  --surface-clean: #111827;
+  --surface-dim: #070A11;
+  --canvas-paper: #070A11;
+  --surface-container: #15223A;
+  --surface-container-low: #0F172A;
+  --surface-container-high: #1E293B;
+  --surface-container-highest: #334155;
+  --border-black: #334155;
+  --ink-primary: #F8FAFC;
+  --ink-secondary: #94A3B8;
+  --ink-subtle: #64748B;
+  --primary: #00A3C4;
+  --on-primary: #070A11;
+  --primary-container: #00A3C4;
+  --on-primary-container: #070A11;
+  --accent-cyan-light: #0E2A35;
+  --accent-electric-cyan: #38BDF8;
+  --shadow-color: #000000;
   --brand-sky: #38bdf8;
   --brand-cyan: #06b6d4;
   --brand-blue: #0284c7;
@@ -39,7 +67,7 @@ html {
 
 body {
   background-color: var(--bg-primary);
-  color: var(--text-primary);
+  color: var(--ink-primary);
   overflow-x: hidden;
   min-height: 100vh;
   line-height: 1.5;
@@ -65,7 +93,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #00A3C4;
+  outline: 2px solid var(--accent-electric-cyan);
   outline-offset: 2px;
 }
 
@@ -74,12 +102,12 @@ select:focus-visible {
   left: 1rem;
   top: -5rem;
   z-index: 100;
-  background: #00A3C4;
-  color: #0B0C0E;
-  border: 2px solid #0B0C0E;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 2px solid var(--border-black);
   padding: 0.75rem 1.25rem;
   font-weight: 800;
-  box-shadow: 3px 3px 0px #0B0C0E;
+  box-shadow: 3px 3px 0px var(--shadow-color);
   transition: top 0.2s ease-in-out;
 }
 
@@ -98,65 +126,46 @@ select:focus-visible {
 
 /* Neo-Brutalist Cadastre Panel System */
 .glass-panel {
-  background: #FFFFFF;
-  border: 2px solid #0B0C0E;
-  box-shadow: 4px 4px 0px #0B0C0E;
-}
-
-.dark .glass-panel {
-  background: #111827;
-  border: 2px solid #334155;
-  box-shadow: 4px 4px 0px #030712;
+  background: var(--surface-clean);
+  border: 2px solid var(--border-black);
+  box-shadow: 4px 4px 0px var(--shadow-color);
 }
 
 .glass-card {
-  background: #F4F1EA;
-  border: 2px solid #0B0C0E;
-  box-shadow: 3px 3px 0px #0B0C0E;
+  background: var(--surface-container);
+  border: 2px solid var(--border-black);
+  box-shadow: 3px 3px 0px var(--shadow-color);
   transition: all 0.15s ease;
 }
 
-.dark .glass-card {
-  background: #15223A;
-  border: 2px solid #334155;
-  box-shadow: 3px 3px 0px #030712;
-}
-
 .glass-input {
-  background: #FFFFFF;
-  border: 2px solid #0B0C0E;
-  color: #0B0C0E;
-  box-shadow: 2px 2px 0px #0B0C0E;
+  background: var(--surface-clean);
+  border: 2px solid var(--border-black);
+  color: var(--ink-primary);
+  box-shadow: 2px 2px 0px var(--shadow-color);
   transition: all 0.15s ease;
 }
 
 .glass-input:focus {
-  border-color: #00A3C4;
+  border-color: var(--accent-electric-cyan);
   outline: none;
-  box-shadow: 3px 3px 0px #0B0C0E;
-}
-
-.dark .glass-input {
-  background: #0B0F17;
-  border: 2px solid #334155;
-  color: #F8FAFC;
-  box-shadow: 2px 2px 0px #030712;
+  box-shadow: 3px 3px 0px var(--shadow-color);
 }
 
 /* Brutalist Button Utility */
 .brutal-btn {
-  border: 2px solid #0B0C0E;
-  box-shadow: 4px 4px 0px #0B0C0E;
+  border: 2px solid var(--border-black);
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all 0.12s ease-in-out;
 }
 
 .brutal-btn:hover {
-  box-shadow: 2px 2px 0px #0B0C0E;
+  box-shadow: 2px 2px 0px var(--shadow-color);
   transform: translate(2px, 2px);
 }
 
 .brutal-btn:active {
-  box-shadow: 0px 0px 0px #0B0C0E;
+  box-shadow: 0px 0px 0px var(--shadow-color);
   transform: translate(4px, 4px);
 }
 
