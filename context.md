@@ -10,7 +10,8 @@
 **Urban Fix BD** is a civic technology platform adapted for Bangladesh that transforms citizen reports and photographic evidence into prioritized, transparent, and verified municipal action.
 
 - **Primary Repository:** `https://github.com/Arik09013/urban-fix-bd`
-- **Current Working Branch:** `feature/ui-update`
+- **Current Working Branch:** `feature/ui-update` (tracking `origin/feature/ui-update`)
+- **Active Development Phase:** Redesigning UI with neo-brutalist civic cadastre aesthetic, default dark mode focus, and breathable navigation.
 - **License:** MIT License
 - **Target Deployment:** Fast-response civic remediation across Bangladeshi metropolitan jurisdictions (Chattogram City Corporation - CCC, Dhaka North City Corporation - DNCC, Dhaka South City Corporation - DSCC, and regional utilities).
 
@@ -106,6 +107,30 @@ urban-fix-bd/
 ├── vercel.json                   # Vercel SPA routing and backend proxy rewrites
 └── Dockerfile                    # Containerization for FastAPI + static dist build
 ```
+
+### 2.3 Frontend Design System: Neo-Brutalist Cadastre & Dark Mode
+The frontend is undergoing a high-contrast civic cadastre redesign inspired by municipal ledgers and neo-brutalism:
+- **Default Theme:** Dark mode is the primary default theme (`<html class="dark">` with automatic fallback to dark unless explicitly set to light in `localStorage`).
+- **Dynamic CSS Variable Pipeline:** All theme tokens in `tailwind.config.js` map directly to CSS variables defined in `src/styles.css`, eliminating hardcoded hex color clashes:
+  | Token | Light Mode (`:root`) | Dark Mode (`.dark`) | Usage |
+  | :--- | :--- | :--- | :--- |
+  | `--surface` | `#FCF9F2` (cream canvas) | `#0B0F17` (deep obsidian) | Primary application background |
+  | `--surface-clean` | `#FFFFFF` (white card) | `#111827` (card obsidian) | Cards, inputs, dialogs |
+  | `--surface-container` | `#F1EEE7` | `#15223A` (slate navy) | Secondary cards, pill badges |
+  | `--border-black` | `#0B0C0E` (ink black) | `#334155` (high-contrast slate) | Structural 2px brutalist borders |
+  | `--shadow-color` | `#0B0C0E` (solid black) | `#000000` (deep shadow) | Hard brutalist box-shadow offsets |
+  | `--ink-primary` | `#0B0C0E` (charcoal) | `#F8FAFC` (pure crisp white) | Headings, labels, primary text |
+  | `--ink-secondary` | `#4A4D53` (dark gray) | `#94A3B8` (slate text) | Subtitles, body descriptions |
+  | `--primary-container`| `#00A3C4` (electric cyan) | `#00A3C4` (electric cyan) | Action buttons, active tabs |
+  | `--on-primary-container`| `#00333F` (dark cyan) | `#070A11` (dark obsidian) | Text inside active primary badges |
+- **Typography:** Dual-font pairing:
+  - **Headings & Body:** `Inter` (weights 400, 600, 700, 800, 900) via `font-headline` / `font-sans`.
+  - **Cadastre Data & Metadata:** `JetBrains Mono` via `font-mono` / `font-code` for tickers, statuses, IDs, and timestamps.
+- **Top Header & Navigation Architecture:**
+  - **Breathable & Uncluttered:** Strictly 4 core citizen navigation tabs (`Home`, `Report Issue`, `Track Report`, `Public Map`) with spacious padding (`px-4 sm:px-8 py-3.5`), text-only uppercase labels, and generous gap spacing (`gap-6`).
+  - **Strict No-Clutter Policy:** No auxiliary marketing tabs or phone numbers in the top bar (e.g., `Community` and `Civic Hotline` are kept out of the main navbar to adhere strictly to the original cadastre specification).
+  - **Control Cluster:** Top right houses the system theme toggle (`sun`/`moon`) and the direct `Authority Portal` launcher.
+  - **Top Cadastre Ticker Ribbon:** Persistent telemetry ticker (`DISPATCH STATUS: ACTIVE`, `NO APP DOWNLOAD REQUIRED`, `AVERAGE VERIFICATION TIME: 4.2 HRS`, `CURRENT INCIDENT LOAD`).
 
 ---
 
@@ -359,17 +384,29 @@ Configuration is loaded and validated in `backend/app/core/config.py` using Pyda
 
 ### 7.2 Frontend Vitest Suite
 - **Location:** `src/App.test.jsx`, `src/components/*.test.jsx`, `src/lib/*.test.js`
-- **Command:** `npm test`
+- **Command:** `npm test -- --run`
 - **Suites:** 4 test files, 12 unit tests.
+- **Node 25 Global `localStorage` Compatibility (Resolved):**
+  - Built-in `StorageMock` polyfill implemented in `src/test/setup.js` automatically detects if Node 25's experimental uninitialized `globalThis.localStorage` is missing methods and provides complete `getItem`, `setItem`, `removeItem`, `clear`, `key`, and `length` stubs.
+  - **Result:** **12 passed (100% pass rate).**
 
-#### Critical Quirk: Node 25 Global `localStorage` Clash
-- **Issue:** On systems running Node.js 25+ (e.g., v25.9.0), Node provides an experimental built-in `globalThis.localStorage` without an initialized storage file. In Vitest with jsdom, `localStorage.getItem` evaluates to `undefined`, causing:
-  `TypeError: localStorage.getItem is not a function` at `src/App.jsx:386`.
-- **Resolution:** In CI (GitHub Actions runs Node 22), this does not occur. When running on Node 25 locally, ensure `src/test/setup.js` or global environment mocks `window.localStorage` with standard `getItem`, `setItem`, `removeItem`, `clear` stubs before executing tests.
+### 7.3 Frontend Playwright E2E Suite
+- **Location:** `tests/e2e/responsive.spec.js`
+- **Command:** `npx playwright test`
+- **Prerequisites:** `npx playwright install chromium`
+- **Projects Tested:**
+  - Desktop (1440x900 viewport)
+  - Mobile (390x844 viewport)
+- **Coverage:**
+  1. Horizontal overflow prevention across all viewport sizes.
+  2. Citizen navigation links and quick access buttons.
+  3. Interactive tracking inspection flow without guessing case IDs.
+  4. Accessibility tap targets and authority portal entry points.
+- **Result:** **4 passed (100% pass rate).**
 
-### 7.3 Frontend Production Build
+### 7.4 Frontend Production Build
 - **Command:** `npm run build`
-- **Status:** **PASSING**. Builds clean distribution assets to `dist/` in ~1.4 seconds with zero syntax or bundling errors.
+- **Status:** **PASSING**. Builds clean distribution assets to `dist/` in < 1 second with zero syntax or bundling errors.
 
 ---
 
@@ -411,13 +448,19 @@ Access UI: `http://localhost:5173` (proxies `/api` and `/uploads` to port 8000).
 
 ### 9.3 Running All Automated Checks
 ```bash
-# 1. Frontend production build
+# 1. Frontend unit tests (Vitest)
+npm test -- --run
+
+# 2. Frontend E2E tests (Playwright)
+npx playwright test
+
+# 3. Frontend production build
 npm run build
 
-# 2. Backend test suite (with Cloudinary override for local assertions)
+# 4. Backend test suite (with Cloudinary override for local assertions)
 CLOUDINARY_CLOUD_NAME="" CLOUDINARY_API_KEY="" CLOUDINARY_API_SECRET="" CLOUDINARY_URL="" ./backend/.venv/bin/pytest backend/tests
 
-# 3. Live Gemini API Verification (Diagnostic)
+# 5. Live Gemini API Verification (Diagnostic)
 ./backend/.venv/bin/python backend/scripts/verify_live_gemini.py
 ```
 
@@ -433,10 +476,13 @@ CLOUDINARY_CLOUD_NAME="" CLOUDINARY_API_KEY="" CLOUDINARY_API_SECRET="" CLOUDINA
 - [x] Regex scrubbing for Bangladeshi mobile numbers (`+880 1X...`) and National Identity (NID: 10, 13, 17 digits).
 - [x] Pre-seeded demo officers for CCC, DNCC, DSCC, DWASA.
 - [x] 114 automated backend unit and integration tests covering routing, security, resolution workflows, and data protection.
+- [x] Neo-brutalist civic cadastre UI redesign on `feature/ui-update` (hard 2px borders, brutalist offsets, high-contrast dark theme by default, live ticker ribbon, featured cadastre card).
+- [x] Clean, breathable, decluttered navigation bar with strictly citizen-focused routes (`Home`, `Report Issue`, `Track Report`, `Public Map`).
+- [x] Cross-platform Node 25+ storage polyfill implemented in `src/test/setup.js`.
 
 ### 10.2 Immediate Priorities for Incoming AI Agents
-1. **Frontend Mocking for Node 25 Compatibility:**
-   - Update `src/test/setup.js` to define a clean mock for `global.localStorage` so `npm test` runs with zero warnings or errors regardless of Node.js version.
+1. **Polish Remaining Sub-Views in Neo-Brutalist Aesthetic:**
+   - Audit `Report Issue` form, `Track Report` verification gate, and `Public Map` overlays to ensure all form inputs, select dropdowns, and status pills strictly follow the `var(--surface-clean)` and `var(--border-black)` token palette in both dark and light modes.
 2. **Bengali (`বাংলা`) Language Support:**
    - Expand `_language_hint` in `backend/app/services/ai/gemini.py` to support mixed Banglish municipal colloquialisms (e.g., *bhanga rasta*, *moylar stup*, *pani bondi*, *batti jole na*).
    - Add bilingual UI toggle (English / বাংলা) in `src/App.jsx`.
