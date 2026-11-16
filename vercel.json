@@ -4,11 +4,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://urbanfix-ai.onrender.com/api/:path*"
+      "destination": "https://urban-fix-bd.onrender.com/api/:path*"
     },
     {
       "source": "/uploads/:path*",
-      "destination": "https://urbanfix-ai.onrender.com/uploads/:path*"
+      "destination": "https://urban-fix-bd.onrender.com/uploads/:path*"
     },
     {
       "source": "/(.*)",
