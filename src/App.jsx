@@ -1486,28 +1486,103 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                 </section>
 
                 {/* LIVE CADASTRE METRICS / GROUND TRUTH STRIP */}
-                <section className="w-full bg-surface py-10 border-b-2 border-border-black">
+                <section className="w-full bg-surface py-12 md:py-16 border-b-2 border-border-black">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                      <div className="p-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)]">
-                        <div className="font-mono text-[10px] uppercase text-ink-subtle mb-1">Total Logged</div>
-                        <div className="font-headline text-3xl font-black text-ink-primary mb-0.5">12,840</div>
-                        <div className="font-mono text-[10px] text-ink-secondary uppercase">All Municipal Wards</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-2 border-border-black bg-surface-clean shadow-[6px_6px_0px_var(--shadow-color)]">
+                      {/* Metric 01: Total Logged */}
+                      <div className="p-6 md:p-8 border-b-2 sm:border-b-0 border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-ink-primary select-none leading-none">
+                              12,840
+                            </span>
+                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="inbox" className="w-5 h-5 text-accent-electric-cyan" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Total Logged
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Municipal incidents logged across all regional city corporations.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-accent-electric-cyan"></span>
+                          <span>All Municipal Wards</span>
+                        </div>
                       </div>
-                      <div className="p-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)]">
-                        <div className="font-mono text-[10px] uppercase text-ink-subtle mb-1">Resolution Rate</div>
-                        <div className="font-headline text-3xl font-black text-accent-electric-cyan mb-0.5">89.4%</div>
-                        <div className="font-mono text-[10px] text-ink-secondary uppercase">Verified By Citizens</div>
+
+                      {/* Metric 02: Resolution Rate */}
+                      <div className="p-6 md:p-8 border-b-2 sm:border-b-0 border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-accent-electric-cyan select-none leading-none">
+                              89.4%
+                            </span>
+                            <div className="w-9 h-9 bg-primary-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="check-circle" className="w-5 h-5 text-on-primary-container" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Resolution Rate
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Two-party verified fixes backed by photographic evidence.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-status-live-green"></span>
+                          <span>Verified By Citizens</span>
+                        </div>
                       </div>
-                      <div className="p-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)]">
-                        <div className="font-mono text-[10px] uppercase text-ink-subtle mb-1">Avg Dispatch Turn</div>
-                        <div className="font-headline text-3xl font-black text-ink-primary mb-0.5">18.2h</div>
-                        <div className="font-mono text-[10px] text-ink-secondary uppercase">From Log to Crew</div>
+
+                      {/* Metric 03: Avg Dispatch Turn */}
+                      <div className="p-6 md:p-8 border-b-2 sm:border-b-0 border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-ink-primary select-none leading-none">
+                              18.2h
+                            </span>
+                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="clock" className="w-5 h-5 text-status-warning-amber" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Avg Dispatch Turn
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Mean duration from citizen photo submission to field crew dispatch.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-status-warning-amber"></span>
+                          <span>From Log to Field Crew</span>
+                        </div>
                       </div>
-                      <div className="p-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)]">
-                        <div className="font-mono text-[10px] uppercase text-ink-subtle mb-1">Open Telemetry</div>
-                        <div className="font-headline text-3xl font-black text-status-live-green mb-0.5">100%</div>
-                        <div className="font-mono text-[10px] text-ink-secondary uppercase">Public Audit Access</div>
+
+                      {/* Metric 04: Open Telemetry */}
+                      <div className="p-6 md:p-8 flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl font-black text-status-live-green select-none leading-none">
+                              100%
+                            </span>
+                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="shield-check" className="w-5 h-5 text-status-live-green" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Open Telemetry
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Full audit transparency on public map without login barriers.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-status-live-green"></span>
+                          <span>Public Audit Access</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2119,29 +2194,56 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                     {/* RESOLUTION VERIFICATION */}
                     <div>
-                      <div className="text-[11px] font-mono text-ink-secondary mb-2 font-semibold">RESOLUTION VERIFICATION</div>
-                      <div className="grid grid-cols-2 gap-2.5">
-                        <div className={`p-3 rounded-lg border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
-                          selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence
-                            ? 'bg-status-live-green/10 border-status-live-green text-status-live-green'
-                            : 'bg-surface-container border-border-black text-ink-secondary'
-                        }`}>
-                          <Icon name="landmark" className={`w-4 h-4 ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-status-live-green' : 'text-ink-subtle'}`} />
-                          <span className="text-[11px] font-bold tracking-tight">Field Officer Evidence</span>
-                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-status-live-green/10 text-status-live-green font-bold' : 'text-ink-subtle bg-surface-container'}`}>
-                            {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? '✓ SUBMITTED' : 'PENDING'}
-                          </span>
+                      <div className="text-[11px] font-mono text-ink-secondary mb-2 font-bold uppercase tracking-wider">// RESOLUTION VERIFICATION GATES</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 border-2 border-border-black bg-surface-clean shadow-[4px_4px_0px_var(--shadow-color)]">
+                        {/* Gate 01: Field Officer Evidence */}
+                        <div className="p-4 border-b-2 sm:border-b-0 sm:border-r-2 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="font-mono text-xs font-bold uppercase text-ink-subtle">GATE 01</span>
+                              <div className={`w-8 h-8 border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)] ${
+                                selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-status-live-green text-on-primary-container' : 'bg-surface-container text-ink-secondary'
+                              }`}>
+                                <Icon name="landmark" className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <h4 className="font-headline text-sm font-bold text-ink-primary mb-1">Field Officer Evidence</h4>
+                            <p className="text-[11px] text-ink-secondary">Photographic proof and work-order completion logs from dispatch crew.</p>
+                          </div>
+                          <div className="mt-3 pt-2 border-t border-border-black/20 flex items-center justify-between font-mono text-[10px]">
+                            <span className="flex items-center gap-1.5 text-ink-subtle">
+                              <span className={`w-2 h-2 ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'bg-status-live-green' : 'bg-status-warning-amber'}`}></span>
+                              <span>MUNICIPAL LOG</span>
+                            </span>
+                            <span className={`font-bold uppercase ${selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? 'text-status-live-green' : 'text-status-warning-amber'}`}>
+                              {selectedReport.officer_evidence_submitted || selectedReport.resolution_evidence ? '✓ SUBMITTED' : 'PENDING'}
+                            </span>
+                          </div>
                         </div>
-                        <div className={`p-3 rounded-lg border flex flex-col items-center justify-center gap-1.5 transition-all text-center ${
-                          selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter
-                            ? 'bg-status-live-green/10 border-status-live-green text-status-live-green'
-                            : 'bg-surface-container border-border-black text-ink-secondary'
-                        }`}>
-                          <Icon name="check" className={`w-4 h-4 ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-status-live-green' : 'text-ink-subtle'}`} />
-                          <span className="text-[11px] font-bold tracking-tight">Citizen Verification</span>
-                          <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-status-live-green/10 text-status-live-green font-bold' : 'text-ink-subtle bg-surface-container'}`}>
-                            {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? '✓ VERIFIED' : 'PENDING'}
-                          </span>
+
+                        {/* Gate 02: Citizen Verification */}
+                        <div className="p-4 flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                          <div>
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="font-mono text-xs font-bold uppercase text-ink-subtle">GATE 02</span>
+                              <div className={`w-8 h-8 border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)] ${
+                                selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-status-live-green text-on-primary-container' : 'bg-surface-container text-ink-secondary'
+                              }`}>
+                                <Icon name="check" className="w-4 h-4" />
+                              </div>
+                            </div>
+                            <h4 className="font-headline text-sm font-bold text-ink-primary mb-1">Citizen Verification</h4>
+                            <p className="text-[11px] text-ink-secondary">Reporter on-site inspection and token approval before final ticket closure.</p>
+                          </div>
+                          <div className="mt-3 pt-2 border-t border-border-black/20 flex items-center justify-between font-mono text-[10px]">
+                            <span className="flex items-center gap-1.5 text-ink-subtle">
+                              <span className={`w-2 h-2 ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'bg-status-live-green' : 'bg-status-warning-amber'}`}></span>
+                              <span>TWO-PARTY AUDIT</span>
+                            </span>
+                            <span className={`font-bold uppercase ${selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? 'text-status-live-green' : 'text-status-warning-amber'}`}>
+                              {selectedReport.citizen_verification?.fixed || selectedReport.resolution_approvals?.reporter ? '✓ VERIFIED' : 'PENDING'}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -2480,38 +2582,109 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     error={authError} 
                   />
                 ) : authUser.role !== 'youth' ? (
-                  <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-8 text-center space-y-4">
+                  <div className="bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] rounded-lg p-8 text-center space-y-4">
                     <p className="text-sm text-ink-secondary">The current active account is not registered as a youth worker.</p>
-                    <button onClick={logout} className="px-5 py-2.5 rounded-lg bg-surface-container border-2 border-border-black text-xs font-semibold text-ink-primary hover:text-ink-primary">
-                      Log out
+                    <button 
+                      onClick={logout} 
+                      className="px-5 py-2.5 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                      <span>Log Out</span>
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div className="flex flex-wrap items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] bg-surface-container rounded-lg p-4 sm:p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] rounded-lg p-5 sm:p-6 mb-6">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-ink-primary">{authUser.name}</span>
+                          <span className="text-base font-bold text-ink-primary font-headline">{authUser.name}</span>
                           <span className="px-2.5 py-0.5 rounded-full bg-status-live-green/10 border border-status-live-green text-[10px] font-mono text-status-live-green font-bold">
                             VERIFIED CITIZEN
                           </span>
                         </div>
-                        <div className="text-xs text-ink-secondary mt-0.5 font-mono">{authUser.email} · Proposals & proof linked to escrow balance</div>
+                        <div className="text-xs text-ink-secondary mt-1 font-mono">{authUser.email} · Proposals & proof linked to escrow balance</div>
                       </div>
-                      <button onClick={logout} className="px-4 py-2 rounded-lg bg-surface-container border-2 border-border-black hover:border-border-black text-xs font-semibold text-ink-secondary">
-                        Log out
+                      <button 
+                        onClick={logout} 
+                        className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                        <span>Log Out</span>
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2.5 text-center text-xs font-mono">
-                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 border-2 border-border-black">
-                        <span className="text-accent-electric-cyan font-bold block text-sm">01</span> Submit Plan & Estimate
+                    {/* Youth 3-Step Escrow Workflow Box (Contiguous Cadastre Box Grid) */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-2 border-border-black bg-surface-clean shadow-[6px_6px_0px_var(--shadow-color)] mb-6">
+                      {/* Step 01 */}
+                      <div className="p-6 md:p-8 border-b-2 md:border-b-0 md:border-r-2 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl text-accent-electric-cyan font-black select-none leading-none">
+                              01
+                            </span>
+                            <div className="w-9 h-9 bg-primary-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="file-text" className="w-5 h-5 text-on-primary-container" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Submit Proposal
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Draft a repair plan, materials needed, and budget estimate for an eligible neighborhood issue.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-accent-electric-cyan"></span>
+                          <span>Civic Estimate Dispatch</span>
+                        </div>
                       </div>
-                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 border-2 border-border-black">
-                        <span className="text-status-warning-amber font-bold block text-sm">02</span> Authority Escrow Lock
+
+                      {/* Step 02 */}
+                      <div className="p-6 md:p-8 border-b-2 md:border-b-0 md:border-r-2 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl text-status-warning-amber font-black select-none leading-none">
+                              02
+                            </span>
+                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="shield" className="w-5 h-5 text-status-warning-amber" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Escrow Lock
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Municipal authority officers inspect the plan and lock guaranteed funds into escrow.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-status-warning-amber"></span>
+                          <span>Government Backed Funds</span>
+                        </div>
                       </div>
-                      <div className="rounded-lg bg-surface-container border-2 border-border-black p-3 border-2 border-border-black">
-                        <span className="text-status-live-green font-bold block text-sm">03</span> After Photo & Payout
+
+                      {/* Step 03 */}
+                      <div className="p-6 md:p-8 flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-headline text-3xl sm:text-4xl text-status-live-green font-black select-none leading-none">
+                              03
+                            </span>
+                            <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                              <Icon name="check-circle" className="w-5 h-5 text-status-live-green" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                            Verify & Payout
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            Submit timestamped photographic proof of resolution to immediately release the micro-grant.
+                          </p>
+                        </div>
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className="w-2 h-2 bg-status-live-green"></span>
+                          <span>Direct MFS Payout</span>
+                        </div>
                       </div>
                     </div>
 
@@ -2641,18 +2814,32 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                       {authBusy ? 'Authenticating…' : authMode === 'register' ? 'Submit Registration' : 'Contractor Sign In'}
                     </button>
                   </div>
-                  {authUser && <button onClick={logout} className="block mx-auto text-xs text-ink-secondary hover:text-ink-primary underline">Log out of current session</button>}
+                  {authUser && (
+                    <div className="text-center pt-2">
+                      <button 
+                        onClick={logout} 
+                        className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                        <span>Log out of current session</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-7 reveal-up">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] p-6 rounded-lg shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-clean border-2 border-border-black shadow-[4px_4px_0px_var(--shadow-color)] p-6 rounded-lg">
                     <div>
                       <div className="text-[10px] font-mono tracking-widest text-accent-electric-cyan font-bold uppercase">CONTRACTOR OPERATIONS PORTAL</div>
-                      <h1 className="text-xl sm:text-2xl font-extrabold text-ink-primary mt-1">{contractorProfile?.name || 'Contractor Hub'}</h1>
+                      <h1 className="text-xl sm:text-2xl font-extrabold text-ink-primary mt-1 font-headline">{contractorProfile?.name || 'Contractor Hub'}</h1>
                       <p className="text-xs text-ink-secondary mt-0.5 font-mono">Status: {contractorProfile?.approval_status || 'Approved'} · Rating: ★ {contractorProfile?.rating || '5.0'}</p>
                     </div>
-                    <button onClick={logout} className="px-4 py-2 rounded-lg bg-surface-container border-2 border-border-black text-xs font-semibold text-ink-secondary">
-                      Log out
+                    <button 
+                      onClick={logout} 
+                      className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                      <span>Log Out</span>
                     </button>
                   </div>
 
@@ -2731,9 +2918,15 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     onDemoOfficerLogin={handleDemoOfficerLogin}
                   />
                   {authUser && (
-                    <button onClick={logout} className="block mx-auto text-xs text-ink-secondary hover:text-ink-primary underline">
-                      Log out of {authUser.email} first
-                    </button>
+                    <div className="text-center pt-2">
+                      <button 
+                        onClick={logout} 
+                        className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
+                        <span>Log out of {authUser.email}</span>
+                      </button>
+                    </div>
                   )}
                 </div>
               ) : (
@@ -2775,9 +2968,9 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                         <button 
                           onClick={logout} 
                           title="Sign out of authority session"
-                          className="px-3.5 py-2 border-2 border-border-black bg-surface-container hover:bg-red-500 hover:text-white text-ink-primary font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
+                          className="px-4 py-2 border-2 border-border-black bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_var(--shadow-color)] hover:shadow-[1px_1px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-1.5 cursor-pointer"
                         >
-                          <Icon name="log-out" className="w-3.5 h-3.5" />
+                          <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                           <span>Log Out</span>
                         </button>
                       </div>
@@ -2810,21 +3003,82 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                     </div>
                   </div>
 
-                  {/* KPI STATS ROW */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* KPI STATS ROW (Contiguous Cadastre Box Grid) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-2 border-border-black bg-surface-clean shadow-[6px_6px_0px_var(--shadow-color)]">
                     {[
-                      { label: 'Human Review', val: reports.filter(r => r.needs_review || r.status === 'Needs Review').length, alert: true, icon: 'user-check' },
-                      { label: 'Proof Reviews', val: reports.filter(r => r.status === 'Evidence Uploaded').length, alert: false, icon: 'clipboard-check' },
-                      { label: 'SLA Overdue', val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length, alert: true, icon: 'clock' },
-                      { label: 'Active Work', val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length, alert: false, icon: 'inbox' }
+                      {
+                        num: '01',
+                        label: 'Human Review',
+                        val: reports.filter(r => r.needs_review || r.status === 'Needs Review').length,
+                        alert: true,
+                        icon: 'user-check',
+                        desc: 'Routing ambiguity or boundary flags requiring officer sign-off.',
+                        meta: 'Triage Queue: Immediate',
+                        color: 'bg-red-500',
+                      },
+                      {
+                        num: '02',
+                        label: 'Proof Reviews',
+                        val: reports.filter(r => r.status === 'Evidence Uploaded').length,
+                        alert: false,
+                        icon: 'clipboard-check',
+                        desc: 'Resolution proofs submitted by crews awaiting confirmation.',
+                        meta: 'Two-Party Verification',
+                        color: 'bg-accent-electric-cyan',
+                      },
+                      {
+                        num: '03',
+                        label: 'SLA Overdue',
+                        val: dashboard?.stats?.overdue_cases ?? reports.filter(r => (r.sla_status || '').startsWith('Overdue')).length,
+                        alert: true,
+                        icon: 'clock',
+                        desc: 'Incidents exceeding statutory resolution deadlines across wards.',
+                        meta: 'SLA Escalation Flag',
+                        color: 'bg-status-warning-amber',
+                      },
+                      {
+                        num: '04',
+                        label: 'Active Work',
+                        val: dashboard?.stats?.active_issues ?? reports.filter(r => r.status !== 'Resolved').length,
+                        alert: false,
+                        icon: 'inbox',
+                        desc: 'Work orders assigned and currently in progress on site.',
+                        meta: 'Municipal Cadastre Sync',
+                        color: 'bg-status-live-green',
+                      }
                     ].map((kpi, idx) => (
-                      <div key={idx} className={`bg-surface-clean border-2 shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5 transition-all ${kpi.alert && kpi.val > 0 ? 'border-red-500 bg-red-500/10' : 'border-border-black'}`}>
-                        <div className="flex items-center justify-between text-ink-secondary">
-                          <span className="text-xs font-mono font-bold uppercase">{kpi.label}</span>
-                          <Icon name={kpi.icon} className={`w-4 h-4 ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-accent-electric-cyan'}`} />
+                      <div
+                        key={idx}
+                        className={`p-6 border-b-2 sm:border-b-0 sm:border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors ${
+                          kpi.alert && kpi.val > 0 ? 'bg-red-500/5' : ''
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between mb-4">
+                            <span className={`font-headline text-3xl sm:text-4xl font-black font-mono tracking-tight leading-none ${
+                              kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-ink-primary'
+                            }`}>
+                              {kpi.val}
+                            </span>
+                            <div className={`w-9 h-9 border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)] ${
+                              kpi.alert && kpi.val > 0 ? 'bg-red-500 text-white' : 'bg-surface-container text-ink-primary'
+                            }`}>
+                              <Icon name={kpi.icon} className="w-5 h-5" />
+                            </div>
+                          </div>
+                          <h3 className="font-headline text-base font-bold text-ink-primary mb-1 tracking-tight flex items-center gap-1.5">
+                            <span>{kpi.label}</span>
+                            {kpi.alert && kpi.val > 0 && (
+                              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                            )}
+                          </h3>
+                          <p className="text-xs text-ink-secondary leading-relaxed">
+                            {kpi.desc}
+                          </p>
                         </div>
-                        <div className={`text-3xl font-black font-mono mt-2 tracking-tight ${kpi.alert && kpi.val > 0 ? 'text-red-400' : 'text-ink-primary'}`}>
-                          {kpi.val}
+                        <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                          <span className={`w-2 h-2 ${kpi.color}`}></span>
+                          <span>{kpi.meta}</span>
                         </div>
                       </div>
                     ))}
@@ -2926,15 +3180,33 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
                   {/* WHATSAPP VIEW */}
                   {adminView === 'whatsapp' && (
                     <div className="space-y-4">
-                      <div className="grid sm:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-2 border-border-black bg-surface-clean shadow-[6px_6px_0px_var(--shadow-color)]">
                         {[
-                          ['Total WhatsApp Intake', reports.filter(r => r.channel === 'WhatsApp').length],
-                          ['Pending Triage', reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length],
-                          ['Resolved via Bot', reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length]
-                        ].map(([label, value]) => (
-                          <div key={label} className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg p-5">
-                            <div className="text-xs text-ink-secondary font-mono">{label}</div>
-                            <div className="text-3xl font-extrabold text-ink-primary font-mono mt-1">{value}</div>
+                          { num: '01', label: 'Total WhatsApp Intake', value: reports.filter(r => r.channel === 'WhatsApp').length, icon: 'message-square', desc: 'Direct citizen conversational incident logs via WhatsApp bot gateway.', meta: 'Automated Bot Intake', color: 'bg-accent-electric-cyan' },
+                          { num: '02', label: 'Pending Triage', value: reports.filter(r => r.channel === 'WhatsApp' && r.status !== 'Resolved').length, icon: 'clock', desc: 'WhatsApp cases awaiting municipal dispatch routing or verification.', meta: 'Active Dispatch Queue', color: 'bg-status-warning-amber' },
+                          { num: '03', label: 'Resolved via Bot', value: reports.filter(r => r.channel === 'WhatsApp' && r.status === 'Resolved').length, icon: 'check-circle', desc: 'Incidents completed with photographic evidence verified by citizen.', meta: 'Two-Party Verified', color: 'bg-status-live-green' }
+                        ].map((stat, idx) => (
+                          <div key={idx} className="p-6 md:p-8 border-b-2 md:border-b-0 md:border-r-2 last:border-r-0 border-border-black flex flex-col justify-between hover:bg-surface-container/40 transition-colors">
+                            <div>
+                              <div className="flex items-center justify-between mb-4">
+                                <span className="font-headline text-3xl sm:text-4xl font-black font-mono text-ink-primary select-none leading-none">
+                                  {stat.value}
+                                </span>
+                                <div className="w-9 h-9 bg-surface-container border-2 border-border-black flex items-center justify-center shadow-[2px_2px_0px_var(--shadow-color)]">
+                                  <Icon name={stat.icon} className="w-5 h-5 text-accent-electric-cyan" />
+                                </div>
+                              </div>
+                              <h3 className="font-headline text-lg font-bold text-ink-primary mb-1 tracking-tight">
+                                {stat.label}
+                              </h3>
+                              <p className="text-xs text-ink-secondary leading-relaxed">
+                                {stat.desc}
+                              </p>
+                            </div>
+                            <div className="mt-6 pt-3 border-t border-border-black/20 flex items-center gap-2 font-mono text-[10px] uppercase text-ink-subtle">
+                              <span className={`w-2 h-2 ${stat.color}`}></span>
+                              <span>{stat.meta}</span>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -3038,10 +3310,13 @@ import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 
                   {/* WORK QUEUE VIEW */}
                   {['queue', 'review', 'proofs'].includes(adminView) && (
-                    <div className="bg-surface-clean border-2 border-border-black shadow-[3px_3px_0px_var(--shadow-color)] rounded-lg overflow-hidden shadow-2xl">
-                      <div className="px-6 py-4 border-b-2 border-border-black/30 flex items-center justify-between">
-                        <h2 className="text-xs font-bold text-ink-primary font-mono uppercase tracking-wider">{adminView === 'proofs' ? 'Contractor proof review' : adminView === 'review' ? 'Human review queue' : 'Municipal work queue'}</h2>
-                        <span className="text-xs font-mono text-ink-secondary">{displayedAdminReports.length} shown</span>
+                    <div className="bg-surface-clean border-2 border-border-black shadow-[6px_6px_0px_var(--shadow-color)] overflow-hidden">
+                      <div className="px-6 py-4 border-b-2 border-border-black/30 flex items-center justify-between bg-surface-container/50">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 bg-accent-electric-cyan"></span>
+                          <h2 className="text-xs font-black text-ink-primary font-mono uppercase tracking-wider">{adminView === 'proofs' ? 'Contractor Proof Review' : adminView === 'review' ? 'Human Review Queue' : 'Municipal Incident Cadastre'}</h2>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-accent-electric-cyan">{displayedAdminReports.length} Active Records</span>
                       </div>
 
                       {/* INCIDENT WORKSPACE DRAWER */}
