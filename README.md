@@ -363,6 +363,8 @@ npm install
 npm run dev
 ```
 Frontend will be accessible at `http://localhost:5173`. Vite proxies `/api` and `/uploads` requests directly to `http://127.0.0.1:8000`.
+- **Live Technical Documentation & Pitch Deck**: `http://localhost:5173/docs`
+- **Backend Swagger OpenAPI Explorer**: `http://127.0.0.1:8000/docs`
 
 ---
 

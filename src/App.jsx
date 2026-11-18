@@ -3,6 +3,7 @@ import { api, API_BASE } from './lib/api.js';
 import Icon from './components/Icon.jsx';
 import ReviewDialog from './components/ReviewDialog.jsx';
 import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
+import DocsView from './components/DocsView.jsx';
 
 export const getMediaBaseUrl = () => {
   if (typeof window !== 'undefined' && window.URBANFIX_MEDIA_BASE) {
@@ -1041,14 +1042,50 @@ export const normalizeReport = (item) => {
       }
     };
 
+    const getInitialTab = () => {
+      if (typeof window !== 'undefined' && window.location) {
+        const path = (window.location.pathname || '').toLowerCase();
+        const hash = (window.location.hash || '').toLowerCase();
+        if (path === '/docs' || path.startsWith('/docs/') || hash === '#docs' || hash.startsWith('#docs')) {
+          return 'docs';
+        }
+        if (path === '/report' || hash === '#report') return 'report';
+        if (path === '/track' || hash === '#track') return 'track';
+        if (path === '/map' || hash === '#map') return 'map';
+        if (path === '/admin' || hash === '#admin') return 'admin';
+        if (path === '/community' || hash === '#community') return 'community';
+        if (path === '/contractor' || hash === '#contractor') return 'contractor';
+      }
+      return 'landing';
+    };
+
     // --- MAIN APP COMPONENT ---
     export default function App() {
-      const [activeTab, setActiveTab] = useState('landing');
+      const [activeTab, setActiveTab] = useState(getInitialTab);
       const [lang, setLang] = useState(() => localStorage.getItem('urbanfix-lang') || 'en');
       const [darkMode, setDarkMode] = useState(() => localStorage.getItem('urbanfix-theme') === 'dark');
       const [reports, setReports] = useState(INITIAL_REPORTS);
       const [reportsTruncated, setReportsTruncated] = useState(false);
       const [selectedReport, setSelectedReport] = useState(null);
+
+      useEffect(() => {
+        const onPopState = () => {
+          setActiveTab(getInitialTab());
+        };
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+      }, []);
+
+      useEffect(() => {
+        if (typeof window !== 'undefined' && window.history && window.location) {
+          const targetPath = activeTab === 'landing' ? '/' : `/${activeTab}`;
+          if (window.location.pathname !== targetPath && !window.location.hash) {
+            try {
+              window.history.pushState({ tab: activeTab }, '', targetPath);
+            } catch (_) {}
+          }
+        }
+      }, [activeTab]);
       
       // Before/After Slider
       const [sliderPos, setSliderPos] = useState(50);
@@ -1777,6 +1814,7 @@ export const normalizeReport = (item) => {
                   { id: 'report', label: t.reportIssue, enLabel: 'Report Issue' },
                   { id: 'track', label: t.trackReport, enLabel: 'Track Report' },
                   { id: 'map', label: t.publicMap, enLabel: 'Public Map' },
+                  { id: 'docs', label: lang === 'bn' ? 'ডকুমেন্টেশন' : 'Docs', enLabel: 'Documentation' },
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
@@ -1819,6 +1857,20 @@ export const normalizeReport = (item) => {
                 >
                   <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </button>
+
+                {/* LOGOUT BUTTON WHEN LOGGED IN */}
+                {authUser && (
+                  <button 
+                    data-testid="nav-logout-btn"
+                    onClick={logout} 
+                    aria-label="Log Out"
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/60 flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+                    title={`Signed in as ${authUser.name || authUser.email}. Click to log out.`}
+                  >
+                    <Icon name="log-out" className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                    <span className="hidden sm:inline">Log Out</span>
+                  </button>
+                )}
 
                 {/* AUTHORITY PORTAL BUTTON */}
                 <button 
@@ -3704,7 +3756,7 @@ export const normalizeReport = (item) => {
                           </span>
                           {authUser?.role === 'officer' && (
                             <span className="text-xs font-semibold px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300">
-                              {lang === 'bn' ? 'কর্তৃপক্ষ: ' : 'Authority: '}{authUser.authority_id}
+                              {lang === 'bn' ? `কর্তৃপক্ষ: ${authUser.authority_id}` : `Authority Scoped (${authUser.authority_id})`}
                             </span>
                           )}
                           <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300">
@@ -3712,7 +3764,7 @@ export const normalizeReport = (item) => {
                           </span>
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-extrabold font-headline text-slate-900 dark:text-white tracking-tight">
-                          {authUser?.role === 'officer' ? `${authUser.name} ${t.adminOperationsHub}` : (lang === 'bn' ? 'পৌর কর্তৃপক্ষ কমান্ড ড্যাশবোর্ড' : 'Authority Command Dashboard')}
+                          {authUser?.role === 'officer' ? `${authUser.name} Workspace` : (lang === 'bn' ? 'পৌর কর্তৃপক্ষ কমান্ড ড্যাশবোর্ড' : 'Authority Command Dashboard')}
                         </h1>
                         <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
                           {authUser?.role === 'officer'
@@ -3722,17 +3774,30 @@ export const normalizeReport = (item) => {
                       </div>
 
                       {/* Active Officer Status & Prominent Red Log Out */}
-                      <div className="flex items-center gap-4 shrink-0">
+                      <div className="flex items-center gap-3 shrink-0">
                         <div className="hidden sm:flex flex-col text-right">
                           <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">{t.adminOfficerUser}</span>
                           <span className="text-sm font-bold text-slate-900 dark:text-white">{authUser?.name || authUser?.email}</span>
                         </div>
+                        <button
+                          data-testid="switch-authority-btn"
+                          onClick={async () => {
+                            await logout();
+                            setActiveTab('admin');
+                          }}
+                          title="Switch Authority Command Session"
+                          className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-sans text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-slate-300 dark:border-slate-600 shadow-sm"
+                        >
+                          <Icon name="refresh-cw" className="w-3.5 h-3.5 text-slate-500 dark:text-slate-300" />
+                          <span>{lang === 'bn' ? 'কর্তৃপক্ষ পরিবর্তন' : 'Switch Authority'}</span>
+                        </button>
                         <button 
+                          data-testid="officer-logout-btn"
                           onClick={logout} 
                           title="Sign out of authority session"
-                          className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer border border-red-700"
+                          className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-sans text-xs font-bold uppercase shadow-sm hover:shadow transition-all flex items-center gap-1.5 cursor-pointer border border-red-700"
                         >
-                          <Icon name="log-out" className="w-4 h-4 text-white" />
+                          <Icon name="log-out" className="w-3.5 h-3.5 text-white" />
                           <span>{t.logout}</span>
                         </button>
                       </div>
@@ -4499,6 +4564,20 @@ export const normalizeReport = (item) => {
               )
             )}
 
+            {/* 8. DOCUMENTATION VIEW */}
+            {activeTab === 'docs' && (
+              <DocsView
+                lang={lang}
+                onNavigate={(tab) => {
+                  if (tab === 'track') {
+                    setSelectedReport(null);
+                    setSubmittedReportId('');
+                  }
+                  setActiveTab(tab);
+                }}
+              />
+            )}
+
           </main>
 
           {/* FOOTER */}
@@ -4524,6 +4603,7 @@ export const normalizeReport = (item) => {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
+                <button onClick={() => setActiveTab('docs')} className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-bold">Documentation & API</button>
                 <button onClick={() => setActiveTab('community')} className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Community cleanup</button>
                 <button onClick={() => setActiveTab('contractor')} className="text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Contractor portal</button>
                 <span className="text-slate-400">© 2026 Civil Works Authority</span>
