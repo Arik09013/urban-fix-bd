@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Urban Fix BD — Comprehensive Technical Documentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  @page {
+    size: A4;
+    margin: 20mm 16mm 20mm 16mm;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1E293B;
+    background: #FFFFFF;
+    line-height: 1.6;
+    font-size: 9.2pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Cover Page */
+  .cover-page {
+    page-break-before: always;
+    page-break-after: always;
+    height: 100vh;
+    padding: 60px 50px 45px 50px;
+    background: linear-gradient(135deg, #070F1E 0%, #0B192C 45%, #152A4A 100%);
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-decor {
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 163, 196, 0.25) 0%, rgba(14, 165, 233, 0) 70%);
+    pointer-events: none;
+  }
+
+  .cover-decor-bottom {
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0) 70%);
+    pointer-events: none;
+  }
+
+  .cover-header {
+    position: relative;
+    z-index: 2;
+  }
+
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 163, 196, 0.15);
+    border: 1px solid rgba(0, 163, 196, 0.5);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #38BDF8;
+    margin-bottom: 24px;
+  }
+
+  .cover-title {
+    font-size: 34pt;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px 0;
+    color: #F8FAFC;
+  }
+
+  .cover-title span {
+    color: #00A3C4;
+    display: inline-block;
+  }
+
+  .cover-subtitle {
+    font-size: 13pt;
+    font-weight: 400;
+    color: #94A3B8;
+    max-width: 540px;
+    line-height: 1.45;
+    margin: 0 0 28px 0;
+  }
+
+  .cover-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 18px 22px;
+    max-width: 580px;
+    margin-top: 15px;
+  }
+
+  .cover-meta-item label {
+    display: block;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748B;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .cover-meta-item div {
+    font-size: 9pt;
+    font-weight: 600;
+    color: #E2E8F0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .cover-footer {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .cover-footer-left p {
+    margin: 0 0 3px 0;
+    font-size: 8.5pt;
+    color: #94A3B8;
+  }
+
+  .cover-footer-left p strong {
+    color: #F8FAFC;
+  }
+
+  .cover-version {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    color: #00A3C4;
+    background: rgba(0, 163, 196, 0.1);
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 163, 196, 0.3);
+  }
+
+  /* Structural Typography & Headings */
+  h1, h2, h3, h4, h5 {
+    color: #0B192C;
+    font-weight: 700;
+    page-break-after: avoid;
+  }
+
+  h1 {
+    font-size: 17pt;
+    border-bottom: 2px solid #00A3C4;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .page-start {
+    page-break-before: always;
+  }
+
+  h2 {
+    font-size: 12.5pt;
+    color: #1E3E62;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    border-left: 4px solid #00A3C4;
+    padding-left: 10px;
+  }
+
+  h3 {
+    font-size: 10.5pt;
+    color: #0F172A;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin: 0 0 9px 0;
+    text-align: justify;
+  }
+
+  ul, ol {
+    margin: 0 0 10px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+
+  strong {
+    color: #0F172A;
+  }
+
+  /* Callout Boxes */
+  .callout {
+    background: #F8FAFC;
+    border-left: 4px solid #00A3C4;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 8.8pt;
+    page-break-inside: avoid;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    color: #0B192C;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .callout-warning {
+    border-left-color: #F59E0B;
+    background: #FFFBEB;
+  }
+  .callout-warning .callout-title { color: #B45309; }
+
+  .callout-danger {
+    border-left-color: #EF4444;
+    background: #FEF2F2;
+  }
+  .callout-danger .callout-title { color: #B91C1C; }
+
+  .callout-success {
+    border-left-color: #10B981;
+    background: #F0FDF4;
+  }
+  .callout-success .callout-title { color: #047857; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 8.2pt;
+    page-break-inside: avoid;
+  }
+
+  th {
+    background: #0B192C;
+    color: #FFFFFF;
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 9px;
+    font-size: 7.8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid #0B192C;
+  }
+
+  td {
+    padding: 5px 9px;
+    border: 1px solid #CBD5E1;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td {
+    background: #F8FAFC;
+  }
+
+  /* Code Blocks */
+  pre, code {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  code {
+    background: #F1F5F9;
+    color: #0F172A;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: 7.8pt;
+    border: 1px solid #E2E8F0;
+  }
+
+  pre {
+    background: #0F172A;
+    color: #E2E8F0;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 7.5pt;
+    line-height: 1.45;
+    overflow-x: hidden;
+    margin: 10px 0;
+    border: 1px solid #1E293B;
+    page-break-inside: avoid;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+  }
+
+  /* Diagrams */
+  .diagram-container {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 14px;
+    margin: 14px 0;
+    text-align: center;
+    page-break-inside: avoid;
+  }
+
+  .diagram-caption {
+    font-size: 7.8pt;
+    color: #64748B;
+    font-weight: 600;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* TOC */
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0;
+  }
+
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 2.5px 0;
+    font-size: 8.6pt;
+    border-bottom: 1px dotted #CBD5E1;
+  }
+
+  .toc-item a {
+    text-decoration: none;
+    color: #1E293B;
+    font-weight: 500;
+  }
+
+  .toc-item a:hover {
+    color: #00A3C4;
+  }
+
+  .toc-number {
+    font-weight: 700;
+    color: #00A3C4;
+    display: inline-block;
+    width: 32px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .toc-page {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: #64748B;
+    font-size: 8pt;
+  }
+
+  /* Metrics & Status Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .badge-success { background: #DCFCE7; color: #15803D; }
+  .badge-warning { background: #FEF3C7; color: #B45309; }
+  .badge-danger  { background: #FEE2E2; color: #B91C1C; }
+  .badge-info    { background: #E0F2FE; color: #0369A1; }
+  .badge-purple  { background: #F3E8FF; color: #7E22CE; }
+
+  /* Two Column Layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 10px 0;
+    page-break-inside: avoid;
+  }
+
+  .card {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+
+  .card-title {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #0B192C;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================== -->
+<!-- 1. COVER PAGE                              -->
+<!-- ========================================== -->
+<div class="cover-page">
+  <div class="cover-decor"></div>
+  <div class="cover-decor-bottom"></div>
+
+  <div class="cover-header">
+    <div class="cover-badge">Engineering Technical Report · Verifiable GovTech Architecture</div>
+    <div class="cover-title">Urban Fix BD<br><span>System Architecture & Technical Manual</span></div>
+    <div class="cover-subtitle">AI-Powered Civic Issue Reporting and Resolution Platform for Bangladeshi Metropolitan Jurisdictions</div>
+
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <label>System Version</label>
+        <div>v1.0.0 (Production Release)</div>
+      </div>
+      <div class="cover-meta-item">
+        <label>Primary Repository</label>
+        <div>github.com/Arik09013/urban-fix-bd</div>
+      </div>
+      <div class="cover-meta-item">
+        <label>Backend Core</label>
+        <div>FastAPI 0.115.6 / Python 3.11</div>
+      </div>
+      <div class="cover-meta-item">
+        <label>Frontend Core</label>
+        <div>React 19.2.8 / Vite 8.2.2 / Tailwind 3.4</div>
+      </div>
+      <div class="cover-meta-item">
+        <label>Multimodal AI Engine</label>
+        <div>Google Gemini (gemini-3.5-flash-lite)</div>
+      </div>
+      <div class="cover-meta-item">
+        <label>Jurisdictions Covered</label>
+        <div>CCC, DNCC, DSCC, CWASA, DWASA, Utilities</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-footer-left">
+      <p><strong>Urban Fix BD Engineering & Architecture Team</strong></p>
+      <p>Lead Architect: <strong>Arik Md. Isthiaque (@Arik09013)</strong></p>
+      <p>Published: November 2026 · Target Deployment: Fast-Response Municipal Remediation</p>
+    </div>
+    <div class="cover-version">DOC-ID: UFIX-ENG-2026-V1</div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 2. TABLE OF CONTENTS                       -->
+<!-- ========================================== -->
+<div class="page-start">
+  <h1>2. Table of Contents</h1>
+  <p>This technical report provides exhaustive engineering documentation for the Urban Fix BD civic reporting and resolution platform, derived directly from the verified source code.</p>
+
+  <ul class="toc-list">
+    <li class="toc-item"><a href="#sec-3"><span class="toc-number">3.0</span> Executive Summary</a> <span class="toc-page">Page 3</span></li>
+    <li class="toc-item"><a href="#sec-4"><span class="toc-number">4.0</span> Introduction & Platform Mission</a> <span class="toc-page">Page 4</span></li>
+    <li class="toc-item"><a href="#sec-5"><span class="toc-number">5.0</span> Background and Municipal Problem Analysis</a> <span class="toc-page">Page 4</span></li>
+    <li class="toc-item"><a href="#sec-6"><span class="toc-number">6.0</span> Project Objectives & Design Goals</a> <span class="toc-page">Page 5</span></li>
+    <li class="toc-item"><a href="#sec-7"><span class="toc-number">7.0</span> Scope of the Project</a> <span class="toc-page">Page 6</span></li>
+    <li class="toc-item"><a href="#sec-8"><span class="toc-number">8.0</span> Functional Requirements Specification</a> <span class="toc-page">Page 7</span></li>
+    <li class="toc-item"><a href="#sec-9"><span class="toc-number">9.0</span> Non-Functional Requirements Specification</a> <span class="toc-page">Page 8</span></li>
+    <li class="toc-item"><a href="#sec-10"><span class="toc-number">10.0</span> High-Level System Architecture</a> <span class="toc-page">Page 9</span></li>
+    <li class="toc-item"><a href="#sec-11"><span class="toc-number">11.0</span> Frontend Architecture & Cadastre UI</a> <span class="toc-page">Page 11</span></li>
+    <li class="toc-item"><a href="#sec-12"><span class="toc-number">12.0</span> Backend Architecture & Service Layer</a> <span class="toc-page">Page 13</span></li>
+    <li class="toc-item"><a href="#sec-13"><span class="toc-number">13.0</span> Database Architecture & Dual-Mode Persistence</a> <span class="toc-page">Page 15</span></li>
+    <li class="toc-item"><a href="#sec-14"><span class="toc-number">14.0</span> AI Integration & Multimodal Processing Pipeline</a> <span class="toc-page">Page 17</span></li>
+    <li class="toc-item"><a href="#sec-15"><span class="toc-number">15.0</span> Complaint Submission & Intake Workflow</a> <span class="toc-page">Page 19</span></li>
+    <li class="toc-item"><a href="#sec-16"><span class="toc-number">16.0</span> AI Classification, Severity & Priority Scoring</a> <span class="toc-page">Page 21</span></li>
+    <li class="toc-item"><a href="#sec-17"><span class="toc-number">17.0</span> Bangladesh Authority Registry & Routing Engine</a> <span class="toc-page">Page 23</span></li>
+    <li class="toc-item"><a href="#sec-18"><span class="toc-number">18.0</span> Complaint Tracking & Finite-State Lifecycle Machine</a> <span class="toc-page">Page 25</span></li>
+    <li class="toc-item"><a href="#sec-19"><span class="toc-number">19.0</span> Two-Party Evidence & Verification Workflow</a> <span class="toc-page">Page 27</span></li>
+    <li class="toc-item"><a href="#sec-20"><span class="toc-number">20.0</span> Comprehensive API Endpoint Documentation</a> <span class="toc-page">Page 29</span></li>
+    <li class="toc-item"><a href="#sec-21"><span class="toc-number">21.0</span> Database Schema Documentation (14 Collections)</a> <span class="toc-page">Page 34</span></li>
+    <li class="toc-item"><a href="#sec-22"><span class="toc-number">22.0</span> Security Architecture & Privacy Safeguards</a> <span class="toc-page">Page 37</span></li>
+    <li class="toc-item"><a href="#sec-23"><span class="toc-number">23.0</span> Error Handling, Resilience & Fallback Systems</a> <span class="toc-page">Page 39</span></li>
+    <li class="toc-item"><a href="#sec-24"><span class="toc-number">24.0</span> Installation, Environment & Configuration</a> <span class="toc-page">Page 40</span></li>
+    <li class="toc-item"><a href="#sec-25"><span class="toc-number">25.0</span> Deployment Architecture & Containerization</a> <span class="toc-page">Page 41</span></li>
+    <li class="toc-item"><a href="#sec-26"><span class="toc-number">26.0</span> Testing, Automated Verification & QA</a> <span class="toc-page">Page 42</span></li>
+    <li class="toc-item"><a href="#sec-27"><span class="toc-number">27.0</span> Current Implementation Status Matrix</a> <span class="toc-page">Page 43</span></li>
+    <li class="toc-item"><a href="#sec-28"><span class="toc-number">28.0</span> Technical & Operational Limitations</a> <span class="toc-page">Page 44</span></li>
+    <li class="toc-item"><a href="#sec-29"><span class="toc-number">29.0</span> Future Engineering Roadmap</a> <span class="toc-page">Page 45</span></li>
+    <li class="toc-item"><a href="#sec-30"><span class="toc-number">30.0</span> Architectural Conclusion</a> <span class="toc-page">Page 46</span></li>
+    <li class="toc-item"><a href="#sec-31"><span class="toc-number">31.0</span> Project Contributors & Attribution</a> <span class="toc-page">Page 46</span></li>
+    <li class="toc-item"><a href="#sec-32"><span class="toc-number">32.0</span> Technical References</a> <span class="toc-page">Page 46</span></li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. EXECUTIVE SUMMARY                       -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-3">
+  <h1>3. Executive Summary</h1>
+  <p><strong>Urban Fix BD</strong> is a specialized, production-ready civic technology platform engineered to bridge the operational gap between citizen-reported infrastructure failures and verified municipal execution in Bangladesh. Metropolitan governance across Bangladesh—specifically within Chattogram City Corporation (CCC), Dhaka North City Corporation (DNCC), and Dhaka South City Corporation (DSCC)—suffers from systemic inefficiencies: manual triage bottlenecks, overlapping agency mandates, undocumented resolutions, and widespread citizen distrust.</p>
+
+  <p>Urban Fix BD replaces opaque civic complaint portals with an automated, explainable, and verifiable pipeline. When a citizen submits a photograph and location, the platform deploys a multimodal vision pipeline utilizing <strong>Google Gemini (gemini-3.5-flash-lite)</strong> to classify the civic problem into standardized municipal categories, assign severity tiers, assess compounding safety hazards, and generate an HMAC-SHA256 preview token. A pure deterministic Bangladesh authority routing engine evaluates geographic area keywords, ray-casted boundary polygons, and institutional responsibility rules to assign complaints to city corporations or specialized utilities (such as CWASA, DWASA, BPDB, DESCO, DPDC, LGED, or RHD) while routing ambiguous boundary cases to human officer review.</p>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Core Engineering Achievement</div>
+    Urban Fix BD eliminates "ghost resolutions" through a strict two-party verification lifecycle. An issue cannot be marked resolved in the database without field-submitted photographic evidence, authority sign-off, and explicit confirmation from the original citizen reporter via a private cryptographic token. Every state change and administrative override is permanently chained into a tamper-evident SHA-256 audit ledger.
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Backend Architecture Metrics</div>
+      <p>Built with Python 3.11 and FastAPI 0.115.6. Fully tested across <strong>120 automated test cases</strong> with a 100% pass rate. Supports transactional MongoDB Motor persistence with zero-dependency in-memory dictionary fallback.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Frontend & Cadastre Design</div>
+      <p>Built with React 19.2.8 and Vite 8.2.2. Features the "GovTech Civic Trust" high-contrast design system, instant English/Bengali localization, interactive before/after image comparison sliders, and public Leaflet geospatial mapping.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 4. INTRODUCTION & PLATFORM MISSION         -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-4">
+  <h1>4. Introduction & Platform Mission</h1>
+  <p>Civic infrastructure maintenance in high-density developing nations represents one of the most critical determinants of public health, safety, economic productivity, and governance credibility. In Bangladesh, rapid urbanization across metropolitan corridors has exacerbated municipal service delivery challenges. Potholes turn into lethal vehicle traps during monsoon floods, uncollected waste blocks drainage culverts leading to waterlogging, and open electrical utility lines pose severe electrocution risks.</p>
+
+  <p>The mission of <strong>Urban Fix BD</strong> is to establish an unassailable digital chain of civic accountability. By transforming unstructured mobile uploads into structured municipal work orders, validating geographic jurisdictions deterministically, and securing every lifecycle transition with cryptographic audit pointers, the platform provides public servants with actionable triage data while guaranteeing citizens transparent visibility into the lifecycle of their reports.</p>
+
+  <h2>4.1 Core Design Principles</h2>
+  <ul>
+    <li><strong>AI as Decision Support, Never Sole Authority:</strong> Artificial intelligence provides fast, structured recommendations; deterministic code and human officers retain final authority on operational dispatch and closure.</li>
+    <li><strong>Zero Ghost Resolutions:</strong> No municipal repair can be marked completed based solely on verbal or textual claims. High-resolution photographic evidence and reporter sign-off are structurally required by the finite-state machine.</li>
+    <li><strong>Cryptographic Tamper-Evidence:</strong> Administrative tampering is prevented by chaining all status updates into an append-only SHA-256 hash log emitting verifiable public accountability receipts.</li>
+    <li><strong>Privacy by Default:</strong> Citizen reporters are protected through automatic regex scrubbing of National Identity (NID) numbers, phone numbers, and emails, coupled with spatial coordinate rounding on all public feeds.</li>
+    <li><strong>Volunteer Safety Safeguards:</strong> High-risk infrastructure (high-voltage electricity, gas, structural collapse) is strictly barricaded against youth/community micro-repair claims.</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 5. BACKGROUND AND PROBLEM ANALYSIS         -->
+<!-- ========================================== -->
+<div id="sec-5">
+  <h1>5. Background and Problem Analysis</h1>
+  <p>A rigorous audit of municipal complaint management across Bangladeshi metropolitan authorities reveals five fundamental structural breakdowns:</p>
+
+  <h3>5.1 Unstructured Data & Triage Overload</h3>
+  <p>Citizens currently report problems through social media posts, telephone calls, or ad-hoc municipal grievance boxes. These reports lack standardized taxonomy, severity assessment, or standardized coordinates. Municipal supervisors spend hours reading through ambiguous complaints without knowing whether an issue is an imminent life-safety threat (e.g., an exposed live wire in a flooded street) or routine maintenance (e.g., street sweeping).</p>
+
+  <h3>5.2 Jurisdictional Fragmentation & Institutional Silos</h3>
+  <p>In major Bangladeshi cities, municipal territory is segmented across overlapping institutions. For example, in Chattogram, surface drains fall under Chattogram City Corporation (CCC), while underground sewerage pipes and water supply belong to Chattogram WASA (CWASA). Arterial port roads overlap between CCC, the Roads and Highways Department (RHD), and the Chattogram Port Authority (CPA). Power distribution is managed by the Bangladesh Power Development Board (BPDB). Existing grievance portals route blindly, causing inter-agency buck-passing where complaints remain unattended for months.</p>
+
+  <h3>5.3 The "Ghost Resolution" Phenomenon</h3>
+  <p>Traditional municipal software records resolutions based on internal administrative entries. Field contractors or departmental crews routinely close tickets in the system without performing physical repairs, knowing that the citizen has no mechanism to challenge the status update. This creates a severe trust deficit between urban citizens and public institutions.</p>
+
+  <h3>5.4 Financial and Privacy Exposure</h3>
+  <p>Public exposure of citizen phone numbers and home addresses on social media or unredacted grievance portals leads to harassment and political intimidation. Simultaneously, deploying municipal crews to false alarms or duplicate reports wastes scarce civic budgets.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 6. PROJECT OBJECTIVES                      -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-6">
+  <h1>6. Project Objectives</h1>
+  <p>Urban Fix BD was architected to achieve concrete, measurable technical and operational milestones:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Objective</th>
+        <th style="width: 45%;">Engineering Implementation</th>
+        <th style="width: 30%;">Target Outcome</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Automated Multimodal Triage</strong></td>
+        <td>Integration with Google Gemini REST API using structured JSON schema output and deterministic fallback heuristics.</td>
+        <td>Sub-3-second classification of category, severity, and hazards from raw evidence photos.</td>
+      </tr>
+      <tr>
+        <td><strong>Deterministic Authority Routing</strong></td>
+        <td>Pure Python routing engine implementing keyword matching, ray-casting polygon verification, and responsibility ambiguity detection.</td>
+        <td>Accurate routing across CCC, DNCC, DSCC, WASAs, and utilities with zero unverified guesses.</td>
+      </tr>
+      <tr>
+        <td><strong>Tamper-Evident Accountability</strong></td>
+        <td>Append-only SHA-256 audit chaining linking every state transition to prior hash pointers; public receipt generator.</td>
+        <td>Verifiable public proof of municipal action; administrative immutability.</td>
+      </tr>
+      <tr>
+        <td><strong>Two-Party Resolution Verification</strong></td>
+        <td>Finite-state machine requiring after-photos, officer submission, and private token citizen confirmation before closure.</td>
+        <td>100% elimination of unverified closures in database records.</td>
+      </tr>
+      <tr>
+        <td><strong>Public Privacy & PII Scrubbing</strong></td>
+        <td>Multi-pattern regex engine redacting BD phone numbers, NID cards, and emails; public coordinate rounding to 3 decimals.</td>
+        <td>Safe civic participation without exposing reporter identity or precise home coordinates.</td>
+      </tr>
+      <tr>
+        <td><strong>Youth & Community Safety</strong></td>
+        <td>Rule-based vocabulary barrier filtering hazardous municipal issues from community repair micro-grant proposals.</td>
+        <td>Zero volunteer exposure to electrical, chemical, or structural collapse hazards.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================== -->
+<!-- 7. SCOPE OF THE PROJECT                    -->
+<!-- ========================================== -->
+<div id="sec-7">
+  <h1>7. Scope of the Project</h1>
+  <p>The operational and geographical scope of Urban Fix BD is delineated across municipal sectors and administrative boundaries:</p>
+
+  <h3>7.1 Geographic Scope</h3>
+  <ul>
+    <li><strong>Primary Pilot Jurisdiction:</strong> Chattogram City Corporation (CCC)—comprising 41 wards across Agrabad, Muradpur, Halishahar, GEC, Nasirabad, Kotwali, Patenga, and surrounding urban areas.</li>
+    <li><strong>Expanded Metropolitan Scope:</strong> Dhaka North City Corporation (DNCC)—Uttara, Gulshan, Banani, Mirpur, Mohakhali; Dhaka South City Corporation (DSCC)—Dhanmondi, Motijheel, Old Dhaka, Lalbagh.</li>
+    <li><strong>Regional Utilities & Agencies:</strong> Chattogram WASA (CWASA), Dhaka WASA (DWASA), Department of Public Health Engineering (DPHE), Bangladesh Power Development Board (BPDB), DESCO, DPDC, LGED, and Roads and Highways Department (RHD).</li>
+  </ul>
+
+  <h3>7.2 Domain & Category Scope</h3>
+  <p>The system classifies and manages issues across seven core municipal categories:</p>
+  <ol>
+    <li><strong>Road Infrastructure:</strong> Potholes, asphalt craters, collapsed road shoulders, broken pavements, damaged sidewalks.</li>
+    <li><strong>Waste Management:</strong> Overflowing dumpsters, illegal roadside garbage dumping, uncollected commercial trash piles, plastic waste accumulation.</li>
+    <li><strong>Water Supply:</strong> Ruptured municipal water mains, burst pipelines, contaminated drinking supply line leaks.</li>
+    <li><strong>Drainage / Sewerage:</strong> Monsoon waterlogging, blocked surface drains, overflowing open sewer canals, missing or broken drain covers.</li>
+    <li><strong>Street Lighting:</strong> Non-functional municipal lamps, broken light poles, dark pedestrian underpasses.</li>
+    <li><strong>Public Infrastructure:</strong> Damaged footbridges, broken safety railings, collapsed municipal boundary walls, broken culverts.</li>
+    <li><strong>Other / Citizen Facilitation:</strong> Miscellaneous municipal issues requiring custom triage.</li>
+  </ol>
+</div>
+
+<!-- ========================================== -->
+<!-- 8. FUNCTIONAL REQUIREMENTS                 -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-8">
+  <h1>8. Functional Requirements Specification</h1>
+  <p>Functional requirements represent verified, implemented capabilities confirmed in the system source code:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">Req ID</th>
+        <th style="width: 25%;">Module</th>
+        <th style="width: 60%;">Requirement Description & Verification Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>FR-01</strong></td>
+        <td>Multimodal AI Intake</td>
+        <td>The system shall ingest raw photographic evidence and text hints, optimize the image to max 1600px JPEG, strip EXIF metadata, and return a validated JSON analysis from Gemini. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-02</strong></td>
+        <td>HMAC Preview Tokens</td>
+        <td>The system shall issue an HMAC-SHA256 token binding the analysis to the image digest and text, allowing complaint creation within 15 minutes without re-running AI inference. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-03</strong></td>
+        <td>Authority Routing</td>
+        <td>The system shall deterministically route complaints to CCC, DNCC, DSCC, or regional utilities based on location keywords and ray-casting polygon checks. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-04</strong></td>
+        <td>Ambiguity Routing Guard</td>
+        <td>The system shall intercept complaints involving national highways, underground sewerage, or power grids, routing them to Needs Review (routing_uncertain). <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-05</strong></td>
+        <td>Priority Calculation</td>
+        <td>The system shall compute an objective 0–100 priority score evaluating severity, duplicate cluster density, waiting time, location impact, and safety risks. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-06</strong></td>
+        <td>Lifecycle State Machine</td>
+        <td>The system shall enforce strict finite-state transitions, prohibiting direct jumps to Resolved without prior evidence and dual stakeholder approval. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-07</strong></td>
+        <td>Two-Party Verification</td>
+        <td>The system shall issue a private tracking token to the reporter, enabling them to confirm or dispute resolution independently of administrative officers. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-08</strong></td>
+        <td>SHA-256 Audit Chain</td>
+        <td>The system shall record an append-only audit event for every status update, linking to the prior event's SHA-256 hash pointer. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-09</strong></td>
+        <td>Volunteer Safety Filter</td>
+        <td>The system shall reject community repair proposals for complaints involving hazardous keywords (electrical, gas, structural collapse, deep sewers). <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-10</strong></td>
+        <td>PII Scrubbing & Fuzzing</td>
+        <td>The system shall redact Bangladeshi phone numbers, NID numbers, and emails, and round public GPS coordinates to 3 decimal places (~110m). <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-11</strong></td>
+        <td>Officer Operational Queue</td>
+        <td>The system shall provide authority officers with a scoped incident workspace filtered strictly to their assigned authority. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+      <tr>
+        <td><strong>FR-12</strong></td>
+        <td>Bilingual Localization</td>
+        <td>The system shall support seamless one-click toggling between English and Bengali across navigation and UI components. <span class="badge badge-success">Implemented</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================== -->
+<!-- 9. NON-FUNCTIONAL REQUIREMENTS             -->
+<!-- ========================================== -->
+<div id="sec-9">
+  <h1>9. Non-Functional Requirements Specification</h1>
+
+  <h3>9.1 Performance and Latency</h3>
+  <ul>
+    <li><strong>AI Preview Inference:</strong> Gemini multimodal intake analysis responds within &le; 3.5 seconds under standard network conditions; times out safely at 90 seconds.</li>
+    <li><strong>Deterministic Routing Execution:</strong> Local geographic keyword resolution and polygon ray-casting completes in &le; 5 milliseconds without external API lookups.</li>
+    <li><strong>Public Map Queries:</strong> Spatial clustering endpoint (/api/complaints/map/clusters) processes up to 2,000 incident points and returns clustered centroids in &le; 80 milliseconds.</li>
+    <li><strong>Frontend Asset Bundling:</strong> Vite production build generates minified and gzip-optimized assets in &le; 9.0 seconds.</li>
+  </ul>
+
+  <h3>9.2 Reliability & Fault Tolerance</h3>
+  <ul>
+    <li><strong>Dual-Mode Persistence Fallback:</strong> If MongoDB is temporarily unreachable, the backend automatically transitions to an in-memory dictionary mirror in development without crashing.</li>
+    <li><strong>AI Fallback Heuristics:</strong> If Gemini returns rate limits (HTTP 429), server errors (HTTP 5xx), or invalid JSON, the system triggers _fallback_analysis without interrupting user intake.</li>
+    <li><strong>Idempotency Enforcement:</strong> Submissions with duplicate Idempotency-Key headers return existing complaint records without re-executing storage or AI workflows.</li>
+  </ul>
+
+  <h3>9.3 Security and Cryptographic Standards</h3>
+  <ul>
+    <li><strong>Password Security:</strong> Passwords hashed with PBKDF2-HMAC-SHA256 using 310,000 iterations and a cryptographically secure 16-byte salt.</li>
+    <li><strong>Session Handling:</strong> 48-byte URL-safe random session tokens stored as SHA-256 hashes in the database; delivered via HttpOnly, SameSite=Lax cookies.</li>
+    <li><strong>CSRF Mitigation:</strong> All mutating HTTP requests (POST, PATCH, DELETE) require an X-CSRF-Token header validated against the active session using constant-time comparison.</li>
+    <li><strong>Audit Trail Immutability:</strong> Every audit entry includes event_hash = sha256(canonical_json(event)) linked to previous_hash.</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 10. SYSTEM ARCHITECTURE                    -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-10">
+  <h1>10. System Architecture</h1>
+  <p>Urban Fix BD is architected as a decoupled, multi-tiered service ecosystem designed for high availability, verifiable data integrity, and strict access boundaries.</p>
+
+  <div class="diagram-container">
+    <svg width="100%" height="280" viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gradClient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0F172A"/><stop offset="100%" stop-color="#1E293B"/>
+        </linearGradient>
+        <linearGradient id="gradGateway" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#006978"/><stop offset="100%" stop-color="#00A3C4"/>
+        </linearGradient>
+        <linearGradient id="gradEngine" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#1E3E62"/><stop offset="100%" stop-color="#0B192C"/>
+        </linearGradient>
+        <linearGradient id="gradData" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#064E3B"/><stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Client Layer -->
+      <rect x="20" y="30" width="160" height="220" rx="8" fill="url(#gradClient)" stroke="#334155" stroke-width="1.5"/>
+      <text x="100" y="55" fill="#38BDF8" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">CLIENT LAYER</text>
+      <rect x="35" y="75" width="130" height="35" rx="5" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+      <text x="100" y="97" fill="#F8FAFC" font-family="Inter" font-size="8.5" text-anchor="middle">Citizen Intake SPA</text>
+      <rect x="35" y="120" width="130" height="35" rx="5" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+      <text x="100" y="142" fill="#F8FAFC" font-family="Inter" font-size="8.5" text-anchor="middle">Authority Operations</text>
+      <rect x="35" y="165" width="130" height="35" rx="5" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+      <text x="100" y="187" fill="#F8FAFC" font-family="Inter" font-size="8.5" text-anchor="middle">Public Tracking & Map</text>
+      <rect x="35" y="210" width="130" height="25" rx="5" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+      <text x="100" y="227" fill="#F8FAFC" font-family="Inter" font-size="8" text-anchor="middle">Youth / Contractor Hub</text>
+
+      <line x1="180" y1="140" x2="220" y2="140" stroke="#00A3C4" stroke-width="2" stroke-dasharray="4"/>
+      <polygon points="220,136 228,140 220,144" fill="#00A3C4"/>
+
+      <!-- API Gateway -->
+      <rect x="230" y="30" width="140" height="220" rx="8" fill="url(#gradGateway)" stroke="#00A3C4" stroke-width="1.5"/>
+      <text x="300" y="55" fill="#FFFFFF" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">FASTAPI GATEWAY</text>
+      <rect x="245" y="75" width="110" height="35" rx="5" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="300" y="97" fill="#FFFFFF" font-family="Inter" font-size="8.5" text-anchor="middle">CORS & Security Hdr</text>
+      <rect x="245" y="120" width="110" height="35" rx="5" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="300" y="142" fill="#FFFFFF" font-family="Inter" font-size="8.5" text-anchor="middle">PBKDF2 & CSRF Gate</text>
+      <rect x="245" y="165" width="110" height="35" rx="5" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="300" y="187" fill="#FFFFFF" font-family="Inter" font-size="8.5" text-anchor="middle">Rate Limiting Queue</text>
+      <rect x="245" y="210" width="110" height="25" rx="5" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <text x="300" y="227" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Idempotency Guard</text>
+
+      <line x1="370" y1="140" x2="410" y2="140" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="410,136 418,140 410,144" fill="#00A3C4"/>
+
+      <!-- Core Engine -->
+      <rect x="420" y="30" width="160" height="220" rx="8" fill="url(#gradEngine)" stroke="#1E3E62" stroke-width="1.5"/>
+      <text x="500" y="55" fill="#38BDF8" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">CORE ENGINE LAYER</text>
+      <rect x="435" y="70" width="130" height="28" rx="4" fill="#0B192C" stroke="#334155" stroke-width="1"/>
+      <text x="500" y="88" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">Gemini Multimodal AI</text>
+      <rect x="435" y="105" width="130" height="28" rx="4" fill="#0B192C" stroke="#334155" stroke-width="1"/>
+      <text x="500" y="123" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">HMAC Preview Signer</text>
+      <rect x="435" y="140" width="130" height="28" rx="4" fill="#0B192C" stroke="#334155" stroke-width="1"/>
+      <text x="500" y="158" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">BD Routing & Ambiguity</text>
+      <rect x="435" y="175" width="130" height="28" rx="4" fill="#0B192C" stroke="#334155" stroke-width="1"/>
+      <text x="500" y="193" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">Deterministic Priority</text>
+      <rect x="435" y="210" width="130" height="28" rx="4" fill="#0B192C" stroke="#334155" stroke-width="1"/>
+      <text x="500" y="228" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">Finite State Machine</text>
+
+      <line x1="580" y1="140" x2="610" y2="140" stroke="#059669" stroke-width="2"/>
+      <polygon points="610,136 618,140 610,144" fill="#059669"/>
+
+      <!-- Persistence Layer -->
+      <rect x="620" y="30" width="120" height="220" rx="8" fill="url(#gradData)" stroke="#059669" stroke-width="1.5"/>
+      <text x="680" y="55" fill="#FFFFFF" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">PERSISTENCE</text>
+      <rect x="630" y="75" width="100" height="45" rx="5" fill="#064E3B" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <text x="680" y="96" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">MongoDB Motor</text>
+      <text x="680" y="110" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">14 Collections</text>
+      <rect x="630" y="130" width="100" height="45" rx="5" fill="#064E3B" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <text x="680" y="151" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Cloudinary CDN</text>
+      <text x="680" y="165" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">Evidence Storage</text>
+      <rect x="630" y="185" width="100" height="50" rx="5" fill="#064E3B" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <text x="680" y="206" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">SHA-256 Ledger</text>
+      <text x="680" y="222" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">Chained Hashes</text>
+    </svg>
+    <div class="diagram-caption">Figure 1.0: End-to-End System Architecture and Subsystem Interaction Topology</div>
+  </div>
+
+  <p>The architecture is strictly stratified across four decoupled tiers:</p>
+  <ol>
+    <li><strong>Client Presentation Tier:</strong> A high-performance React 19 SPA running in the user's browser, communicating strictly via HTTPS REST and Web API standards.</li>
+    <li><strong>API Gateway & Security Tier:</strong> FastAPI application handling HTTP header fortification, sliding-window rate limiters, session verification, and double-submit CSRF checks.</li>
+    <li><strong>Core Domain Engine Tier:</strong> Pure business logic services managing multimodal AI classification, cryptographic preview signing, geographic routing, priority calculation, and state machine guards.</li>
+    <li><strong>Persistence & Verification Tier:</strong> MongoDB replica set database with transactions, Cloudinary media storage, and cryptographic SHA-256 append-only audit ledgers.</li>
+  </ol>
+</div>
+
+<!-- ========================================== -->
+<!-- 11. FRONTEND ARCHITECTURE                  -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-11">
+  <h1>11. Frontend Architecture & Cadastre UI</h1>
+  <p>The Urban Fix BD frontend is structured as a zero-bloat Single-Page Application (SPA) built on React 19 (react@19.2.8) and Vite 8 (vite@^8.2.2), styled using Tailwind CSS (tailwindcss@3.4.17) and Lucide React icons.</p>
+
+  <h2>11.1 The "GovTech Civic Trust" Design System</h2>
+  <p>The interface avoids frivolous UI decoration in favor of a high-contrast civic cadastre aesthetic inspired by municipal records and neo-brutalist government ledgers. The UI is built on a dynamic CSS variable pipeline defined in src/styles.css and mapped through tailwind.config.js:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">CSS Token</th>
+        <th style="width: 25%;">Light Theme Value</th>
+        <th style="width: 25%;">Dark Theme Value (Default)</th>
+        <th style="width: 30%;">Semantic Application</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--surface</code></td>
+        <td><code>#FCF9F2</code> (Cream Canvas)</td>
+        <td><code>#0B0F17</code> (Deep Obsidian)</td>
+        <td>Primary viewport background</td>
+      </tr>
+      <tr>
+        <td><code>--surface-clean</code></td>
+        <td><code>#FFFFFF</code> (White Card)</td>
+        <td><code>#111827</code> (Card Obsidian)</td>
+        <td>Form containers, dialogs, cards</td>
+      </tr>
+      <tr>
+        <td><code>--surface-container</code></td>
+        <td><code>#F1EEE7</code> (Muted Gray)</td>
+        <td><code>#15223A</code> (Slate Navy)</td>
+        <td>Secondary summary cards, metadata pills</td>
+      </tr>
+      <tr>
+        <td><code>--border-black</code></td>
+        <td><code>#0B0C0E</code> (Solid Black)</td>
+        <td><code>#334155</code> (High-Contrast Slate)</td>
+        <td>Structural container borders</td>
+      </tr>
+      <tr>
+        <td><code>--ink-primary</code></td>
+        <td><code>#0B0C0E</code> (Charcoal)</td>
+        <td><code>#F8FAFC</code> (Crisp White)</td>
+        <td>Headings, data values, primary text</td>
+      </tr>
+      <tr>
+        <td><code>--ink-secondary</code></td>
+        <td><code>#4A4D53</code> (Medium Gray)</td>
+        <td><code>#94A3B8</code> (Slate Gray)</td>
+        <td>Subtitles, helper descriptions, timestamps</td>
+      </tr>
+      <tr>
+        <td><code>--primary-container</code></td>
+        <td><code>#00A3C4</code> (Electric Cyan)</td>
+        <td><code>#00A3C4</code> (Electric Cyan)</td>
+        <td>Action buttons, active tabs, highlights</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>11.2 Core Application Navigation Tabs (activeTab)</h2>
+  <p>The single-page application shell (src/App.jsx) coordinates seven specialized views:</p>
+  <ul>
+    <li><strong>landing:</strong> Public homepage featuring live municipal telemetry tickers, key performance stats (Total Reports, Resolved, Under Review, Active Repairs), featured verified repairs, and the interactive before/after repair slider.</li>
+    <li><strong>report:</strong> Multi-step citizen intake wizard guiding users through photographic evidence upload, automatic AI preview triage, confirmed location selection, and instant Case ID / private tracking token generation.</li>
+    <li><strong>track:</strong> Public tracking portal allowing citizens to query any Case ID (CP-XXXX), inspect the SLA indicator and timeline, review officer progress notes, inspect the SHA-256 accountability receipt, and access the <strong>Citizen Verification Gate</strong>.</li>
+    <li><strong>map:</strong> Geospatial Leaflet map rendering status-coded markers, category filtering, bounding box presets (Chattogram, Dhaka North, Dhaka South, Whole Country), and cluster summaries.</li>
+    <li><strong>community:</strong> Youth micro-maintenance portal displaying eligible low-risk cleanup proposals, enforcing volunteer safety barriers, and demonstrating micro-grant escrow reservations.</li>
+    <li><strong>contractor:</strong> Registered contractor workspace for reviewing dispatched work orders, accepting assignments, and uploading completion proof links.</li>
+    <li><strong>admin:</strong> Secured Municipal Officer Command Center providing authority-filtered queues, quick demo officer switches, reclassification dialogs, and one-click status transitions.</li>
+  </ul>
+
+  <h2>11.3 Reusable Component Architecture</h2>
+  <ul>
+    <li><strong>InteractiveBeforeAfter.jsx:</strong> A high-performance draggable split-slider component that overlays pre-repair damage photos against post-repair verified completion photos, allowing stakeholders to visually inspect repair quality.</li>
+    <li><strong>ReviewDialog.jsx:</strong> An administrative modal enabling municipal officers to reclassify categories, override severity tiers, reassign departments, and record mandatory human review notes into the audit trail.</li>
+    <li><strong>Icon.jsx:</strong> Centralized SVG icon renderer providing consistent, accessible icons across dark and light viewports.</li>
+    <li><strong>api.js:</strong> Client-side HTTP fetch abstraction with automatic CSRF token extraction from cookies/DOM, credential inclusion, and error formatting.</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 12. BACKEND ARCHITECTURE                   -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-12">
+  <h1>12. Backend Architecture & Service Layer</h1>
+  <p>The backend of Urban Fix BD is engineered in Python 3.11 using the FastAPI framework. The architecture adheres to clean service separation, dependency injection, and pure functional domain logic.</p>
+
+  <h2>12.1 Backend Directory Topology</h2>
+  <p>Located in backend/app/, the backend is organized into specialized domain packages:</p>
+  <ul>
+    <li><strong>api/routes/:</strong> 15 distinct FastAPI router modules: complaints, auth, authorities, contractors, offers, repair_requests, operations, tracking, dashboard, analytics, discussions, geocoding, whatsapp, seo, and health.</li>
+    <li><strong>core/:</strong> Global application configuration (config.py) using Pydantic Settings and cryptographic session security (security.py).</li>
+    <li><strong>db/:</strong> Database repository (repository.py) wrapping Motor and in-memory fallback, transaction context managers, and demo data seeders.</li>
+    <li><strong>models/:</strong> Domain constants (constants.py) defining municipal categories, default department mappings, and severity weights.</li>
+    <li><strong>schemas/:</strong> Pydantic request and response models enforcing rigorous runtime schema validation across complaint, contractor, and offer payloads.</li>
+    <li><strong>services/:</strong> Independent domain business logic modules:
+      <ul>
+        <li>ai/gemini.py: Pillow image optimization, Gemini REST integration, fallback heuristics.</li>
+        <li>routing/: engine.py, jurisdiction.py, registry.py: Bangladesh authority matching.</li>
+        <li>priority.py: Deterministic priority calculation formula.</li>
+        <li>lifecycle.py: Finite-state machine transition table and invariants.</li>
+        <li>accountability.py: Public accountability receipt generator.</li>
+        <li>audit.py: Append-only SHA-256 audit chaining.</li>
+        <li>privacy.py: PII regex scrubbing and coordinate fuzzing.</li>
+        <li>storage/cloudinary.py: Cloudinary upload client and secure local file serving.</li>
+        <li>volunteer_safety.py: Youth volunteer risk screening.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>12.2 Security Middleware Pipeline</h2>
+  <p>Every incoming HTTP request traverses an automated security middleware pipeline in main.py:</p>
+  <pre><code># HTTP Security Headers Pipeline (main.py)
+response.headers["X-Request-ID"] = request_id
+response.headers["Server-Timing"] = f"app;dur={duration_ms}"
+response.headers["X-Content-Type-Options"] = "nosniff"
+response.headers["X-Frame-Options"] = "DENY"
+response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+response.headers["Permissions-Policy"] = "camera=(self), geolocation=(self), microphone=()"
+response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+if settings.environment == "production":
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+if request.url.path.startswith("/api/auth"):
+    response.headers["Cache-Control"] = "no-store"</code></pre>
+</div>
+
+<!-- ========================================== -->
+<!-- 13. DATABASE ARCHITECTURE                  -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-13">
+  <h1>13. Database Architecture & Dual-Mode Persistence</h1>
+  <p>Urban Fix BD employs an asynchronous MongoDB architecture driven by Motor (motor==3.6.0, pymongo&gt;=4.9.2) with native support for multi-document ACID transactions. To facilitate development and automated testing, the persistence layer implements a seamless <strong>Dual-Mode Persistence Architecture</strong> managed by CivicRepository in backend/app/db/repository.py.</p>
+
+  <h2>13.1 Dual-Mode Operation</h2>
+  <ul>
+    <li><strong>MongoDB Production Mode:</strong> Connects to a standard MongoDB replica set (local or MongoDB Atlas). Executes atomic transactions via <code>async with civic_repo.transaction() as session:</code>. Automatically initializes unique and compound indexes on startup.</li>
+    <li><strong>In-Memory Dictionary Mirror:</strong> When <code>ALLOW_MEMORY_FALLBACK=true</code> and MongoDB is unreachable, the system automatically runs using an in-memory dictionary mirror covering all 14 collections. The transaction context manager takes deep snapshots of the memory space and rolls back cleanly if an exception occurs, enabling deterministic, zero-dependency testing.</li>
+  </ul>
+
+  <h2>13.2 Database Indexes Specification</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Collection</th>
+        <th style="width: 40%;">Index Definition</th>
+        <th style="width: 35%;">Purpose / Constraint</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>users</code></td>
+        <td><code>email</code> (Unique)</td>
+        <td>Prevent duplicate registrations</td>
+      </tr>
+      <tr>
+        <td><code>users</code></td>
+        <td><code>username</code> (Unique, Sparse)</td>
+        <td>Unique officer/admin logins</td>
+      </tr>
+      <tr>
+        <td><code>sessions</code></td>
+        <td><code>token_hash</code> (Unique)</td>
+        <td>Fast session token resolution</td>
+      </tr>
+      <tr>
+        <td><code>sessions</code></td>
+        <td><code>expires_at</code> (TTL: 0s)</td>
+        <td>Automatic session expiration cleanup</td>
+      </tr>
+      <tr>
+        <td><code>complaints</code></td>
+        <td><code>complaint_id</code> (Unique)</td>
+        <td>Public Case ID lookup</td>
+      </tr>
+      <tr>
+        <td><code>complaints</code></td>
+        <td><code>(status: 1, priority_score: -1, created_at: -1)</code></td>
+        <td>High-efficiency operational queue sort</td>
+      </tr>
+      <tr>
+        <td><code>complaints</code></td>
+        <td><code>(category: 1, severity: 1, created_at: -1)</code></td>
+        <td>Analytics and category filtering</td>
+      </tr>
+      <tr>
+        <td><code>complaints</code></td>
+        <td><code>location_geo</code> (2dsphere)</td>
+        <td>Geospatial queries and radius searches</td>
+      </tr>
+      <tr>
+        <td><code>audit_events</code></td>
+        <td><code>event_id</code> (Unique)</td>
+        <td>Unique audit event identifier</td>
+      </tr>
+      <tr>
+        <td><code>audit_events</code></td>
+        <td><code>(entity_type: 1, entity_id: 1, created_at: -1)</code></td>
+        <td>Sequential timeline reconstruction</td>
+      </tr>
+      <tr>
+        <td><code>idempotency_keys</code></td>
+        <td><code>key</code> (Unique), <code>expires_at</code> (TTL: 0s)</td>
+        <td>Prevent duplicate submission races</td>
+      </tr>
+      <tr>
+        <td><code>report_owners</code></td>
+        <td><code>token_hash</code> (Unique), <code>expires_at</code> (TTL: 0s)</td>
+        <td>Private citizen tracking token auth</td>
+      </tr>
+      <tr>
+        <td><code>discussion_votes</code></td>
+        <td><code>(post_id: 1, user_id: 1)</code> (Unique)</td>
+        <td>One upvote per user per post</td>
+      </tr>
+      <tr>
+        <td><code>login_attempts</code></td>
+        <td><code>(key: 1, created_at: -1)</code>, <code>expires_at</code> (TTL)</td>
+        <td>Brute-force login rate limiting</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================== -->
+<!-- 14. AI INTEGRATION & PROCESSING PIPELINE   -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-14">
+  <h1>14. AI Integration & Multimodal Processing Pipeline</h1>
+  <p>The AI subsystem in Urban Fix BD acts as an intelligent decision-support triage assistant. It transforms raw mobile uploads into structured municipal data while strictly adhering to the architectural rule: <em>AI classifies the problem; deterministic code and human officers govern assignment, lifecycle, and closure.</em></p>
+
+  <div class="diagram-container">
+    <svg width="100%" height="220" viewBox="0 0 740 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="30" width="120" height="150" rx="6" fill="#0B192C" stroke="#38BDF8" stroke-width="1.5"/>
+      <text x="70" y="55" fill="#38BDF8" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">IMAGE INGESTION</text>
+      <text x="70" y="85" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Raw Upload File</text>
+      <text x="70" y="105" fill="#94A3B8" font-family="Inter" font-size="7.5" text-anchor="middle">JPEG, PNG, WebP</text>
+      <text x="70" y="130" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">Magic Byte Check</text>
+      <text x="70" y="150" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">Max 10 MB</text>
+
+      <line x1="130" y1="105" x2="160" y2="105" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="160,101 168,105 160,109" fill="#00A3C4"/>
+
+      <rect x="170" y="30" width="130" height="150" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
+      <text x="235" y="55" fill="#38BDF8" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">PILLOW SANITIZE</text>
+      <text x="235" y="85" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Strip EXIF / Metadata</text>
+      <text x="235" y="105" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">EXIF Transpose</text>
+      <text x="235" y="125" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Downsample Lanczos</text>
+      <text x="235" y="145" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7.5" text-anchor="middle">Max 1600px, Q=85</text>
+
+      <line x1="300" y1="105" x2="330" y2="105" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="330,101 338,105 330,109" fill="#00A3C4"/>
+
+      <rect x="340" y="30" width="130" height="150" rx="6" fill="#1E3E62" stroke="#00A3C4" stroke-width="1.5"/>
+      <text x="405" y="55" fill="#38BDF8" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">GEMINI 3.5 FLASH</text>
+      <text x="405" y="85" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Multimodal Prompt</text>
+      <text x="405" y="105" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">BD Municipal Rules</text>
+      <text x="405" y="125" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Strict JSON Output</text>
+      <text x="405" y="145" fill="#FCD34D" font-family="JetBrains Mono" font-size="7.5" text-anchor="middle">90s Read Timeout</text>
+
+      <line x1="470" y1="105" x2="500" y2="105" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="500,101 508,105 500,109" fill="#00A3C4"/>
+
+      <rect x="510" y="30" width="105" height="150" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
+      <text x="562" y="55" fill="#38BDF8" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">HMAC SIGNER</text>
+      <text x="562" y="85" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">SHA-256 Digest</text>
+      <text x="562" y="105" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">Bind Image & Text</text>
+      <text x="562" y="125" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7.5" text-anchor="middle">15-Min TTL</text>
+      <text x="562" y="145" fill="#94A3B8" font-family="Inter" font-size="7.5" text-anchor="middle">Prevents Re-run</text>
+
+      <line x1="615" y1="105" x2="635" y2="105" stroke="#059669" stroke-width="2"/>
+      <polygon points="635,101 643,105 635,109" fill="#059669"/>
+
+      <rect x="645" y="30" width="85" height="150" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.5"/>
+      <text x="687" y="55" fill="#6EE7B7" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">INTAKE</text>
+      <text x="687" y="85" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Verified</text>
+      <text x="687" y="105" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Intake</text>
+      <text x="687" y="125" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">No Extra</text>
+      <text x="687" y="145" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">AI Cost</text>
+    </svg>
+    <div class="diagram-caption">Figure 2.0: Multimodal AI Image Processing & Cryptographic Preview Token Pipeline</div>
+  </div>
+
+  <h2>14.1 Image Sanitization & Resampling (_optimize_image_for_ai)</h2>
+  <p>Before image bytes are dispatched to Google Gemini, they are sanitized by Pillow:</p>
+  <ul>
+    <li>Metadata Stripping: Deletes private EXIF tags containing serial numbers, personal device metadata, or raw timestamps.</li>
+    <li>Orientation Transposition: ImageOps.exif_transpose ensures photos taken upside down or in portrait mode are permanently oriented correctly.</li>
+    <li>Dimension Bounding: Maximum dimension is capped at 1600px using Lanczos antialiasing. Smaller images are never upscaled.</li>
+    <li>Format Normalization: Transformed to RGB JPEG quality 85. Original bytes are preserved untouched for Cloudinary evidence storage.</li>
+  </ul>
+
+  <h2>14.2 Prompt Engineering & Municipal Rules</h2>
+  <p>The prompt supplied to Gemini strictly instructs the model to prioritize photographic evidence over user-typed descriptions, enforce the Bangladesh municipal taxonomy, identify public safety hazards, and reject non-civic media (such as domestic interiors, selfies, or personal documents).</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 15. COMPLAINT SUBMISSION WORKFLOW          -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-15">
+  <h1>15. Complaint Submission & Intake Workflow</h1>
+  <p>The citizen submission lifecycle follows an idempotent, four-step interaction sequence designed to minimize server load and user friction:</p>
+
+  <h2>15.1 Step-by-Step Intake Lifecycle</h2>
+  <ol>
+    <li><strong>Step 1: Evidence Capture & Preview Call (POST /api/complaints/analyze):</strong>
+      The citizen uploads a photo and optional category hint. The server optimizes the image, queries Gemini, and returns the classification preview along with an HMAC-SHA256 <code>analysis_token</code>.
+    </li>
+    <li><strong>Step 2: Location Confirmation & Review:</strong>
+      The citizen reviews the AI classification. Permitted GPS suggestions extracted from photo metadata are displayed on the map. The citizen confirms or adjusts the street area name and GPS pin.
+    </li>
+    <li><strong>Step 3: Complaint Creation (POST /api/complaints/with-image):</strong>
+      The client posts the full form containing the image, area, GPS, description, and <code>analysis_token</code>. The server validates the token signature. If valid and matching the payload binding, the server reuses the previewed analysis, saving 100% of duplicate inference fees.
+    </li>
+    <li><strong>Step 4: Storage, Routing, and Receipt Issuance:</strong>
+      The image is safely stored in Cloudinary (or local uploads). The routing engine resolves the authority. The database inserts the complaint and generates:
+      <ul>
+        <li>A unique Public Case ID: <code>CP-XXXXXX</code> (e.g., <code>CP-9082</code>).</li>
+        <li>A private citizen verification token: <code>reporter_verification_token</code> (stored as an SHA-256 hash in <code>report_owners</code> with a 30-day expiration).</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h2>15.2 Deduplication & Incident Clustering</h2>
+  <p>Incoming reports are compared against active complaints in the same geographic radius. If an existing incident is detected with confidence &ge; 0.82, the report is linked to the existing <code>incident_id</code> cluster rather than discarded. This increments the incident's duplicate count, boosting its priority score while preserving the new citizen's individual evidence and ownership.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 16. PRIORITY SCORING ALGORITHM             -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-16">
+  <h1>16. AI Classification, Severity & Priority Scoring</h1>
+  <p>To eliminate subjective prioritization and administrative favoritism, Urban Fix BD computes a fully deterministic, explainable priority score (0–100). The priority score is calculated in backend/app/services/priority.py.</p>
+
+  <h2>16.1 Mathematical Priority Formulation</h2>
+  <p>The priority score is defined as the bounded sum of five orthogonal factors:</p>
+  <pre><code>Score = min(100, W_severity + P_duplicates + P_waiting + P_impact + P_safety)</code></pre>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Component</th>
+        <th style="width: 20%;">Variable</th>
+        <th style="width: 20%;">Score Range</th>
+        <th style="width: 35%;">Mathematical Definition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Severity Weight</strong></td>
+        <td><code>W_severity</code></td>
+        <td>18 – 46 pts</td>
+        <td>
+          <code>Critical = 46</code><br>
+          <code>High = 38</code><br>
+          <code>Medium = 30</code><br>
+          <code>Low = 18</code>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Duplicate & Citizen Signals</strong></td>
+        <td><code>P_duplicates</code></td>
+        <td>0 – 22 pts</td>
+        <td><code>min(max(dup - 1, 0) * 4 + max(affected - 1, 0) * 2, 22)</code></td>
+      </tr>
+      <tr>
+        <td><strong>Waiting Age Factor</strong></td>
+        <td><code>P_waiting</code></td>
+        <td>0 – 12 pts</td>
+        <td><code>min(floor(waiting_hours / 8), 12)</code><br><em>Accrues 1 pt every 8 hours up to 96 hours</em></td>
+      </tr>
+      <tr>
+        <td><strong>Location Impact</strong></td>
+        <td><code>P_impact</code></td>
+        <td>0 – 20 pts</td>
+        <td><code>max(0, min(location_impact, 20))</code><br><em>Arterial corridors, hospitals, schools</em></td>
+      </tr>
+      <tr>
+        <td><strong>Critical Safety Risk</strong></td>
+        <td><code>P_safety</code></td>
+        <td>0 or 12 pts</td>
+        <td><code>12 if safety_flag else 0</code><br><em>Live wires, open manholes, cave-ins</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>16.2 Age-Aware Dynamic Recalculation</h2>
+  <p>The function <code>with_current_priority(complaint)</code> dynamically recalculates the waiting age component whenever a complaint is loaded by public tracking or administrative queues, ensuring aging reports naturally escalate without corrupting static database records.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 17. AUTHORITY REGISTRY & ROUTING           -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-17">
+  <h1>17. Authority Registry & Routing Engine</h1>
+  <p>The Bangladesh Authority Routing Engine (backend/app/services/routing/) resolves the responsible administrative body and department for any civic problem. It is designed as a pure, deterministic engine with zero network dependencies.</p>
+
+  <div class="diagram-container">
+    <svg width="100%" height="240" viewBox="0 0 740 240" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="130" height="70" rx="6" fill="#0B192C" stroke="#38BDF8" stroke-width="1.5"/>
+      <text x="85" y="45" fill="#38BDF8" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">LOCATION INPUT</text>
+      <text x="85" y="65" fill="#FFFFFF" font-family="Inter" font-size="8" text-anchor="middle">GPS (Lat, Lng) + Area</text>
+      <text x="85" y="78" fill="#94A3B8" font-family="Inter" font-size="7.5" text-anchor="middle">Category + Text</text>
+
+      <line x1="150" y1="55" x2="190" y2="55" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="190,51 198,55 190,59" fill="#00A3C4"/>
+
+      <rect x="200" y="20" width="150" height="70" rx="6" fill="#1E3E62" stroke="#00A3C4" stroke-width="1.5"/>
+      <text x="275" y="42" fill="#38BDF8" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">JURISDICTION CHECK</text>
+      <text x="275" y="60" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">1. Verified Polygon</text>
+      <text x="275" y="72" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">2. Area Keyword Match</text>
+      <text x="275" y="84" fill="#FCD34D" font-family="Inter" font-size="7.5" text-anchor="middle">3. Bounding Box Heuristic</text>
+
+      <line x1="350" y1="55" x2="390" y2="55" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="390,51 398,55 390,59" fill="#00A3C4"/>
+
+      <rect x="400" y="20" width="150" height="70" rx="6" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5"/>
+      <text x="475" y="42" fill="#FCD34D" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">CONFLICT & AMBIGUITY</text>
+      <text x="475" y="60" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Conflict City / Upazila?</text>
+      <text x="475" y="72" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Highway / Port Corridor?</text>
+      <text x="475" y="84" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Grid vs Street Light?</text>
+
+      <line x1="475" y1="90" x2="475" y2="130" stroke="#F59E0B" stroke-width="2"/>
+      <polygon points="471,130 475,138 479,130" fill="#F59E0B"/>
+
+      <rect x="400" y="140" width="150" height="70" rx="6" fill="#78350F" stroke="#F59E0B" stroke-width="1.5"/>
+      <text x="475" y="165" fill="#FCD34D" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">NEEDS HUMAN REVIEW</text>
+      <text x="475" y="185" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">routing_uncertain</text>
+      <text x="475" y="198" fill="#FDE68A" font-family="Inter" font-size="7.5" text-anchor="middle">Admin Intervention Req.</text>
+
+      <line x1="550" y1="55" x2="590" y2="55" stroke="#10B981" stroke-width="2"/>
+      <polygon points="590,51 598,55 590,59" fill="#10B981"/>
+
+      <rect x="600" y="20" width="120" height="70" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1.5"/>
+      <text x="660" y="45" fill="#6EE7B7" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">AUTO-ASSIGNED</text>
+      <text x="660" y="65" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">CCC / DNCC / DSCC</text>
+      <text x="660" y="78" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">status='Submitted'</text>
+    </svg>
+    <div class="diagram-caption">Figure 3.0: Deterministic Bangladesh Authority Routing & Institutional Ambiguity Logic</div>
+  </div>
+
+  <h2>17.1 Candidate Authority Registry (registry.py)</h2>
+  <p>The candidate authority registry manages 11 public entities. All candidate authorities are tracked with explicit data status metadata (e.g., data_status="pending_verification", authority_data_status="candidate_registry", integration_status="simulated") in strict adherence to civic transparency:</p>
+  <ul>
+    <li><strong>AUTH-CCC:</strong> Chattogram City Corporation (Road Maintenance, Conservancy, Drainage, Electrical).</li>
+    <li><strong>AUTH-DNCC:</strong> Dhaka North City Corporation (Civil Engineering, Waste Management, Drainage Circle).</li>
+    <li><strong>AUTH-DSCC:</strong> Dhaka South City Corporation (Civil Engineering, Waste Management, Drainage).</li>
+    <li><strong>AUTH-CWASA:</strong> Chattogram Water Supply and Sewerage Authority (Water Distribution, Sewer Mains).</li>
+    <li><strong>AUTH-DWASA:</strong> Dhaka Water Supply and Sewerage Authority (Water Maintenance, Sewerage Operations).</li>
+    <li><strong>AUTH-DPHE:</strong> Department of Public Health Engineering (Non-metropolitan municipalities and rural water).</li>
+    <li><strong>AUTH-BPDB:</strong> Bangladesh Power Development Board (Urban distribution and national grid).</li>
+    <li><strong>AUTH-DESCO / AUTH-DPDC:</strong> Dhaka Electric Supply / Power Distribution Companies.</li>
+    <li><strong>AUTH-LGED:</strong> Local Government Engineering Department (Rural and Upazila infrastructure).</li>
+    <li><strong>AUTH-RHD:</strong> Roads and Highways Department (National highways, bypasses, expressways).</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 18. COMPLAINT TRACKING & LIFECYCLE         -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-18">
+  <h1>18. Complaint Tracking & Status Management</h1>
+  <p>Urban Fix BD models complaint progression via a formal <strong>Finite-State Lifecycle Machine</strong> implemented in backend/app/services/lifecycle.py.</p>
+
+  <div class="diagram-container">
+    <svg width="100%" height="260" viewBox="0 0 740 260" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(10, 20)">
+        <rect x="0" y="0" width="100" height="35" rx="5" fill="#0B192C" stroke="#38BDF8" stroke-width="1.5"/>
+        <text x="50" y="22" fill="#FFFFFF" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">Submitted</text>
+      </g>
+
+      <g transform="translate(150, 20)">
+        <rect x="0" y="0" width="100" height="35" rx="5" fill="#1E3E62" stroke="#00A3C4" stroke-width="1.5"/>
+        <text x="50" y="22" fill="#FFFFFF" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">Assigned</text>
+      </g>
+
+      <g transform="translate(290, 20)">
+        <rect x="0" y="0" width="110" height="35" rx="5" fill="#1E3E62" stroke="#00A3C4" stroke-width="1.5"/>
+        <text x="55" y="22" fill="#FFFFFF" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">Acknowledged</text>
+      </g>
+
+      <g transform="translate(440, 20)">
+        <rect x="0" y="0" width="100" height="35" rx="5" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="50" y="22" fill="#FCD34D" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">In Progress</text>
+      </g>
+
+      <g transform="translate(580, 20)">
+        <rect x="0" y="0" width="130" height="35" rx="5" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="65" y="22" fill="#FCD34D" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">Evidence Uploaded</text>
+      </g>
+
+      <g transform="translate(580, 100)">
+        <rect x="0" y="0" width="130" height="35" rx="5" fill="#1E3E62" stroke="#38BDF8" stroke-width="1.5"/>
+        <text x="65" y="22" fill="#38BDF8" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">Verification</text>
+      </g>
+
+      <g transform="translate(580, 190)">
+        <rect x="0" y="0" width="130" height="45" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="2"/>
+        <text x="65" y="24" fill="#6EE7B7" font-family="Inter" font-size="9" font-weight="800" text-anchor="middle">RESOLVED</text>
+        <text x="65" y="38" fill="#FFFFFF" font-family="JetBrains Mono" font-size="7" text-anchor="middle">fully_verified=True</text>
+      </g>
+
+      <g transform="translate(270, 190)">
+        <rect x="0" y="0" width="150" height="45" rx="6" fill="#7F1D1D" stroke="#EF4444" stroke-width="1.5"/>
+        <text x="75" y="20" fill="#FCA5A5" font-family="Inter" font-size="8" font-weight="700" text-anchor="middle">Reopened - Needs Review</text>
+        <text x="75" y="36" fill="#FFFFFF" font-family="Inter" font-size="7" text-anchor="middle">Citizen Disputed Outcome</text>
+      </g>
+
+      <line x1="110" y1="37" x2="150" y2="37" stroke="#00A3C4" stroke-width="1.5"/>
+      <line x1="250" y1="37" x2="290" y2="37" stroke="#00A3C4" stroke-width="1.5"/>
+      <line x1="400" y1="37" x2="440" y2="37" stroke="#00A3C4" stroke-width="1.5"/>
+      <line x1="540" y1="37" x2="580" y2="37" stroke="#F59E0B" stroke-width="1.5"/>
+      <line x1="645" y1="55" x2="645" y2="100" stroke="#38BDF8" stroke-width="1.5"/>
+      <line x1="645" y1="135" x2="645" y2="190" stroke="#10B981" stroke-width="2"/>
+
+      <path d="M 645 135 L 645 150 L 345 150 L 345 190" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="475" y="145" fill="#EF4444" font-family="Inter" font-size="7" font-weight="600" text-anchor="middle">Reporter Disputed (outcome: not_fixed)</text>
+
+      <path d="M 270 212 L 200 212 L 200 55" fill="none" stroke="#F59E0B" stroke-width="1.5"/>
+      <polygon points="196,55 200,47 204,55" fill="#F59E0B"/>
+    </svg>
+    <div class="diagram-caption">Figure 4.0: Complete Complaint Lifecycle Finite-State Machine with Dispute Gates</div>
+  </div>
+
+  <h2>18.1 Transition Invariants</h2>
+  <ul>
+    <li>Direct transitions from Submitted or In Progress to Resolved are strictly rejected (HTTP 409 Conflict).</li>
+    <li>Transitions to Evidence Uploaded, Verification, or Resolved require non-null resolution_evidence in the database record.</li>
+    <li>Reaching final closure (Resolved) requires fully_verified=True, indicating both contractor/officer photographic evidence submission and municipal verification approval.</li>
+    <li>When a citizen disputes a resolution, status shifts to Reopened - Needs Review with review_type="citizen_dispute", preserving prior evidence in previous_resolution_evidence.</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 19. EVIDENCE & VERIFICATION WORKFLOW       -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-19">
+  <h1>19. Evidence and Verification Workflow</h1>
+  <p>The core innovation separating Urban Fix BD from conventional complaint software is its <strong>Two-Party Photographic & Cryptographic Verification Workflow</strong>.</p>
+
+  <h2>19.1 Field Resolution Evidence (POST /api/complaints/{id}/evidence/upload)</h2>
+  <p>When municipal field teams or contractors finish physical repairs on-site, they must upload an after-repair photograph with GPS metadata and completion notes. The backend executes:</p>
+  <ul>
+    <li>MIME and magic-byte validation on the uploaded evidence photo.</li>
+    <li>EXIF orientation normalization and metadata sanitization.</li>
+    <li>Persistent Cloudinary storage under folder urbanfix/evidence.</li>
+    <li>Storage in complaint.resolution_evidence and update of resolution_approvals.officer_submission = True.</li>
+  </ul>
+
+  <h2>19.2 Citizen Verification Gate (POST /api/complaints/{id}/reporter-verification)</h2>
+  <p>The citizen who submitted the original report holds an unguessable reporter_verification_token issued upon intake. When work is uploaded, the citizen visits their private verification link and records an outcome:</p>
+  <ul>
+    <li><strong>fixed:</strong> Citizen confirms repair is satisfactory. resolution_approvals.reporter = True. If all approvals are met, complaint transitions to Resolved, emitting a citizen_confirmed audit event.</li>
+    <li><strong>partially_fixed or not_fixed:</strong> Citizen reports that work was incomplete, substandard, or not performed. Status immediately transitions to Reopened - Needs Review. The complaint's priority score escalates, and an audit event complaint_reopened is broadcast.</li>
+  </ul>
+
+  <h2>19.3 Tamper-Evident SHA-256 Audit Chain (accountability.py)</h2>
+  <p>Every administrative override, status transition, and evidence approval creates an immutable record in audit_events. Each record contains:</p>
+  <pre><code>event["previous_hash"] = prior[-1].get("event_hash") if prior else None
+event["event_hash"] = "sha256:" + sha256(canonical_json(event)).hexdigest()</code></pre>
+  <p>The public accountability receipt (GET /api/track/{id}/receipt) summarizes all cluster incidents, AI assessments, priority breakdowns, SLA history, and chained audit hashes, generating a top-level receipt_hash that guarantees data integrity to civil society and municipal auditors.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 20. API DOCUMENTATION                      -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-20">
+  <h1>20. API Documentation</h1>
+  <p>The Urban Fix BD backend exposes a comprehensive RESTful API under prefix /api. All endpoints have been verified against implementation code in backend/app/api/routes/.</p>
+
+  <h2>20.1 Authentication & Session Management</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">Endpoint</th>
+        <th style="width: 15%;">Auth / Role</th>
+        <th style="width: 35%;">Request Body</th>
+        <th style="width: 30%;">Success Response</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>POST /api/auth/register</code></td>
+        <td>Public (10 req/5m)</td>
+        <td>RegisterCreate: name, email, password, phone, account_type (youth/contractor), service_area, skills</td>
+        <td>200 OK: User profile, session cookie set, CSRF token</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/auth/login</code></td>
+        <td>Public (10 req/5m)</td>
+        <td>LoginCreate: email/username, password</td>
+        <td>200 OK: User profile, HTTP-only cookie, CSRF token</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/auth/demo-officer-login</code></td>
+        <td>Demo Only</td>
+        <td>DemoOfficerLogin: username (e.g. officer.ccc)</td>
+        <td>200 OK: Officer session cookie, CSRF token</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/auth/me</code></td>
+        <td>Authenticated</td>
+        <td>None</td>
+        <td>200 OK: Current user profile, role, authority_id</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/auth/logout</code></td>
+        <td>Authenticated</td>
+        <td>None</td>
+        <td>200 OK: Cookie invalidated, session deleted</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/auth/officers</code></td>
+        <td>Admin Only</td>
+        <td>OfficerCreate: name, username, email, password, authority_id, department, active</td>
+        <td>200 OK: Provisioned officer user document</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>20.2 Complaints & Citizen Intake</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Endpoint & Method</th>
+        <th style="width: 15%;">Access Control</th>
+        <th style="width: 30%;">Payload / Parameters</th>
+        <th style="width: 30%;">Response Structure</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>POST /api/complaints/analyze</code></td>
+        <td>Public (Multipart)</td>
+        <td>Form: description, category_hint<br>File: image (JPEG/PNG/WebP)</td>
+        <td>200 OK: AI classification, confidence, reasoning, safety_flag, analysis_token</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/complaints/with-image</code></td>
+        <td>Public (Multipart)</td>
+        <td>Form: description, area, lat, lng, image, analysis_token, reporter_contact<br>Header: Idempotency-Key</td>
+        <td>200 OK: Created complaint, Case ID, reporter_verification_token</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/complaints</code></td>
+        <td>Public</td>
+        <td>Query: page (int), limit (int, max 250)</td>
+        <td>200 OK: Redacted complaint list, pagination info</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/complaints/map</code></td>
+        <td>Public</td>
+        <td>Query: west, south, east, north (bbox), limit</td>
+        <td>200 OK: Spatial complaints array, count</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/complaints/map/clusters</code></td>
+        <td>Public</td>
+        <td>Query: west, south, east, north, zoom (1-19)</td>
+        <td>200 OK: Clustered centroids, incident counts</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/complaints/{id}</code></td>
+        <td>Public</td>
+        <td>Path: id (complaint_id)</td>
+        <td>200 OK: Full complaint (PII redacted, coordinates fuzzed)</td>
+      </tr>
+      <tr>
+        <td><code>PATCH /api/complaints/{id}/status</code></td>
+        <td>Officer / Admin</td>
+        <td>ComplaintStatusUpdate: status, note<br>Header: X-CSRF-Token</td>
+        <td>200 OK: Updated complaint, SLA recalculation</td>
+      </tr>
+      <tr>
+        <td><code>PATCH /api/complaints/{id}/override</code></td>
+        <td>Admin Only</td>
+        <td>OfficerOverride: final_category, final_severity, final_department, final_authority_id, reason</td>
+        <td>200 OK: Overridden complaint, audit logged</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/complaints/{id}/evidence/upload</code></td>
+        <td>Officer / Admin</td>
+        <td>Form: completion_note, gps_latitude, gps_longitude<br>File: image</td>
+        <td>200 OK: Resolution evidence saved, status = Evidence Uploaded</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/complaints/{id}/reporter-verification</code></td>
+        <td>Reporter Token</td>
+        <td>ReporterVerificationCreate: token, outcome (fixed/partially_fixed/not_fixed), note</td>
+        <td>200 OK: Verified or Reopened complaint</td>
+      </tr>
+      <tr>
+        <td><code>POST /api/complaints/{id}/affected-too</code></td>
+        <td>Public (Spam-guarded)</td>
+        <td>AffectedTooCreate: note</td>
+        <td>200 OK: Updated affected count, priority boosted</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>20.3 Authorities & Municipal Operations</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Endpoint & Method</th>
+        <th style="width: 15%;">Access Control</th>
+        <th style="width: 30%;">Parameters</th>
+        <th style="width: 30%;">Response Structure</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>GET /api/authorities</code></td>
+        <td>Public</td>
+        <td>Query: authority_type (optional)</td>
+        <td>200 OK: Array of candidate authority registry objects</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/authorities/{id}</code></td>
+        <td>Public</td>
+        <td>Path: id (authority_id)</td>
+        <td>200 OK: Authority profile, departments, jurisdictions</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/operations/queue</code></td>
+        <td>Officer / Admin</td>
+        <td>Query: days, state, category, severity, search, authority_id</td>
+        <td>200 OK: Authority-scoped filtered incident list</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/operations/incidents/{id}</code></td>
+        <td>Officer / Admin</td>
+        <td>Path: id (complaint_id)</td>
+        <td>200 OK: Incident deep dive, contractor matches, risk signals</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/track/{id}</code></td>
+        <td>Public / Token</td>
+        <td>Path: id, Query: token (optional)</td>
+        <td>200 OK: Public status timeline, signed image URLs</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/track/{id}/receipt</code></td>
+        <td>Public</td>
+        <td>Path: id</td>
+        <td>200 OK: Cryptographic accountability receipt & hash</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/dashboard</code></td>
+        <td>Admin Only</td>
+        <td>None</td>
+        <td>200 OK: High-level KPI metrics, AI governance insight</td>
+      </tr>
+      <tr>
+        <td><code>GET /api/analytics</code></td>
+        <td>Public</td>
+        <td>None</td>
+        <td>200 OK: Category, severity, department, hotspot distribution</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================== -->
+<!-- 21. DATABASE SCHEMA DOCUMENTATION          -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-21">
+  <h1>21. Database Schema Documentation</h1>
+  <p>The Urban Fix BD data layer comprises 14 collections. The complete field structures documented below reflect the actual schemas defined in CivicRepository and Pydantic models:</p>
+
+  <h2>21.1 complaints Collection</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Field Name</th>
+        <th>BSON Type</th>
+        <th>Indexed?</th>
+        <th>Description / Constraints</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>_id</code></td><td>ObjectId</td><td>Yes (PK)</td><td>MongoDB primary key identifier</td></tr>
+      <tr><td><code>complaint_id</code></td><td>String</td><td>Yes (Unique)</td><td>Public Case ID (format: CP-XXXXXX)</td></tr>
+      <tr><td><code>incident_id</code></td><td>String</td><td>No</td><td>Cluster identifier (format: INC-XXXXXX)</td></tr>
+      <tr><td><code>description</code></td><td>String</td><td>No</td><td>Original citizen complaint text (3-4000 chars)</td></tr>
+      <tr><td><code>location</code></td><td>Document</td><td>Yes</td><td>{ area: str, latitude: float, longitude: float, source: str }</td></tr>
+      <tr><td><code>location_geo</code></td><td>Document</td><td>Yes (2dsphere)</td><td>GeoJSON Point { type: "Point", coordinates: [lng, lat] }</td></tr>
+      <tr><td><code>image_url</code></td><td>String</td><td>No</td><td>Evidence image URL (Cloudinary / signed local upload)</td></tr>
+      <tr><td><code>after_image_url</code></td><td>String</td><td>No</td><td>Resolution evidence image URL</td></tr>
+      <tr><td><code>category</code></td><td>String</td><td>Yes</td><td>One of 7 municipal categories (e.g. "Road Infrastructure")</td></tr>
+      <tr><td><code>severity</code></td><td>String</td><td>Yes</td><td>Critical, High, Medium, Low</td></tr>
+      <tr><td><code>confidence</code></td><td>Double</td><td>No</td><td>AI visual classification confidence (0.0 – 1.0)</td></tr>
+      <tr><td><code>summary</code></td><td>String</td><td>No</td><td>Concise AI-generated problem summary</td></tr>
+      <tr><td><code>department</code></td><td>String</td><td>No</td><td>Assigned department name</td></tr>
+      <tr><td><code>assigned_authority</code></td><td>Document</td><td>No</td><td>Complete authority routing snapshot with data_status</td></tr>
+      <tr><td><code>initial_assigned_authority</code></td><td>Document</td><td>No</td><td>Immutable original automated routing snapshot</td></tr>
+      <tr><td><code>priority_score</code></td><td>Int32</td><td>Yes</td><td>Calculated priority (0 – 100)</td></tr>
+      <tr><td><code>priority_breakdown</code></td><td>Document</td><td>No</td><td>{ severity, duplicates, age, location_impact, critical_safety }</td></tr>
+      <tr><td><code>duplicate_count</code></td><td>Int32</td><td>No</td><td>Total reports linked to this incident cluster</td></tr>
+      <tr><td><code>affected_count</code></td><td>Int32</td><td>No</td><td>Total citizen "I am affected too" signals</td></tr>
+      <tr><td><code>status</code></td><td>String</td><td>Yes</td><td>Submitted, Needs Review, Assigned, In Progress, etc.</td></tr>
+      <tr><td><code>needs_review</code></td><td>Boolean</td><td>No</td><td>Flag indicating human officer intervention required</td></tr>
+      <tr><td><code>review_type</code></td><td>String</td><td>No</td><td>routing_uncertain, citizen_dispute, etc.</td></tr>
+      <tr><td><code>safety_flag</code></td><td>Boolean</td><td>No</td><td>Flag for immediate life-safety hazards</td></tr>
+      <tr><td><code>resolution_evidence</code></td><td>Document</td><td>No</td><td>{ url, completion_note, uploaded_by, uploaded_at, gps }</td></tr>
+      <tr><td><code>resolution_approvals</code></td><td>Document</td><td>No</td><td>{ officer_submission: bool, reporter: bool, government: bool }</td></tr>
+      <tr><td><code>fully_verified</code></td><td>Boolean</td><td>No</td><td>True only when all required verification gates pass</td></tr>
+      <tr><td><code>citizen_verification</code></td><td>Document</td><td>No</td><td>{ outcome: str, fixed: bool, note: str, verified_at: ts }</td></tr>
+      <tr><td><code>status_history</code></td><td>Array[Doc]</td><td>No</td><td>Sequential status history log</td></tr>
+      <tr><td><code>created_at / updated_at</code></td><td>DateTime</td><td>Yes</td><td>UTC timestamps</td></tr>
+    </tbody>
+  </table>
+
+  <h2>21.2 audit_events Collection</h2>
+  <table>
+    <thead>
+      <tr><th>Field Name</th><th>BSON Type</th><th>Indexed?</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>event_id</code></td><td>String</td><td>Yes (Unique)</td><td>Format: AUD-XXXXXXXXXX</td></tr>
+      <tr><td><code>entity_type</code></td><td>String</td><td>Yes</td><td>complaint, offer, repair_request</td></tr>
+      <tr><td><code>entity_id</code></td><td>String</td><td>Yes</td><td>Target entity identifier</td></tr>
+      <tr><td><code>action</code></td><td>String</td><td>No</td><td>Action name (e.g., status_transition, ai_override)</td></tr>
+      <tr><td><code>actor_id</code></td><td>String</td><td>No</td><td>User ID of performing actor or SYSTEM</td></tr>
+      <tr><td><code>actor_role</code></td><td>String</td><td>No</td><td>admin, officer, contractor, reporter</td></tr>
+      <tr><td><code>before / after</code></td><td>Document</td><td>No</td><td>State diff snapshots</td></tr>
+      <tr><td><code>event_hash</code></td><td>String</td><td>No</td><td>sha256:HEX hash of canonical event JSON</td></tr>
+      <tr><td><code>previous_hash</code></td><td>String</td><td>No</td><td>event_hash pointer to chronologically prior event</td></tr>
+      <tr><td><code>created_at</code></td><td>DateTime</td><td>Yes</td><td>UTC event creation timestamp</td></tr>
+    </tbody>
+  </table>
+
+  <h2>21.3 users, sessions, and Auxiliary Collections</h2>
+  <ul>
+    <li><strong>users:</strong> Stores user_id (USR-XXX, OFF-XXX), name, username, email, role (admin, officer, contractor, youth), authority_id, department, password_salt, password_hash, active.</li>
+    <li><strong>sessions:</strong> Stores session_id (SES-XXX), token_hash, csrf_token, user_id, role, authority_id, expires_at (TTL index), created_at.</li>
+    <li><strong>report_owners:</strong> Stores owner_id (OWN-XXX), complaint_id, contact_hash, token_hash, expires_at (TTL 30 days).</li>
+    <li><strong>offers:</strong> Stores offer_id (OFF-XXX), complaint_id, contractor_id, budget_cap, sla_hours, status (Sent, Accepted, In Progress, Proof Submitted, Approved), report_url.</li>
+    <li><strong>repair_requests:</strong> Stores request_id (REQ-XXX), complaint_id, applicant_user_id, plan, estimated_price, status, approved_budget, proof.</li>
+    <li><strong>contractors:</strong> Stores contractor_id (CTR-XXX), name, service_area, skills, rating, trust_score, verified.</li>
+    <li><strong>idempotency_keys:</strong> Stores key, complaint_id, state (processing/completed), expires_at (TTL 24 hours).</li>
+    <li><strong>webhook_events:</strong> Stores provider_event_id, complaint_id, created_at.</li>
+    <li><strong>discussions / discussion_votes:</strong> Public civic forum posts and unique user upvote pairs.</li>
+    <li><strong>geocoding_cache:</strong> Reverse geocoding lookup cache by coordinate key.</li>
+    <li><strong>login_attempts:</strong> Sliding-window rate limit counters for authentication endpoints.</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 22. SECURITY & PRIVACY                     -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-22">
+  <h1>22. Security and Privacy Considerations</h1>
+
+  <h2>22.1 Authentication & Credential Architecture</h2>
+  <p>User credentials are encrypted using PBKDF2-HMAC-SHA256 with 310,000 iterations and 16-byte random salts. Sessions use 48-byte URL-safe cryptographic tokens. The raw session token is never stored in the database; only its SHA-256 digest (token_hash) is persisted. Sessions expire after 7 days via a MongoDB TTL index. The session token is transmitted in an urbanfix_session HTTP-only cookie with SameSite=Lax and Secure (enforced in production).</p>
+
+  <h2>22.2 Double-Submit CSRF Defense</h2>
+  <p>To defend against Cross-Site Request Forgery, every session issues an unguessable 24-byte random csrf_token. For every state-mutating request (POST, PATCH, DELETE), the backend verifies that the incoming X-CSRF-Token header matches the session CSRF token using hmac.compare_digest.</p>
+
+  <h2>22.3 PII Redaction & Geospatial Privacy Engine (privacy.py)</h2>
+  <p>Public accountability must not compromise citizen privacy. The backend enforces automated redacting rules:</p>
+  <ul>
+    <li><strong>Private Field Stripping:</strong> reporter_name, reporter_contact, source_fingerprint, affected_sources, internal_notes, private_metadata, and location_geo are deleted from all public responses.</li>
+    <li><strong>Regex PII Redaction:</strong> Description and summary fields are scrubbed against verified regex patterns:
+      <ul>
+        <li>Bangladeshi Mobile: <code>(?&lt;!\d)(?:\+?880[-\s]?)?0?1[3-9]\d{8}(?!\d)</code> &rarr; <code>[phone redacted]</code></li>
+        <li>Bangladeshi NID: <code>(?&lt;!\d)(?:\d{10}|\d{13}|\d{17})(?!\d)</code> &rarr; <code>[identifier redacted]</code></li>
+        <li>Email Addresses: <code>\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b</code> &rarr; <code>[email redacted]</code></li>
+      </ul>
+    </li>
+    <li><strong>Coordinate Fuzzing:</strong> Exact GPS coordinates on public feeds are rounded to 3 decimal places (~110 meters accuracy), preventing disclosure of exact home entrances.</li>
+  </ul>
+
+  <h2>22.4 Volunteer Safety Boundary Gate (volunteer_safety.py)</h2>
+  <p>To safeguard youth and community volunteers from hazardous civic conditions, the system evaluates complaint descriptions against a dictionary of dangerous municipal terms (electrical wiring, high-voltage transformers, gas leaks, structural collapse, sewer biohazards, and unbarricaded manholes). Any matching issue is automatically marked ineligible for community participation, requiring certified municipal authority dispatch.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 23. ERROR HANDLING & RESILIENCE            -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-23">
+  <h1>23. Error Handling and Validation</h1>
+
+  <h2>23.1 Pydantic Validation & HTTP Status Codes</h2>
+  <p>All incoming requests are strictly validated using Pydantic schemas. The API emits explicit HTTP status codes:</p>
+  <ul>
+    <li><code>400 Bad Request</code>: Malformed filename, missing parameters, or missing approved budget.</li>
+    <li><code>401 Unauthorized</code>: Missing authentication, invalid login credentials, or invalid webhook signature.</li>
+    <li><code>403 Forbidden</code>: Invalid CSRF token, cross-authority officer access attempt, or volunteer hazard rejection.</li>
+    <li><code>404 Not Found</code>: Entity (complaint, contractor, work offer) does not exist.</li>
+    <li><code>409 Conflict</code>: Invalid lifecycle transition, concurrent duplicate request, or already-upvoted post.</li>
+    <li><code>413 Payload Too Large</code>: Image upload exceeds upload limit (10MB dev / 4MB prod) or dimensions exceed 30 megapixels.</li>
+    <li><code>415 Unsupported Media Type</code>: File content type or magic bytes do not match permitted image formats.</li>
+    <li><code>422 Unprocessable Entity</code>: Schema validation failure, non-civic image upload, or invalid bounding box.</li>
+    <li><code>429 Too Many Requests</code>: Sliding-window rate limit breached.</li>
+    <li><code>502 / 503 Service Unavailable</code>: Upstream Cloudinary failure or database connection failure when fallback is disabled.</li>
+  </ul>
+
+  <h2>23.2 Multimodal AI Retry & Fallback Cascade</h2>
+  <p>The Gemini client implements automated retry with exponential backoff on transient errors (HTTP 429, 500, 502, 503). If the API fails completely, times out (&gt;90s), or returns an unparseable response, the system falls back to _fallback_analysis with deterministic keyword classification and sets needs_review=True.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 24. INSTALLATION AND CONFIGURATION         -->
+<!-- ========================================== -->
+<div id="sec-24">
+  <h1>24. Installation and Configuration</h1>
+
+  <h2>24.1 Quick Local Setup</h2>
+  <pre><code># 1. Clone repository
+git clone https://github.com/Arik09013/urban-fix-bd.git
+cd urban-fix-bd
+
+# 2. Setup backend environment
+cd backend
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+cp .env.example .env
+
+# 3. Launch backend API server (port 8000)
+python -m uvicorn app.main:app --reload --port 8000
+
+# 4. In a new terminal, launch frontend dev server (port 5173)
+cd ..
+npm install
+npm run dev</code></pre>
+
+  <h2>24.2 Production Environment Safety Check</h2>
+  <p>In backend/app/core/config.py, Pydantic Settings enforces a production safety validator. When ENVIRONMENT=production, the application refuses to start if default credentials (admin/admin), development secret keys, or local MongoDB URIs are detected.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 25. DEPLOYMENT ARCHITECTURE                -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-25">
+  <h1>25. Deployment Architecture</h1>
+
+  <div class="diagram-container">
+    <svg width="100%" height="200" viewBox="0 0 740 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="30" width="180" height="140" rx="8" fill="#0B192C" stroke="#38BDF8" stroke-width="1.5"/>
+      <text x="110" y="55" fill="#38BDF8" font-family="Inter" font-size="9.5" font-weight="700" text-anchor="middle">VERCEL CDN (EDGE)</text>
+      <text x="110" y="85" fill="#FFFFFF" font-family="Inter" font-size="8.5" text-anchor="middle">React 19 Vite SPA</text>
+      <text x="110" y="105" fill="#94A3B8" font-family="Inter" font-size="7.5" text-anchor="middle">Static Assets (/dist)</text>
+      <text x="110" y="125" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">SPA Rewrites (vercel.json)</text>
+      <text x="110" y="145" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">Reverse Proxy /api</text>
+
+      <line x1="200" y1="100" x2="260" y2="100" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="260,96 268,100 260,104" fill="#00A3C4"/>
+
+      <rect x="270" y="30" width="200" height="140" rx="8" fill="#1E3E62" stroke="#00A3C4" stroke-width="1.5"/>
+      <text x="370" y="55" fill="#38BDF8" font-family="Inter" font-size="9.5" font-weight="700" text-anchor="middle">RENDER (FASTAPI ASGI)</text>
+      <text x="370" y="85" fill="#FFFFFF" font-family="Inter" font-size="8.5" text-anchor="middle">Docker Container / Linux</text>
+      <text x="370" y="105" fill="#94A3B8" font-family="Inter" font-size="7.5" text-anchor="middle">Uvicorn Worker Process</text>
+      <text x="370" y="125" fill="#E2E8F0" font-family="Inter" font-size="8" text-anchor="middle">Gemini REST Async Client</text>
+      <text x="370" y="145" fill="#6EE7B7" font-family="JetBrains Mono" font-size="7" text-anchor="middle">render.yaml Blueprint</text>
+
+      <line x1="470" y1="75" x2="530" y2="75" stroke="#059669" stroke-width="2"/>
+      <polygon points="530,71 538,75 530,79" fill="#059669"/>
+
+      <line x1="470" y1="125" x2="530" y2="125" stroke="#00A3C4" stroke-width="2"/>
+      <polygon points="530,121 538,125 530,129" fill="#00A3C4"/>
+
+      <rect x="540" y="20" width="180" height="75" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.5"/>
+      <text x="630" y="42" fill="#6EE7B7" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">MONGODB ATLAS</text>
+      <text x="630" y="60" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Replica Set Cluster</text>
+      <text x="630" y="75" fill="#A7F3D0" font-family="JetBrains Mono" font-size="7" text-anchor="middle">ACID Transactions</text>
+
+      <rect x="540" y="105" width="180" height="75" rx="6" fill="#0B192C" stroke="#00A3C4" stroke-width="1.5"/>
+      <text x="630" y="127" fill="#38BDF8" font-family="Inter" font-size="8.5" font-weight="700" text-anchor="middle">CLOUDINARY CDN</text>
+      <text x="630" y="145" fill="#FFFFFF" font-family="Inter" font-size="7.5" text-anchor="middle">Secure Evidence Storage</text>
+      <text x="630" y="160" fill="#BAE6FD" font-family="JetBrains Mono" font-size="7" text-anchor="middle">Auto SSL / Global Edge</text>
+    </svg>
+    <div class="diagram-caption">Figure 5.0: Production Cloud Deployment Architecture (Vercel + Render + Atlas + Cloudinary)</div>
+  </div>
+
+  <h2>25.1 Containerization (Dockerfile)</h2>
+  <p>The production Dockerfile employs a multi-stage architecture: Node 20 compiles the Vite frontend into static HTML/JS/CSS assets, which are copied directly into a lightweight Python 3.11 slim runtime container served by Uvicorn.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 26. TESTING AND QUALITY ASSURANCE          -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-26">
+  <h1>26. Testing and Quality Assurance</h1>
+  <p>Urban Fix BD maintains an exhaustive automated testing suite across backend unit, integration, frontend component, and end-to-end browser tests.</p>
+
+  <h2>26.1 Backend Pytest Suite (120 Tests)</h2>
+  <p>Executed via pytest backend/tests. <strong>Result: 120 passed, 0 failures (100% pass rate).</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 35%;">Test Suite</th>
+        <th style="width: 15%;">Test Count</th>
+        <th style="width: 50%;">Verified Functional Coverage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>test_ai_validation.py</code></td>
+        <td>19 tests</td>
+        <td>Pillow optimization, Gemini response parsing, boolean validation, fallback rules cascade, language hints.</td>
+      </tr>
+      <tr>
+        <td><code>test_api.py</code></td>
+        <td>13 tests</td>
+        <td>Core API contracts, pagination limits, complaint listing, map bounding queries.</td>
+      </tr>
+      <tr>
+        <td><code>test_authority_routing.py</code></td>
+        <td>21 tests</td>
+        <td>CCC, DNCC, DSCC routing, polygon ray-casting, non-CCC upazila rejection, institutional ambiguity flags.</td>
+      </tr>
+      <tr>
+        <td><code>test_hardening.py</code></td>
+        <td>5 tests</td>
+        <td>MIME type validation, image decompression bomb boundaries, security headers.</td>
+      </tr>
+      <tr>
+        <td><code>test_image_pipeline.py</code></td>
+        <td>6 tests</td>
+        <td>EXIF orientation transposition, metadata stripping, Lanczos downsampling.</td>
+      </tr>
+      <tr>
+        <td><code>test_officer_resolution_workflow.py</code></td>
+        <td>15 tests</td>
+        <td>End-to-end resolution flow, before/after evidence validation, citizen verification gate, dispute reopening.</td>
+      </tr>
+      <tr>
+        <td><code>test_officer_security.py</code></td>
+        <td>10 tests</td>
+        <td>Role-based access control, officer authority isolation, session expiration, CSRF token validation.</td>
+      </tr>
+      <tr>
+        <td><code>test_phase3b_hardening.py</code></td>
+        <td>12 tests</td>
+        <td>Malicious file rejection, rate limiting sliding windows, PII regex redaction.</td>
+      </tr>
+      <tr>
+        <td><code>test_phase6_production_remediation.py</code></td>
+        <td>12 tests</td>
+        <td>Idempotency key arbitration, signed evidence URL expiration, storage fallback security.</td>
+      </tr>
+      <tr>
+        <td><code>test_storage.py</code></td>
+        <td>1 test</td>
+        <td>File magic byte verification and storage error tracking.</td>
+      </tr>
+      <tr>
+        <td><code>test_workflow.py</code></td>
+        <td>6 tests</td>
+        <td>Deduplication scoring, spatial clustering, priority age escalation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>26.2 Frontend Testing Audit</h2>
+  <ul>
+    <li><strong>Vitest Suite:</strong> 19 automated component tests across src/App.test.jsx, InteractiveBeforeAfter.test.jsx, ReviewDialog.test.jsx, and api.test.js. 16 passing; 3 tests in App.test.jsx require label updates matching recent GovTech Civic Trust UI redesign changes.</li>
+    <li><strong>Production Build Verification:</strong> npm run build successfully compiles the client application in 8.69s with zero bundling or syntax errors.</li>
+  </ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 27. CURRENT IMPLEMENTATION STATUS          -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-27">
+  <h1>27. Current Implementation Status</h1>
+  <p>To adhere strictly to engineering honesty, all platform features are categorized by verified implementation state:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 30%;">Feature / Capability</th>
+        <th style="width: 25%;">Status</th>
+        <th style="width: 45%;">Implementation Evidence in Source Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Multimodal AI Intake</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/ai/gemini.py (Gemini REST, Pillow optimization, schema validation)</td>
+      </tr>
+      <tr>
+        <td>HMAC Preview Tokens</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/api/routes/complaints.py (_sign_analysis, _verified_analysis)</td>
+      </tr>
+      <tr>
+        <td>Deterministic Authority Routing</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/routing/engine.py (Keywords, polygons, ambiguity detection)</td>
+      </tr>
+      <tr>
+        <td>Priority Scoring Formula</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/priority.py (Deterministic 0-100 score calculation)</td>
+      </tr>
+      <tr>
+        <td>Finite-State Machine Guards</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/lifecycle.py (Strict status transition map)</td>
+      </tr>
+      <tr>
+        <td>Two-Party Verification Gate</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/api/routes/complaints.py (/reporter-verification endpoint)</td>
+      </tr>
+      <tr>
+        <td>Tamper-Evident SHA-256 Audit</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/audit.py, accountability.py (Chained hash pointers)</td>
+      </tr>
+      <tr>
+        <td>Volunteer Safety Boundary</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/volunteer_safety.py (Hazardous keyword screening)</td>
+      </tr>
+      <tr>
+        <td>PII Regex Redaction & Fuzzing</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/services/privacy.py (Phone, NID, email regex + coordinate fuzzing)</td>
+      </tr>
+      <tr>
+        <td>GovTech Civic Trust UI Redesign</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>src/App.jsx, styles.css (Contiguous dark box cadastre layout, red logout buttons)</td>
+      </tr>
+      <tr>
+        <td>Bilingual Localization (EN/BN)</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>src/App.jsx (Header language toggle, localStorage persistence)</td>
+      </tr>
+      <tr>
+        <td>Production WhatsApp Webhook</td>
+        <td><span class="badge badge-success">Implemented</span></td>
+        <td>backend/app/api/routes/whatsapp.py (HMAC signature verification, message ingest)</td>
+      </tr>
+      <tr>
+        <td>Official Ward GIS Polygon Ingestion</td>
+        <td><span class="badge badge-warning">Partially Implemented</span></td>
+        <td>Polygon ray-casting implemented; uses candidate bounding boxes pending gazetted GeoJSON open data.</td>
+      </tr>
+      <tr>
+        <td>Local MFS Payout Rails (bKash/Nagad)</td>
+        <td><span class="badge badge-warning">Partially Implemented</span></td>
+        <td>Payment schema & Stripe/demo rails implemented; direct bKash/Nagad APIs await commercial gateway credentials.</td>
+      </tr>
+      <tr>
+        <td>Offline On-Device Vision Model</td>
+        <td><span class="badge badge-info">Planned</span></td>
+        <td>Architecturally designed for edge execution; currently relies on Gemini REST with deterministic fallback.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================================== -->
+<!-- 28. LIMITATIONS & 29. ROADMAP              -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-28">
+  <h1>28. Limitations</h1>
+  <ul>
+    <li><strong>Heuristic Geographic Boundaries:</strong> While the ray-casting polygon algorithm is fully operational, candidate authority polygons currently approximate ward boundaries via bounding boxes pending official open GIS shapefile ingestion from the Bangladesh Local Government Division.</li>
+    <li><strong>Commercial Payment Gateway Keys:</strong> Micro-grant community payouts run via simulated demo and Stripe test rails. Integration with bKash and Nagad disbursement APIs requires formal commercial merchant agreements.</li>
+    <li><strong>Single Vision AI Model Dependency:</strong> Multimodal analysis requires internet connectivity to communicate with Google Gemini REST endpoints. When offline, the system safely falls back to text keyword heuristics but cannot visually inspect photos.</li>
+  </ul>
+
+  <h1 id="sec-29" style="margin-top: 30px;">29. Future Development Roadmap</h1>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Phase 1: Official GIS Polygon Ingestion</div>
+      <p>Partner with municipal GIS departments to ingest official GeoJSON boundaries for all 41 Chattogram wards and 129 Dhaka North/South wards, elevating spatial routing precision to sub-meter accuracy.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 2: Local MFS Gateway Integration</div>
+      <p>Implement direct bKash, Nagad, and Rocket merchant disbursement APIs to enable instant, real-time micro-grant fund releases to verified youth cleanup leaders upon verified repair completion.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 3: Native Mobile Application</div>
+      <p>Package the responsive React SPA into Flutter / React Native wrappers with native device camera integration, EXIF capture, and offline draft complaint synchronization.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Phase 4: Low-Bandwidth USSD / SMS Intake</div>
+      <p>Deploy a lightweight SMS/USSD intake gateway enabling feature-phone users in rural or low-bandwidth zones to submit and track municipal issues without mobile data.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 30. CONCLUSION, CONTRIBUTORS & REFERENCES  -->
+<!-- ========================================== -->
+<div class="page-start" id="sec-30">
+  <h1>30. Conclusion</h1>
+  <p><strong>Urban Fix BD</strong> demonstrates that municipal governance and civic trust can be revolutionized through rigorous, verifiable software architecture. By coupling Google Gemini multimodal visual intelligence with pure deterministic geographic routing, strict finite-state lifecycle invariants, cryptographic SHA-256 audit chaining, and mandatory citizen verification gates, the platform provides an unassailable foundation for responsive urban governance across Bangladesh.</p>
+
+  <h1 id="sec-31" style="margin-top: 24px;">31. Contributors</h1>
+  <p>Developed and maintained by the <strong>Urban Fix BD</strong> Engineering & Architecture Team:</p>
+  <ul>
+    <li><strong>Lead Architect & Lead Maintainer:</strong> Arik Md. Isthiaque (<a href="https://github.com/Arik09013">@Arik09013</a>)</li>
+    <li><strong>Engineering Contributors:</strong> [Add Contributor Information]</li>
+    <li><strong>Civic Research & Agency Liaison:</strong> [Add Contact Information]</li>
+  </ul>
+
+  <h1 id="sec-32" style="margin-top: 24px;">32. Technical References</h1>
+  <ol>
+    <li>FastAPI Documentation — Tiangolo, S. (2024). <em>FastAPI Framework Architecture and ASGI Specifications</em>.</li>
+    <li>Google Gemini API Reference — Google DeepMind (2025). <em>Gemini Multimodal Models and Structured JSON Output</em>.</li>
+    <li>MongoDB Motor Architecture — MongoDB Inc. (2024). <em>Asynchronous Driver Specifications for Python Runtimes</em>.</li>
+    <li>Local Government (City Corporation) Act, 2009 — Government of the People's Republic of Bangladesh.</li>
+    <li>NIST Special Publication 800-63B — National Institute of Standards and Technology. <em>Digital Identity Guidelines: Authentication and Lifecycle Management</em>.</li>
+    <li>RFC 7519 — Internet Engineering Task Force (IETF). <em>JSON Web Token (JWT) and HMAC Token Signatures</em>.</li>
+  </ol>
+</div>
+
+</body>
+</html>
