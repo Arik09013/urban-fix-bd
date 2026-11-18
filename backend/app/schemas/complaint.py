@@ -60,6 +60,32 @@ class ResolutionEvidenceCreate(BaseModel):
     uploaded_by: str = Field(default="field-team", max_length=120)
 
 
+class EvidenceVersion(BaseModel):
+    version: int = Field(default=1, ge=1)
+    image_url: str = Field(..., max_length=2000)
+    after_image_url: Optional[str] = Field(default=None, max_length=2000)
+    url: Optional[str] = Field(default=None, max_length=2000)
+    completion_note: str = Field(..., max_length=2000)
+    uploaded_by: str = Field(default="field-team", max_length=120)
+    uploaded_at: datetime
+    actor_id: Optional[str] = None
+    actor_role: Optional[str] = None
+    verification_status: Literal["pending", "approved", "rejected", "superseded"] = "pending"
+    admin_feedback: Optional[str] = None
+    verified_by: Optional[str] = None
+    verified_at: Optional[datetime] = None
+    gps: Optional[Dict[str, float]] = None
+
+
+class EvidenceEditRequest(BaseModel):
+    completion_note: str = Field(..., min_length=3, max_length=2000)
+
+
+class AdminVerificationRequest(BaseModel):
+    action: Literal["approve", "reject"]
+    note: Optional[str] = Field(default=None, max_length=2000)
+
+
 class CitizenVerificationCreate(BaseModel):
     fixed: bool
     note: Optional[str] = None
@@ -124,6 +150,12 @@ class Complaint(BaseModel):
     updated_at: datetime
     final_decision: Optional[Dict[str, Any]] = None
     resolution_evidence: Optional[Dict[str, Any]] = None
+    evidence_versions: List[Dict[str, Any]] = Field(default_factory=list)
+    current_evidence_version: Optional[int] = None
+    admin_verified: bool = False
+    admin_verification: Optional[Dict[str, Any]] = None
+    rejection_reason: Optional[str] = None
+    work_completed_at: Optional[datetime] = None
     citizen_verification: Optional[Dict[str, Any]] = None
     status_history: List[Dict[str, Any]] = Field(default_factory=list)
 

@@ -67,26 +67,28 @@ async def track_complaint(
         else:
             public_comp["image_url"] = None
 
-    # Process resolution evidence
-    res_ev = public_comp.get("resolution_evidence")
-    if isinstance(res_ev, dict):
+    # Process resolution evidence: authorized users view in any state; public views if verified
+    can_view_evidence = is_authorized or public_comp.get("is_verified")
+    res_ev = complaint.get("resolution_evidence")
+    if can_view_evidence and isinstance(res_ev, dict):
         res_ev = dict(res_ev)
-        after_url = res_ev.get("after_image_url") or res_ev.get("url")
+        after_url = res_ev.get("after_image_url") or res_ev.get("url") or complaint.get("after_image_url")
         if after_url and "/uploads/" in after_url:
-            if is_authorized:
-                signed_after = _sign_url_if_local(after_url, complaint_id)
-                res_ev["after_image_url"] = signed_after
-                res_ev["url"] = signed_after
-            else:
-                res_ev["after_image_url"] = None
-                res_ev["url"] = None
+            signed_after = _sign_url_if_local(after_url, complaint_id)
+            res_ev["after_image_url"] = signed_after
+            res_ev["url"] = signed_after
+            public_comp["after_image_url"] = signed_after
+        elif after_url:
+            public_comp["after_image_url"] = after_url
         public_comp["resolution_evidence"] = res_ev
+    else:
+        public_comp["after_image_url"] = None
+        public_comp["resolution_evidence"] = None
 
-    if public_comp.get("after_image_url") and "/uploads/" in public_comp["after_image_url"]:
-        if is_authorized:
-            public_comp["after_image_url"] = _sign_url_if_local(public_comp["after_image_url"], complaint_id)
-        else:
-            public_comp["after_image_url"] = None
+    if is_authorized:
+        public_comp["evidence_versions"] = complaint.get("evidence_versions", [])
+        public_comp["rejection_reason"] = complaint.get("rejection_reason")
+        public_comp["admin_verification"] = complaint.get("admin_verification")
 
     offers = [
         offer

@@ -6,13 +6,14 @@ from datetime import datetime, timezone
 STATUS_TRANSITIONS = {
     "Submitted": {"Needs Review", "Assigned", "Acknowledged", "Rejected"},
     "Needs Review": {"Assigned", "Rejected"},
-    "Assigned": {"Acknowledged", "In Progress", "Needs Review"},
+    "Assigned": {"Acknowledged", "In Progress", "Needs Review", "Rejected"},
     "Contractor Offer Sent": {"Assigned", "Acknowledged", "In Progress"},
     "Acknowledged": {"In Progress", "Needs Review"},
-    "In Progress": {"Resolution Submitted", "Needs Review"},
-    "Resolution Submitted": {"Evidence Uploaded", "In Progress"},
-    "Evidence Uploaded": {"Verification", "In Progress", "Reopened - Needs Review"},
-    "Verification": {"Resolved", "In Progress", "Reopened - Needs Review"},
+    "In Progress": {"Resolution Submitted", "Evidence Uploaded", "Needs Review"},
+    "Resolution Submitted": {"Evidence Uploaded", "In Progress", "Rejected"},
+    "Evidence Uploaded": {"Verification", "Resolved", "In Progress", "Reopened - Needs Review", "Rejected"},
+    "Verification": {"Resolved", "In Progress", "Reopened - Needs Review", "Rejected"},
+    "Rejected": {"In Progress", "Evidence Uploaded", "Assigned"},
     "Reopened - Needs Review": {"Assigned", "Acknowledged", "In Progress"},
     "Resolved": {"Reopened - Needs Review"},
 }
@@ -22,7 +23,7 @@ class InvalidTransition(ValueError):
     pass
 
 
-def validate_transition(complaint: dict, target: str) -> None:
+def validate_transition(complaint: dict, target: str, actor: dict | None = None) -> None:
     current = complaint.get("status", "Submitted")
     if target == current:
         raise InvalidTransition(f"Complaint is already {current}")
@@ -36,12 +37,18 @@ def validate_transition(complaint: dict, target: str) -> None:
         raise InvalidTransition("Routing-uncertain complaints require administrator review before operational dispatch")
     if target in {"Evidence Uploaded", "Verification", "Resolved"} and not complaint.get("resolution_evidence"):
         raise InvalidTransition("Resolution evidence is required before verification or closure")
-    if target == "Resolved" and not complaint.get("fully_verified"):
-        raise InvalidTransition("All required resolution approvals are required before closure")
+    if target == "Resolved":
+        is_verified = (
+            complaint.get("fully_verified")
+            or complaint.get("admin_verified")
+            or (actor and actor.get("role") == "admin")
+        )
+        if not is_verified:
+            raise InvalidTransition("All required resolution approvals are required before closure")
 
 
 def transition_changes(complaint: dict, target: str, note: str, actor: dict, source: str = "human") -> dict:
-    validate_transition(complaint, target)
+    validate_transition(complaint, target, actor)
     now = datetime.now(timezone.utc)
     history = list(complaint.get("status_history", []))
     history.append({
@@ -66,10 +73,18 @@ def transition_changes(complaint: dict, target: str, note: str, actor: dict, sou
         if complaint.get("review_type") == "citizen_dispute":
             changes["needs_review"] = False
             changes["review_type"] = None
+        if complaint.get("status") == "Rejected":
+            changes["rejection_reason"] = None
     if target == "Resolution Submitted":
         changes["resolution_submitted_at"] = now
     if target == "Resolved":
         changes["resolved_at"] = now
+        changes["admin_verified"] = True
+        changes["fully_verified"] = True
+    if target == "Rejected":
+        changes["rejection_reason"] = note
+        changes["rejected_at"] = now
+        changes["admin_verified"] = False
     if target == "Reopened - Needs Review":
         changes["reopened_at"] = now
         changes["needs_review"] = True

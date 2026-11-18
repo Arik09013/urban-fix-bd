@@ -27,8 +27,8 @@ def redact_public_text(value):
 
 def public_complaint(item: dict) -> dict:
     result = {key: value for key, value in item.items() if key not in PRIVATE_COMPLAINT_FIELDS}
-    for field in ("description", "summary", "ai_reasoning", "review_reason"):
-        if field in result:
+    for field in ("description", "summary", "ai_reasoning", "review_reason", "completion_notes"):
+        if field in result and isinstance(result[field], str):
             result[field] = redact_public_text(result[field])
     location = dict(result.get("location") or {})
     # Public coordinates are sufficiently accurate for civic discovery without
@@ -49,4 +49,25 @@ def public_complaint(item: dict) -> dict:
         for event in result.get("status_history", [])
     ]
     result["public_reporter_visible"] = False
+
+    # Public verification transparency
+    is_verified = bool(item.get("admin_verified") or item.get("status") == "Resolved" or item.get("fully_verified"))
+    result["is_verified"] = is_verified
+    if is_verified:
+        result["verification_status"] = "Verified"
+        result["work_completed_at"] = item.get("work_completed_at") or item.get("resolved_at") or item.get("updated_at")
+        result["completion_description"] = redact_public_text(item.get("completion_notes") or (item.get("resolution_evidence") or {}).get("completion_note"))
+    else:
+        status = item.get("status", "")
+        if status in {"Evidence Uploaded", "Verification", "Resolution Submitted"}:
+            result["verification_status"] = "Pending Verification"
+        elif status == "Rejected":
+            result["verification_status"] = "Rejected - Correction Required"
+        else:
+            result["verification_status"] = "Unverified"
+        # Protect unverified or rejected evidence from being presented as verified work to the general public
+        result["after_image_url"] = None
+        if "resolution_evidence" in result:
+            result["resolution_evidence"] = None
+
     return result

@@ -4,6 +4,9 @@ import Icon from './components/Icon.jsx';
 import ReviewDialog from './components/ReviewDialog.jsx';
 import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 import DocsView from './components/DocsView.jsx';
+import WorkHistoryView from './components/WorkHistoryView.jsx';
+import AdminVerificationView from './components/AdminVerificationView.jsx';
+import EvidenceManagementView from './components/EvidenceManagementView.jsx';
 
 export const getMediaBaseUrl = () => {
   if (typeof window !== 'undefined' && window.URBANFIX_MEDIA_BASE) {
@@ -1544,6 +1547,7 @@ export const normalizeReport = (item) => {
         'Contractor Offer Sent': 'Acknowledged',
         'Acknowledged': 'In Progress',
         'Reopened - Needs Review': 'Acknowledged',
+        'Rejected': 'In Progress',
       })[report.status] || null;
 
       const inspectIncident = async report => {
@@ -1736,7 +1740,10 @@ export const normalizeReport = (item) => {
         if (searchQuery && !searchable.includes(searchQuery.toLowerCase())) return false;
         if (queueFilters.category !== 'all' && item.category !== queueFilters.category) return false;
         if (queueFilters.severity !== 'all' && item.severity !== queueFilters.severity) return false;
-        if (queueFilters.state === 'assigned' && !['Assigned','In Progress','Evidence Uploaded'].includes(item.status)) return false;
+        if (queueFilters.state === 'assigned' && !['Assigned','Acknowledged','In Progress','Evidence Uploaded'].includes(item.status)) return false;
+        if (queueFilters.state === 'in_progress' && item.status !== 'In Progress') return false;
+        if (queueFilters.state === 'pending_verification' && !['Evidence Uploaded', 'Verification'].includes(item.status)) return false;
+        if (queueFilters.state === 'rejected' && item.status !== 'Rejected') return false;
         if (queueFilters.state === 'unresolved' && item.status === 'Resolved') return false;
         if (queueFilters.state === 'resolved' && item.status !== 'Resolved') return false;
         if (queueFilters.state === 'needs_action' && !['Submitted','Needs Review'].includes(item.status)) return false;
@@ -3093,6 +3100,37 @@ export const normalizeReport = (item) => {
                           </span>
                         </div>
 
+                        {/* Official Admin Verification Status Banner */}
+                        {(selectedReport.admin_verified || selectedReport.verification_status === 'Verified') && (
+                          <div className="rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50/70 dark:bg-emerald-950/40 p-4 space-y-1.5 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 font-mono">
+                                <Icon name="shield-check" className="w-4 h-4 text-emerald-600" />
+                                <span>Official Authority Resolution Verified</span>
+                              </span>
+                              {selectedReport.work_completed_at && (
+                                <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400">
+                                  Completed: {new Date(selectedReport.work_completed_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                              This repair was officially inspected and verified by municipal oversight administration.
+                            </p>
+                          </div>
+                        )}
+                        {selectedReport.status === 'Rejected' && (
+                          <div className="rounded-xl border border-red-200 dark:border-red-800/60 bg-red-50 dark:bg-red-950/30 p-4 space-y-1 text-xs">
+                            <div className="flex items-center gap-1.5 font-bold text-red-700 dark:text-red-300">
+                              <Icon name="alert-triangle" className="w-4 h-4 text-red-600" />
+                              <span>Resolution Quality Under Review · Correction Required</span>
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 text-[11px]">
+                              Submitted work did not pass verification criteria and is being corrected by the designated municipal crew.
+                            </p>
+                          </div>
+                        )}
+
                         {/* If already confirmed & resolved */}
                         {(selectedReport.status === 'Resolved' || selectedReport.citizen_verification?.fixed) ? (
                           <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/30 p-4 space-y-2">
@@ -3805,15 +3843,24 @@ export const normalizeReport = (item) => {
 
                     {/* SUB-NAVIGATION TAB RIBBON */}
                     <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none pt-1">
-                      {[
+                      {(authUser?.role === 'officer' ? [
+                        ['queue', 'list-filter', lang === 'bn' ? 'আমার কাজ' : 'My Tasks'],
+                        ['history', 'clock', lang === 'bn' ? 'কাজের ইতিহাস' : 'Work History'],
+                        ['evidence', 'camera', lang === 'bn' ? 'প্রমাণ ব্যবস্থাপনা' : 'Evidence Management'],
+                        ['map', 'map', t.adminNavMap],
+                        ['whatsapp', 'message-circle', t.adminNavWhatsApp]
+                      ] : [
                         ['queue', 'list-filter', t.adminNavQueue],
+                        ['history', 'clock', lang === 'bn' ? 'কাজের ইতিহাস' : 'Work History'],
+                        ['verification', 'shield-check', `${lang === 'bn' ? 'যাচাইকরণ কিউ' : 'Verification Queue'} (${reports.filter(r => r.status === 'Evidence Uploaded').length})`],
+                        ['evidence', 'camera', lang === 'bn' ? 'প্রমাণ ব্যবস্থাপনা' : 'Evidence Management'],
                         ['review', 'user-check', `${t.adminNavReview} (${reports.filter(r => r.needs_review || r.status === 'Needs Review').length})`],
                         ['proofs', 'clipboard-check', `${t.adminNavProofs} (${reports.filter(r => r.status === 'Evidence Uploaded').length})`],
                         ['map', 'map', t.adminNavMap],
                         ['contractors', 'hard-hat', t.adminNavContractors],
                         ['whatsapp', 'message-circle', t.adminNavWhatsApp],
                         ['funding', 'hand-coins', t.adminNavYouth]
-                      ].map(([id, icon, label]) => (
+                      ]).map(([id, icon, label]) => (
                         <button
                           key={id}
                           onClick={() => setAdminView(id)}
@@ -3965,6 +4012,9 @@ export const normalizeReport = (item) => {
                           <option value="all">{t.adminStatusAll}</option>
                           <option value="needs_action">{t.adminStatusNeedsAction}</option>
                           <option value="assigned">{t.adminStatusAssigned}</option>
+                          <option value="in_progress">{lang === 'bn' ? 'চলমান কাজ' : 'In Progress'}</option>
+                          <option value="pending_verification">{lang === 'bn' ? 'যাচাই অপেক্ষমাণ' : 'Pending Verification'}</option>
+                          <option value="rejected">{lang === 'bn' ? 'সংশোধন প্রয়োজন' : 'Needs Correction / Rejected'}</option>
                           <option value="unresolved">{t.adminStatusUnresolved}</option>
                           <option value="resolved">{t.adminStatusResolved}</option>
                         </select>
@@ -3998,7 +4048,64 @@ export const normalizeReport = (item) => {
                           </button>
                         ))}
                       </div>
+
+                      {/* QUICK FILTER PILLS FOR TASKS */}
+                      <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+                        <span className="text-[11px] font-mono text-slate-400 uppercase font-bold pr-1">Filter Tasks:</span>
+                        {[
+                          ['unresolved', lang === 'bn' ? 'সকল সক্রিয় কাজ' : 'All Active'],
+                          ['assigned', lang === 'bn' ? 'অ্যাসাইনকৃত' : 'Assigned'],
+                          ['in_progress', lang === 'bn' ? 'চলমান' : 'In Progress'],
+                          ['pending_verification', lang === 'bn' ? 'যাচাই অপেক্ষমাণ' : 'Awaiting Verification'],
+                          ['rejected', lang === 'bn' ? 'সংশোধন প্রয়োজন' : 'Needs Correction'],
+                          ['resolved', lang === 'bn' ? 'সম্পন্ন' : 'Resolved'],
+                          ['all', lang === 'bn' ? 'সব' : 'All']
+                        ].map(([stateKey, stateLabel]) => (
+                          <button
+                            key={stateKey}
+                            onClick={() => setQueueFilters({ ...queueFilters, state: stateKey })}
+                            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                              queueFilters.state === stateKey
+                                ? 'bg-emerald-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {stateLabel}
+                          </button>
+                        ))}
+                      </div>
                     </div>
+                  )}
+
+                  {/* WORK HISTORY VIEW */}
+                  {adminView === 'history' && (
+                    <WorkHistoryView
+                      lang={lang}
+                      authUser={authUser}
+                      onSelectComplaint={(item) => inspectIncident(item)}
+                      showToast={showToast}
+                    />
+                  )}
+
+                  {/* ADMIN VERIFICATION QUEUE VIEW */}
+                  {adminView === 'verification' && (
+                    <AdminVerificationView
+                      lang={lang}
+                      authUser={authUser}
+                      onSelectComplaint={(item) => inspectIncident(item)}
+                      onRefreshData={() => refreshData(authUser)}
+                      showToast={showToast}
+                    />
+                  )}
+
+                  {/* EVIDENCE MANAGEMENT VIEW */}
+                  {adminView === 'evidence' && (
+                    <EvidenceManagementView
+                      lang={lang}
+                      authUser={authUser}
+                      onRefreshData={() => refreshData(authUser)}
+                      showToast={showToast}
+                    />
                   )}
 
                   {/* SPATIAL MAP VIEW */}
@@ -4339,8 +4446,24 @@ export const normalizeReport = (item) => {
                                     </div>
                                   )}
 
+                                  {/* Rejected Incident Correction Card */}
+                                  {operationDetail.complaint.status === 'Rejected' && (
+                                    <div className="p-5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-300 dark:border-red-800 space-y-3">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <Icon name="alert-triangle" className="w-4 h-4 text-red-600" />
+                                          <span className="text-red-700 dark:text-red-300 font-bold text-xs uppercase tracking-wider">Admin Verification Rejected · Correction Required</span>
+                                        </div>
+                                      </div>
+                                      <div className="text-xs text-red-800 dark:text-red-200 bg-white dark:bg-slate-800 p-3 rounded-xl border border-red-200 dark:border-red-900/60">
+                                        <span className="font-semibold">Rejection Feedback: </span>
+                                        {operationDetail.complaint.rejection_reason || 'Resolution rejected by administrative reviewer. Correction is required before case can be verified.'}
+                                      </div>
+                                    </div>
+                                  )}
+
                                   {/* In Progress Controls: Progress Note & Evidence Upload */}
-                                  {['In Progress', 'Resolution Submitted'].includes(operationDetail.complaint.status) && (
+                                  {['In Progress', 'Resolution Submitted', 'Rejected'].includes(operationDetail.complaint.status) && (
                                     <div className="space-y-4 pt-1">
                                       {/* Progress Note Form */}
                                       <div className="space-y-1.5">
@@ -4399,7 +4522,7 @@ export const normalizeReport = (item) => {
                                           ) : (
                                             <>
                                               <Icon name="upload" className="w-3.5 h-3.5" />
-                                              <span>Submit Resolution Evidence for Citizen Verification</span>
+                                              <span>{operationDetail.complaint.status === 'Rejected' ? 'Resubmit Corrected Evidence for Verification' : 'Submit Resolution Evidence for Citizen Verification'}</span>
                                             </>
                                           )}
                                         </button>
@@ -4418,6 +4541,28 @@ export const normalizeReport = (item) => {
                                         <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-emerald-600 dark:text-emerald-400 font-medium text-xs hover:underline">
                                           View proof photo ↗
                                         </a>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* If Resolved and Verified */}
+                                  {operationDetail.complaint.status === 'Resolved' && (
+                                    <div className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/30 p-4 space-y-2 text-xs">
+                                      <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <span className="text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-2">
+                                          <Icon name="check-circle-2" className="w-4 h-4 text-emerald-600" />
+                                          <span>Resolution Verified & Case Closed.</span>
+                                        </span>
+                                        {operationDetail.complaint.afterImage && (
+                                          <a href={operationDetail.complaint.afterImage} target="_blank" rel="noopener noreferrer" className="text-emerald-600 dark:text-emerald-400 font-medium text-xs hover:underline">
+                                            View verified proof photo ↗
+                                          </a>
+                                        )}
+                                      </div>
+                                      {operationDetail.complaint.completion_description && (
+                                        <p className="text-slate-600 dark:text-slate-300 text-[11px]">
+                                          Notes: {operationDetail.complaint.completion_description}
+                                        </p>
                                       )}
                                     </div>
                                   )}
@@ -4517,7 +4662,21 @@ export const normalizeReport = (item) => {
                                   {item.confidence}
                                 </td>
                                 <td className="py-4 px-6">
-                                  <span className="text-slate-700 dark:text-slate-300 font-medium font-mono">{item.status}</span>
+                                  {item.status === 'Resolved' || item.admin_verified ? (
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                      Verified Resolved
+                                    </span>
+                                  ) : item.status === 'Rejected' ? (
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
+                                      Rejected (Correction)
+                                    </span>
+                                  ) : item.status === 'Evidence Uploaded' ? (
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                                      Awaiting Verification
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-700 dark:text-slate-300 font-medium font-mono">{item.status}</span>
+                                  )}
                                 </td>
                                 <td className="py-4 px-6 text-right">
                                   <div className="flex justify-end gap-2">

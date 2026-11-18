@@ -22,6 +22,7 @@ from app.schemas.complaint import (
     ComplaintCreate,
     ComplaintStatusUpdate,
     ComplaintProgressUpdate,
+    EvidenceEditRequest,
     OfficerOverride,
     ResolutionEvidenceCreate,
     ResolutionApprovalCreate,
@@ -739,42 +740,73 @@ async def attach_resolution_evidence(complaint_id: str, payload: ResolutionEvide
         assigned = complaint.get("assigned_authority") or {}
         if assigned.get("authority_id") != user.get("authority_id"):
             raise HTTPException(status_code=403, detail="Officers cannot submit evidence for complaints assigned to other authorities")
-    if complaint.get("status") not in {"In Progress", "Resolution Submitted", "Evidence Uploaded"}:
+    if complaint.get("status") not in {"In Progress", "Resolution Submitted", "Evidence Uploaded", "Rejected"}:
         raise HTTPException(status_code=409, detail="Evidence can only be uploaded after work is in progress or resolution is submitted")
     history = list(complaint.get("status_history", []))
     uploader_name = payload.uploaded_by or user.get("name") or user.get("username") or user.get("user_id")
     now = now_utc()
-    if complaint.get("status") == "In Progress":
-        history.append({"status": "Resolution Submitted", "note": "Field team submitted work for verification.", "at": now, "actor_id": user["user_id"], "actor_role": user["role"]})
+    now_iso = now.isoformat() if hasattr(now, "isoformat") else str(now)
+    if complaint.get("status") in {"In Progress", "Rejected"}:
+        history.append({
+            "status": "Resolution Submitted",
+            "note": "Field team submitted work for verification." if complaint.get("status") == "In Progress" else "Field team resubmitted corrected work evidence.",
+            "at": now,
+            "actor_id": user["user_id"],
+            "actor_role": user["role"],
+        })
     history.append({"status": "Evidence Uploaded", "note": payload.completion_note, "at": now, "uploaded_by": uploader_name, "actor_id": user["user_id"], "actor_role": user["role"]})
     approvals = dict(complaint.get("resolution_approvals") or {})
     approvals["officer_submission"] = True
     if not complaint.get("assigned_contractor_id"):
         approvals.pop("contractor", None)
-    evidence_dict = payload.model_dump() | {
+
+    # Maintain evidence version history
+    evidence_versions = list(complaint.get("evidence_versions") or [])
+    for ev in evidence_versions:
+        if ev.get("verification_status") == "pending":
+            ev["verification_status"] = "superseded"
+    version_num = len(evidence_versions) + 1
+
+    version_record = {
+        "version": version_num,
+        "image_url": payload.after_image_url,
+        "after_image_url": payload.after_image_url,
         "url": payload.after_image_url,
-        "uploaded_at": now,
+        "completion_note": payload.completion_note,
+        "completion_notes": payload.completion_note,
         "uploaded_by": uploader_name,
-        "actor_id": user["user_id"],
-        "actor_role": user["role"],
+        "uploaded_at": now_iso,
+        "actor_id": user.get("user_id"),
+        "actor_role": user.get("role"),
+        "verification_status": "pending",
+        "admin_feedback": None,
     }
+    if payload.gps_latitude is not None and payload.gps_longitude is not None:
+        version_record["gps"] = {"latitude": payload.gps_latitude, "longitude": payload.gps_longitude}
+    evidence_versions.append(version_record)
+
     updated = await civic_repo.update_one(
         "complaints",
         "complaint_id",
         complaint_id,
         {
             "status": "Evidence Uploaded",
-            "resolution_evidence": evidence_dict,
+            "resolution_evidence": version_record,
+            "evidence_versions": evidence_versions,
+            "current_evidence_version": version_num,
             "after_image_url": payload.after_image_url,
             "completion_notes": payload.completion_note,
             "officer_evidence_submitted": True,
+            "work_completed_at": complaint.get("work_completed_at") or now,
+            "rejection_reason": None,
+            "admin_verified": False,
             "resolution_approvals": approvals,
             "status_history": history,
             "resolution_submitted_at": complaint.get("resolution_submitted_at") or now,
             "updated_at": now,
         },
     )
-    await record_audit_event("complaint", complaint_id, "resolution_evidence_uploaded", user, {"status": complaint.get("status")}, {"status": "Evidence Uploaded", "evidence_url": payload.after_image_url}, payload.completion_note)
+    await record_audit_event("complaint", complaint_id, "resolution_evidence_uploaded", user, {"status": complaint.get("status")}, {"status": "Evidence Uploaded", "evidence_url": payload.after_image_url, "version": version_num}, payload.completion_note)
     return updated
 
 
@@ -794,17 +826,18 @@ async def upload_resolution_evidence(
         assigned = complaint.get("assigned_authority") or {}
         if assigned.get("authority_id") != user.get("authority_id"):
             raise HTTPException(status_code=403, detail="Officers cannot submit evidence for complaints assigned to other authorities")
-    if complaint.get("status") not in {"In Progress", "Resolution Submitted", "Evidence Uploaded"}:
+    if complaint.get("status") not in {"In Progress", "Resolution Submitted", "Evidence Uploaded", "Rejected"}:
         raise HTTPException(status_code=409, detail="Evidence can only be uploaded after work is in progress or resolution is submitted")
 
     image_url = await store_upload(image)
     uploader_name = user.get("name") or user.get("username") or user.get("user_id")
     now = now_utc()
+    now_iso = now.isoformat() if hasattr(now, "isoformat") else str(now)
     history = list(complaint.get("status_history", []))
-    if complaint.get("status") == "In Progress":
+    if complaint.get("status") in {"In Progress", "Rejected"}:
         history.append({
             "status": "Resolution Submitted",
-            "note": "Field team submitted work for verification.",
+            "note": "Field team submitted work for verification." if complaint.get("status") == "In Progress" else "Field team resubmitted corrected work evidence.",
             "at": now,
             "actor_id": user["user_id"],
             "actor_role": user["role"],
@@ -818,18 +851,30 @@ async def upload_resolution_evidence(
         "actor_role": user["role"],
     })
 
-    evidence_dict = {
-        "url": image_url,
+    # Maintain evidence version history
+    evidence_versions = list(complaint.get("evidence_versions") or [])
+    for ev in evidence_versions:
+        if ev.get("verification_status") == "pending":
+            ev["verification_status"] = "superseded"
+    version_num = len(evidence_versions) + 1
+
+    version_record = {
+        "version": version_num,
+        "image_url": image_url,
         "after_image_url": image_url,
+        "url": image_url,
         "completion_note": completion_note,
         "completion_notes": completion_note,
         "uploaded_by": uploader_name,
-        "uploaded_at": now,
+        "uploaded_at": now_iso,
         "actor_id": user["user_id"],
         "actor_role": user["role"],
+        "verification_status": "pending",
+        "admin_feedback": None,
     }
     if gps_latitude is not None and gps_longitude is not None:
-        evidence_dict["gps"] = {"latitude": gps_latitude, "longitude": gps_longitude}
+        version_record["gps"] = {"latitude": gps_latitude, "longitude": gps_longitude}
+    evidence_versions.append(version_record)
 
     approvals = dict(complaint.get("resolution_approvals") or {})
     approvals["officer_submission"] = True
@@ -838,10 +883,15 @@ async def upload_resolution_evidence(
 
     changes = {
         "status": "Evidence Uploaded",
-        "resolution_evidence": evidence_dict,
+        "resolution_evidence": version_record,
+        "evidence_versions": evidence_versions,
+        "current_evidence_version": version_num,
         "after_image_url": image_url,
         "completion_notes": completion_note,
         "officer_evidence_submitted": True,
+        "work_completed_at": complaint.get("work_completed_at") or now,
+        "rejection_reason": None,
+        "admin_verified": False,
         "resolution_approvals": approvals,
         "status_history": history,
         "resolution_submitted_at": complaint.get("resolution_submitted_at") or now,
@@ -854,9 +904,44 @@ async def upload_resolution_evidence(
         "resolution_evidence_uploaded",
         user,
         {"status": complaint.get("status")},
-        {"status": "Evidence Uploaded", "evidence_url": image_url},
+        {"status": "Evidence Uploaded", "evidence_url": image_url, "version": version_num},
         completion_note,
     )
+    return updated
+
+
+@router.patch("/{complaint_id}/evidence/note")
+async def update_evidence_note(complaint_id: str, payload: EvidenceEditRequest, user: dict = Depends(require_admin_or_officer)):
+    complaint = await civic_repo.find_one("complaints", "complaint_id", complaint_id)
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+    if user.get("role") == "officer":
+        assigned = complaint.get("assigned_authority") or {}
+        if assigned.get("authority_id") != user.get("authority_id"):
+            raise HTTPException(status_code=403, detail="Officers cannot edit evidence for complaints assigned to other authorities")
+    if complaint.get("status") == "Resolved" and complaint.get("admin_verified"):
+        raise HTTPException(status_code=409, detail="Cannot edit completion note of an already verified and resolved complaint")
+
+    now = now_utc()
+    now_iso = now.isoformat() if hasattr(now, "isoformat") else str(now)
+    evidence_versions = list(complaint.get("evidence_versions") or [])
+    if evidence_versions:
+        evidence_versions[-1]["completion_note"] = payload.completion_note
+        evidence_versions[-1]["completion_notes"] = payload.completion_note
+        evidence_versions[-1]["edited_at"] = now_iso
+
+    res_evidence = dict(complaint.get("resolution_evidence") or {})
+    res_evidence["completion_note"] = payload.completion_note
+    res_evidence["completion_notes"] = payload.completion_note
+
+    changes = {
+        "completion_notes": payload.completion_note,
+        "resolution_evidence": res_evidence,
+        "evidence_versions": evidence_versions,
+        "updated_at": now,
+    }
+    updated = await civic_repo.update_one("complaints", "complaint_id", complaint_id, changes)
+    await record_audit_event("complaint", complaint_id, "evidence_note_updated", user, {"completion_notes": complaint.get("completion_notes")}, {"completion_notes": payload.completion_note}, payload.completion_note)
     return updated
 
 
