@@ -5,9 +5,33 @@ import { api } from '../lib/api';
 
 export const formatLocation = (loc) => {
   if (!loc) return 'Location pending';
-  if (typeof loc === 'string') return loc;
+  if (typeof loc === 'string') {
+    const trimmed = loc.trim();
+    return trimmed || 'Location pending';
+  }
   if (typeof loc === 'object') {
-    return loc.area || (loc.latitude && loc.longitude ? `${loc.latitude}, ${loc.longitude}` : 'Location pending');
+    if (typeof loc.area === 'string' && loc.area.trim()) {
+      return loc.area.trim();
+    }
+    if (typeof loc.address === 'string' && loc.address.trim()) {
+      return loc.address.trim();
+    }
+    if (typeof loc.name === 'string' && loc.name.trim()) {
+      return loc.name.trim();
+    }
+
+    const lat = loc.latitude !== undefined ? loc.latitude : loc.lat;
+    const lng = loc.longitude !== undefined ? loc.longitude : loc.lng;
+
+    if (lat !== undefined && lng !== undefined && lat !== null && lng !== null) {
+      const numLat = Number(lat);
+      const numLng = Number(lng);
+      if (Number.isFinite(numLat) && Number.isFinite(numLng)) {
+        return `${numLat}, ${numLng}`;
+      }
+    }
+
+    return 'Location pending';
   }
   return String(loc);
 };

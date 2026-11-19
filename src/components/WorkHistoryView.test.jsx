@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import WorkHistoryView from './WorkHistoryView.jsx';
+import WorkHistoryView, { formatLocation } from './WorkHistoryView.jsx';
 import * as apiModule from '../lib/api.js';
 
 vi.mock('../lib/api.js', () => ({
@@ -128,6 +128,36 @@ describe('WorkHistoryView Component Tests', () => {
     await waitFor(() => {
       expect(screen.getByTestId('work-history-detail-modal')).toBeInTheDocument();
       expect(screen.getAllByText(/Filled with cold asphalt mix/i).length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('formatLocation utility tests', () => {
+    it('handles null and undefined values safely', () => {
+      expect(formatLocation(null)).toBe('Location pending');
+      expect(formatLocation(undefined)).toBe('Location pending');
+      expect(formatLocation('')).toBe('Location pending');
+      expect(formatLocation('   ')).toBe('Location pending');
+    });
+
+    it('handles string locations properly', () => {
+      expect(formatLocation('Dhanmondi 27, Dhaka')).toBe('Dhanmondi 27, Dhaka');
+      expect(formatLocation('  Agrabad, Chattogram  ')).toBe('Agrabad, Chattogram');
+    });
+
+    it('handles latitude/longitude values of 0 correctly', () => {
+      expect(formatLocation({ latitude: 0, longitude: 0 })).toBe('0, 0');
+      expect(formatLocation({ latitude: 0, longitude: 90.37 })).toBe('0, 90.37');
+      expect(formatLocation({ latitude: 23.75, longitude: 0 })).toBe('23.75, 0');
+      expect(formatLocation({ lat: 0, lng: 0 })).toBe('0, 0');
+    });
+
+    it('prevents malformed location objects from crashing rendering and always returns strings', () => {
+      expect(formatLocation({})).toBe('Location pending');
+      expect(formatLocation({ area: { nested: 'object' } })).toBe('Location pending');
+      expect(formatLocation({ area: null, latitude: null, longitude: null })).toBe('Location pending');
+      expect(formatLocation({ area: ['array', 'value'] })).toBe('Location pending');
+      expect(formatLocation(['an', 'array'])).toBe('Location pending');
+      expect(formatLocation({ address: 'Gulshan 2, Dhaka' })).toBe('Gulshan 2, Dhaka');
     });
   });
 });

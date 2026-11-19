@@ -102,4 +102,26 @@ describe('EvidenceManagementView Component Tests', () => {
       );
     });
   });
+
+  it('handles empty API responses safely without stale ghost selections', async () => {
+    apiModule.api.mockImplementation(async (endpoint) => {
+      if (endpoint.startsWith('/operations/work-history')) {
+        return { items: [], total: 0 };
+      }
+      return {};
+    });
+
+    render(
+      <EvidenceManagementView
+        lang="en"
+        authUser={{ role: 'officer', authority_id: 'AUTH-DNCC', name: 'Field Engineer' }}
+        showToast={vi.fn()}
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Tasks \(0\)/i)).toBeInTheDocument();
+      expect(screen.getByText(/Select a task from the left column to view its evidence records/i)).toBeInTheDocument();
+    });
+  });
 });
