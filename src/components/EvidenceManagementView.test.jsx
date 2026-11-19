@@ -16,7 +16,7 @@ describe('EvidenceManagementView Component Tests', () => {
       complaint_id: 'CP-EVI-001',
       category: 'Street Lighting',
       title: 'Fix street light',
-      location: 'Dhanmondi 27, Dhaka',
+      location: { area: 'Dhanmondi 27, Dhaka', latitude: 23.75, longitude: 90.37 },
       status: 'Evidence Uploaded',
       after_image_url: 'https://example.com/light_fixed.jpg',
       completion_description: 'Replaced 100W LED module.',

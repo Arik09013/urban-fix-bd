@@ -3,6 +3,15 @@ import Icon from './Icon';
 import InteractiveBeforeAfter from './InteractiveBeforeAfter';
 import { api } from '../lib/api';
 
+export const formatLocation = (loc) => {
+  if (!loc) return 'Location pending';
+  if (typeof loc === 'string') return loc;
+  if (typeof loc === 'object') {
+    return loc.area || (loc.latitude && loc.longitude ? `${loc.latitude}, ${loc.longitude}` : 'Location pending');
+  }
+  return String(loc);
+};
+
 export default function WorkHistoryView({
   lang = 'en',
   authUser,
@@ -48,7 +57,13 @@ export default function WorkHistoryView({
       }
 
       const res = await api(`/operations/work-history?${params.toString()}`);
-      setItems(res.items || []);
+      const rawItems = res.items || [];
+      const normalizedItems = rawItems.map((item) => ({
+        ...item,
+        id: item.complaint_id || item.id,
+        location: formatLocation(item.location),
+      }));
+      setItems(normalizedItems);
       setTotalPages(res.total_pages || 1);
       setTotalCount(res.total || 0);
       if (res.stats) {
@@ -59,7 +74,7 @@ export default function WorkHistoryView({
     } finally {
       setLoading(false);
     }
-  }, [page, statusFilter, searchQuery, dateFrom, dateTo, showToast]);
+  }, [page, statusFilter, searchQuery, dateFrom, dateTo]);
 
   useEffect(() => {
     fetchWorkHistory();
@@ -349,7 +364,7 @@ export default function WorkHistoryView({
                       <td className="py-4 px-5 align-top font-mono text-[11px] text-slate-600 dark:text-slate-300 max-w-[180px]">
                         <div className="flex items-start gap-1">
                           <Icon name="map-pin" className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                          <span className="line-clamp-2">{item.location}</span>
+                          <span className="line-clamp-2">{formatLocation(item.location)}</span>
                         </div>
                       </td>
 
@@ -490,7 +505,7 @@ export default function WorkHistoryView({
                   {selectedItem.category} — {selectedItem.title || selectedItem.description}
                 </h3>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
-                  {selectedItem.location}
+                  {formatLocation(selectedItem.location)}
                 </p>
               </div>
               <button

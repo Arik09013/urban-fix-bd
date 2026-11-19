@@ -3,6 +3,15 @@ import Icon from './Icon';
 import InteractiveBeforeAfter from './InteractiveBeforeAfter';
 import { api } from '../lib/api';
 
+export const formatLocation = (loc) => {
+  if (!loc) return 'Location pending';
+  if (typeof loc === 'string') return loc;
+  if (typeof loc === 'object') {
+    return loc.area || (loc.latitude && loc.longitude ? `${loc.latitude}, ${loc.longitude}` : 'Location pending');
+  }
+  return String(loc);
+};
+
 export default function EvidenceManagementView({
   lang = 'en',
   authUser,
@@ -30,26 +39,32 @@ export default function EvidenceManagementView({
     try {
       // Use work-history with limit 50 to get authority items with evidence
       const res = await api('/operations/work-history?limit=50');
-      const allItems = res.items || [];
-      // Items that have evidence or are in progress/rejected
-      setComplaints(allItems);
-      if (allItems.length > 0 && !selectedComplaint) {
-        // default select first item that has evidence or first item
-        const firstWithEvidence = allItems.find(
-          (c) => c.after_image_url || c.resolution_evidence?.after_image_url || c.evidence_versions?.length > 0
-        ) || allItems[0];
-        setSelectedComplaint(firstWithEvidence);
-      } else if (selectedComplaint) {
-        // update selectedComplaint from latest data
-        const updated = allItems.find((c) => c.id === selectedComplaint.id);
-        if (updated) setSelectedComplaint(updated);
+      const rawItems = res.items || [];
+      const normalizedItems = rawItems.map((item) => ({
+        ...item,
+        id: item.complaint_id || item.id,
+        location: formatLocation(item.location),
+      }));
+      setComplaints(normalizedItems);
+      if (normalizedItems.length > 0) {
+        setSelectedComplaint((prev) => {
+          if (!prev) {
+            return (
+              normalizedItems.find(
+                (c) => c.after_image_url || c.resolution_evidence?.after_image_url || c.evidence_versions?.length > 0
+              ) || normalizedItems[0]
+            );
+          }
+          const updated = normalizedItems.find((c) => c.id === prev.id);
+          return updated || prev;
+        });
       }
     } catch (err) {
       showToast(err.message || 'Failed to fetch evidence records.');
     } finally {
       setLoading(false);
     }
-  }, [selectedComplaint, showToast]);
+  }, []);
 
   useEffect(() => {
     fetchEvidenceList();
@@ -128,11 +143,12 @@ export default function EvidenceManagementView({
   const filteredComplaints = complaints.filter((c) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
+    const locText = formatLocation(c.location).toLowerCase();
     return (
-      c.id.toLowerCase().includes(q) ||
+      (c.id && c.id.toLowerCase().includes(q)) ||
       (c.category && c.category.toLowerCase().includes(q)) ||
       (c.title && c.title.toLowerCase().includes(q)) ||
-      (c.location && c.location.toLowerCase().includes(q))
+      locText.includes(q)
     );
   });
 
@@ -241,7 +257,7 @@ export default function EvidenceManagementView({
                       {item.category}
                     </div>
                     <div className="text-[10px] text-slate-400 truncate">
-                      {item.location}
+                      {formatLocation(item.location)}
                     </div>
                   </div>
                 </button>
@@ -268,7 +284,7 @@ export default function EvidenceManagementView({
                   {selectedComplaint.title || selectedComplaint.description}
                 </h3>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
-                  Location: {selectedComplaint.location}
+                  Location: {formatLocation(selectedComplaint.location)}
                 </p>
               </div>
 

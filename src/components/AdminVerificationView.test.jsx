@@ -18,7 +18,7 @@ describe('AdminVerificationView Component Tests', () => {
         category: 'Road Infrastructure',
         title: 'Road crack repair',
         description: 'Road cracks on Mirpur 10.',
-        location: 'Mirpur 10, Dhaka',
+        location: { area: 'Mirpur 10, Dhaka', latitude: 23.8067, longitude: 90.3683 },
         status: 'Evidence Uploaded',
         created_at: '2026-11-05T09:00:00Z',
         work_completed_at: '2026-11-05T14:00:00Z',

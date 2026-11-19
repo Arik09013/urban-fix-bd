@@ -4,6 +4,7 @@ import Icon from './components/Icon.jsx';
 import ReviewDialog from './components/ReviewDialog.jsx';
 import InteractiveBeforeAfter from './components/InteractiveBeforeAfter.jsx';
 import DocsView from './components/DocsView.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import WorkHistoryView from './components/WorkHistoryView.jsx';
 import AdminVerificationView from './components/AdminVerificationView.jsx';
 import EvidenceManagementView from './components/EvidenceManagementView.jsx';
@@ -4079,33 +4080,39 @@ export const normalizeReport = (item) => {
 
                   {/* WORK HISTORY VIEW */}
                   {adminView === 'history' && (
-                    <WorkHistoryView
-                      lang={lang}
-                      authUser={authUser}
-                      onSelectComplaint={(item) => inspectIncident(item)}
-                      showToast={showToast}
-                    />
+                    <ErrorBoundary title={lang === 'bn' ? 'কাজের ইতিহাস রেন্ডারিং ত্রুটি' : 'Work History View Error'}>
+                      <WorkHistoryView
+                        lang={lang}
+                        authUser={authUser}
+                        onSelectComplaint={(item) => inspectIncident(item)}
+                        showToast={showToast}
+                      />
+                    </ErrorBoundary>
                   )}
 
                   {/* ADMIN VERIFICATION QUEUE VIEW */}
                   {adminView === 'verification' && (
-                    <AdminVerificationView
-                      lang={lang}
-                      authUser={authUser}
-                      onSelectComplaint={(item) => inspectIncident(item)}
-                      onRefreshData={() => refreshData(authUser)}
-                      showToast={showToast}
-                    />
+                    <ErrorBoundary title={lang === 'bn' ? 'যাচাই কিউ রেন্ডারিং ত্রুটি' : 'Verification Queue View Error'}>
+                      <AdminVerificationView
+                        lang={lang}
+                        authUser={authUser}
+                        onSelectComplaint={(item) => inspectIncident(item)}
+                        onRefreshData={() => refreshData(authUser)}
+                        showToast={showToast}
+                      />
+                    </ErrorBoundary>
                   )}
 
                   {/* EVIDENCE MANAGEMENT VIEW */}
                   {adminView === 'evidence' && (
-                    <EvidenceManagementView
-                      lang={lang}
-                      authUser={authUser}
-                      onRefreshData={() => refreshData(authUser)}
-                      showToast={showToast}
-                    />
+                    <ErrorBoundary title={lang === 'bn' ? 'প্রমাণ ব্যবস্থাপনা রেন্ডারিং ত্রুটি' : 'Evidence Management View Error'}>
+                      <EvidenceManagementView
+                        lang={lang}
+                        authUser={authUser}
+                        onRefreshData={() => refreshData(authUser)}
+                        showToast={showToast}
+                      />
+                    </ErrorBoundary>
                   )}
 
                   {/* SPATIAL MAP VIEW */}

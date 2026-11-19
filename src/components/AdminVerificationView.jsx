@@ -3,6 +3,15 @@ import Icon from './Icon';
 import InteractiveBeforeAfter from './InteractiveBeforeAfter';
 import { api } from '../lib/api';
 
+export const formatLocation = (loc) => {
+  if (!loc) return 'Location pending';
+  if (typeof loc === 'string') return loc;
+  if (typeof loc === 'object') {
+    return loc.area || (loc.latitude && loc.longitude ? `${loc.latitude}, ${loc.longitude}` : 'Location pending');
+  }
+  return String(loc);
+};
+
 export default function AdminVerificationView({
   lang = 'en',
   authUser,
@@ -43,7 +52,13 @@ export default function AdminVerificationView({
         limit: '10',
       });
       const res = await api(`/operations/verification-queue?${params.toString()}`);
-      setQueue(res.items || []);
+      const rawItems = res.items || [];
+      const normalizedItems = rawItems.map((item) => ({
+        ...item,
+        id: item.complaint_id || item.id,
+        location: formatLocation(item.location),
+      }));
+      setQueue(normalizedItems);
       setTotalPages(res.total_pages || 1);
       setTotalCount(res.total || 0);
       if (res.stats) {
@@ -54,7 +69,7 @@ export default function AdminVerificationView({
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, page, showToast]);
+  }, [statusFilter, page]);
 
   useEffect(() => {
     fetchQueue();
@@ -314,7 +329,7 @@ export default function AdminVerificationView({
                         {item.title || item.description}
                       </p>
                       <div className="text-[11px] font-mono text-slate-400 mt-1 flex flex-wrap items-center gap-3">
-                        <span>Loc: {item.location}</span>
+                        <span>Loc: {formatLocation(item.location)}</span>
                         {item.assigned_authority?.authority_name && (
                           <span>Dept: {item.assigned_authority.authority_name}</span>
                         )}
@@ -434,7 +449,7 @@ export default function AdminVerificationView({
                   {reviewItem.category} — {reviewItem.title || reviewItem.description}
                 </h3>
                 <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
-                  {reviewItem.location}
+                  {formatLocation(reviewItem.location)}
                 </p>
               </div>
               <button

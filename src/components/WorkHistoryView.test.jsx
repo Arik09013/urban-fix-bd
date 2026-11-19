@@ -18,7 +18,7 @@ describe('WorkHistoryView Component Tests', () => {
         category: 'Road Infrastructure',
         title: 'Pothole on Main Road',
         description: 'Large pothole causing vehicle damage.',
-        location: 'Agrabad, Chattogram',
+        location: { area: 'Agrabad, Chattogram', latitude: 22.32, longitude: 91.81 },
         status: 'Resolved',
         admin_verified: true,
         verification_status: 'Verified',
